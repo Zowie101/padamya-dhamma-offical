@@ -164,7 +164,7 @@ test('actual checkout handler clears cart and navigates only after a successful 
     const context = {
       document: { getElementById: id => elements[id] || null, createElement: () => ({ setAttribute() {} }) },
       getCart: () => [{ id: 'one', qty: 1 }], getProduct: () => products[0], PRODUCTS: products,
-      money: n => String(n), saveCart: cart => { assert.equal(cart.length, 0); cleared = true }, location: {},
+      checkoutSignedIn: () => true, money: n => String(n), saveCart: cart => { assert.equal(cart.length, 0); cleared = true }, location: {},
       FormData: class { entries() { return Object.entries(customer) } },
       window: { SacredOrders: { create(...args) { if (fails) throw Error('blocked'); created = true; return api.create(...args) } } }
     }

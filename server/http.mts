@@ -115,7 +115,7 @@ export function createApp(options:any={}) {
       }
       if(route==='/api/orders'){
         if(req.method==='GET')return send({orders:await store.orders(profile)})
-        if(req.method==='POST'){await store.limit('checkout:'+profile.id,10,60000);return send({order:await store.createOrder(profile,validate(orderSchema,await body(req)))},201)}
+        if(req.method==='POST'){if(profile.role==='guest')throw new ApiError(401,'Sign in before placing your order.');await store.limit('checkout:'+profile.id,10,60000);return send({order:await store.createOrder(profile,validate(orderSchema,await body(req)))},201)}
       }
       const orderMatch=/^\/api\/orders\/(SF-[\w-]+)$/.exec(route)
       if(orderMatch&&req.method==='GET')return send({order:await store.order(orderMatch[1],profile)})

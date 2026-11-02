@@ -26,6 +26,7 @@ const checkout=(key='fixture-checkout-0001',qty=1)=>({customer,cart:[{id:'golden
 test('server calculates prices, checks ownership and makes checkout retries idempotent',async t=>{
   const app=await fixture(t),a=await app.client(),b=await app.client()
   await a.request('/api/cart','PUT',[{id:'golden-presence',qty:1}])
+  await a.request('/api/auth/register','POST',{name:customer.name,email:customer.email,password:'Fixture private password 2026!'})
   const first=await a.request('/api/orders','POST',checkout())
   assert.equal(first.status,201);assert.equal(first.body.order.total,68000);assert.match(first.body.order.ref,/^SF-\d{7}$/)
   assert.equal((await a.request('/api/cart')).body.cart.length,0)
@@ -53,6 +54,7 @@ test('accounts authenticate, protect admin roles and merge only the current gues
 })
 test('admin stage changes, corrections and stock checks are atomic',async t=>{
   const app=await fixture(t),a=await app.client()
+  await a.request('/api/auth/register','POST',{name:customer.name,email:customer.email,password:'Fixture private password 2026!'})
   const order=(await a.request('/api/orders','POST',checkout())).body.order
   app.db.prepare("UPDATE profiles SET role='admin' WHERE id=?").run(a.profile.id)
   let result=await a.request(`/api/admin/orders/${order.ref}/stage`,'PATCH',{status:'delivered',expectedStatus:'placed'})
@@ -100,4 +102,15 @@ test('configured HTTPS tunnel accepts its own origin and rejects another site or
   assert.equal((await a.request('/api/cart','PUT',[],{origin,'x-csrf-token':'wrong'})).status,403)
   const fresh=await fetch(app.base+'/api/bootstrap')
   assert.match(fresh.headers.get('set-cookie')||'',/; Secure/)
+})
+
+test('guest checkout is rejected without clearing the bag; registration preserves it',async t=>{
+  const app=await fixture(t),a=await app.client()
+  await a.request('/api/cart','PUT',[{id:'golden-presence',qty:1}])
+  assert.equal((await a.request('/api/orders','POST',checkout())).status,401)
+  assert.equal((await a.request('/api/orders')).body.orders.length,0)
+  assert.equal((await a.request('/api/cart')).body.cart[0].qty,1)
+  await a.request('/api/auth/register','POST',{name:customer.name,email:customer.email,password:'Fixture private password 2026!'})
+  assert.equal((await a.request('/api/cart')).body.cart[0].qty,1)
+  assert.equal((await a.request('/api/orders','POST',checkout())).status,201)
 })

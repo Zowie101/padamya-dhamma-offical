@@ -96,7 +96,6 @@
     dialog.addEventListener('keydown',event=>{if(event.key!=='Tab')return;const nodes=[...dialog.querySelectorAll('button,input,select')].filter(el=>!el.disabled),first=nodes[0],last=nodes.at(-1);if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}})
     function addEntry(parent){if(!parent||parent.querySelector('.accessibility-open'))return;const button=document.createElement('button');button.type='button';button.className='accessibility-open';button.dataset.noTranslate='';button.dataset.noScramble='';button.dataset.a11yCopy='title';button.textContent=words().title;button.setAttribute('aria-haspopup','dialog');button.setAttribute('aria-controls',dialog.id);button.onclick=openPanel;parent.append(button)}
     addEntry(document.querySelector('.account-drawer-preferences'))
-    addEntry(document.querySelector('.room-panel-bottom'))
     const observer=new MutationObserver(records=>{
       if(!document.querySelector('.account-drawer-preferences .accessibility-open'))addEntry(document.querySelector('.account-drawer-preferences'))
       if(records.some(r=>[...r.addedNodes].some(n=>n.nodeType===1&&!n.matches('.sage-word,.scramble-visual,.scramble-original'))))scheduleText()

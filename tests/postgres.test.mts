@@ -60,6 +60,8 @@ test('HTTP routes await cloud storage, enforce sessions and keep guided Sage fun
   assert.equal((await request('bag/import','POST',{cart:[{id:'quiet-meditation',qty:1}],wishlist:['quiet-meditation']})).value.cart.length,1)
   const sage=await request('sage','POST',{messages:[{role:'user',content:'Show my cart'}],language:'en'})
   assert.equal(sage.status,200);assert.equal(sage.value.cart.total,42000)
+  assert.equal((await request('orders','POST',checkout('cloud-http-test-0001'))).status,401)
+  assert.equal((await request('auth/register','POST',{name:'Cloud fixture',email:'cloud-http@example.com',password:'Cloud fixture password 2026!'})).status,200)
   const order=await request('orders','POST',checkout('cloud-http-test-0001'));assert.equal(order.status,201)
   assert.equal((await request('orders')).value.orders.length,1)
   assert.equal((await request('auth/logout','POST',{})).status,200)

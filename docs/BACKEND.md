@@ -71,3 +71,7 @@ node --run check:paths
 ```
 
 Tests cover checkout ownership, tampered prices, retries, inventory atomicity, account merging, CSRF, role boundaries, stage corrections, asset range loading, guided assistant behaviour and mocked LLM tool loops. Existing AR/camera/gesture/order/transition tests are retained. Browser checks covered actual checkout/receipt, bag clearing, Sage recommendation add-to-bag, bag totals, comparison, tracking help and a 390px mobile frame. Live provider calls and real device AR were not re-tested as part of the backend work.
+
+## Checkout sign-in requirement
+
+Guests can browse and keep a bag or wishlist. Continuing to checkout opens a sign-in/create-account dialog; successful authentication returns to checkout and preserves the current bag. Direct checkout-page visits are gated too. The order creation API rejects guest sessions with HTTP 401 before saving an order or clearing the bag. Existing orders are preserved.

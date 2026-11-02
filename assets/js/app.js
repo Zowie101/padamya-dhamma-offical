@@ -883,9 +883,26 @@ function initShrine() {
   size = parseInt(chosen.height)
   draw()
 }
+function checkoutSignedIn() { return window.SacredStore?.enabled && ['customer','admin'].includes(window.SacredStore.profile?.role) }
+function showCheckoutSignin() {
+  let dialog=document.getElementById('checkoutSigninDialog')
+  if(!dialog){
+    dialog=document.createElement('dialog');dialog.id='checkoutSigninDialog';dialog.className='checkout-signin-dialog';dialog.setAttribute('aria-labelledby','checkoutSigninTitle')
+    dialog.innerHTML='<button class="checkout-signin-close" type="button" aria-label="Close sign-in prompt">×</button><h2 id="checkoutSigninTitle">Sign in to continue</h2><p>Keep your order and delivery updates together in your account. Your bag will be waiting.</p><div class="signin-actions"><a class="button button-dark" href="account.html?return=checkout.html">Sign in</a><a class="button button-outline" href="account.html?mode=register&amp;return=checkout.html">Create account</a></div>'
+    document.body.append(dialog);dialog.querySelector('button').onclick=()=>dialog.close()
+    dialog.addEventListener('click',event=>{if(event.target!==dialog)return;const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close()})
+    dialog.addEventListener('close',()=>dialog._trigger?.focus())
+  }
+  if(!dialog.open){dialog._trigger=document.activeElement;dialog.showModal()}
+}
+document.addEventListener('click',event=>{
+  const link=event.target.closest?.('a[href]');if(!link||new URL(link.href,location.href).pathname.split('/').pop()!=='checkout.html'||checkoutSignedIn())return
+  event.preventDefault();event.stopImmediatePropagation();showCheckoutSignin()
+},true)
 function initCheckout() {
   const root = document.getElementById('checkoutRoot')
   if (!root) return
+  if (!checkoutSignedIn()) { root.innerHTML='<div class="empty-cart"><h2>Sign in to place your order.</h2><button class="button button-dark" id="checkoutSigninAgain" type="button">Sign in / Create account</button></div>';document.getElementById('checkoutSigninAgain').onclick=showCheckoutSignin;showCheckoutSignin();return }
   const cart = getCart()
   if (!cart.length) {
     root.innerHTML =

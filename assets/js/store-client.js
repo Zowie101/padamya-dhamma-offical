@@ -61,7 +61,7 @@
   state.request=request;state.refreshOrders=refreshOrders;state.syncCart=cart=>queueBag('cart',cart);state.syncWishlist=ids=>queueBag('wishlist',ids)
   state.flush=()=>state.queue
   state.refreshCatalogue=async()=>applyProducts((await request('catalogue')).products)
-  state.authenticate=async(mode,data)=>{await request('auth/'+mode,'POST',data);location.href='account.html'+location.search}
+  state.authenticate=async(mode,data)=>{await request('auth/'+mode,'POST',data);const dest=new URLSearchParams(location.search).get('return');location.href=dest==='checkout.html'?'checkout.html':'account.html'+location.search}
   state.logout=async()=>{await request('auth/logout','POST',{});write(CART,[]);write(WISH,[]);location.href='account.html'}
   state.ready=(async()=>{
     try{
