@@ -1,0 +1,72 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Native XR framebuffer regression</title>
+<script type="importmap">{"imports":{"three":"../assets/vendor/three/three.module.js?v=20261031-6","three/addons/":"../assets/vendor/three/addons/"}}</script>
+<style>body{margin:0;background:#eee9df;color:#252820;font:12px system-ui}canvas{position:fixed;inset:0;width:100%;height:100%}#overlay{position:relative;z-index:2;pointer-events:none}header,footer{background:#fffdf5ed;padding:12px;pointer-events:auto}header{display:flex;gap:7px;flex-wrap:wrap;align-items:center}button,select{font:inherit;padding:7px}footer{position:fixed;bottom:0;left:0;right:0;max-height:28vh;overflow:auto}pre{white-space:pre-wrap;font-size:10px}p{margin:6px 0}</style>
+</head><body><div id="overlay"><header><b>Real WebXRManager · simulated device</b><button id="start">Start native-path test</button><select id="product" aria-label="Test statue"></select><select id="surface" aria-label="Simulated surface"><option value="none">No surface</option><option value="floor">Horizontal surface</option></select><button id="manual">Place manually</button><button id="place">Place on surface</button><button id="move">Move</button><button id="details">Check framebuffer</button><button id="end">End</button></header><footer><p id="message">No physical camera is used. This test exercises Three.js's actual XR manager and XR framebuffer.</p><pre id="gpu"></pre><pre id="report"></pre></footer></div>
+<script src="../assets/js/app.js?v=20261031-room-studio-6"></script><script type="module">
+import * as THREE from 'three'
+import {startSurfaceAR} from '../assets/js/room-xr.js?v=20261031-6'
+const $=id=>document.getElementById(id), products=window.SacredForm.products.map(p=>({...p,model:new URL('../'+p.model,location.href).href,arModel:new URL('../'+p.arModel,location.href).href}))
+for(const p of products)$('product').add(new Option(p.name,p.id))
+let controller, real, layer, session, ticks=0, projectionAttempts=0, abort
+const space={}, viewer=new THREE.Matrix4().makeTranslation(0,1.5,0)
+class TestLayer{
+ constructor(xrSession,gl){
+  layer=this;this.gl=gl;this.framebufferWidth=gl.drawingBufferWidth;this.framebufferHeight=gl.drawingBufferHeight;this.ignoreDepthValues=true;this.fixedFoveation=0
+  const old=gl.getParameter(gl.FRAMEBUFFER_BINDING),oldTexture=gl.getParameter(gl.TEXTURE_BINDING_2D),oldBuffer=gl.getParameter(gl.RENDERBUFFER_BINDING)
+  this.framebuffer=gl.createFramebuffer();this.texture=gl.createTexture();this.depth=gl.createRenderbuffer()
+  gl.bindTexture(gl.TEXTURE_2D,this.texture);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA8,this.framebufferWidth,this.framebufferHeight,0,gl.RGBA,gl.UNSIGNED_BYTE,null);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR)
+  gl.bindRenderbuffer(gl.RENDERBUFFER,this.depth);gl.renderbufferStorage(gl.RENDERBUFFER,gl.DEPTH_COMPONENT24,this.framebufferWidth,this.framebufferHeight)
+  gl.bindFramebuffer(gl.FRAMEBUFFER,this.framebuffer);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,this.texture,0);gl.framebufferRenderbuffer(gl.FRAMEBUFFER,gl.DEPTH_ATTACHMENT,gl.RENDERBUFFER,this.depth)
+  if(gl.checkFramebufferStatus(gl.FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE)throw Error('Test XR framebuffer incomplete')
+  gl.bindFramebuffer(gl.FRAMEBUFFER,old);gl.bindTexture(gl.TEXTURE_2D,oldTexture);gl.bindRenderbuffer(gl.RENDERBUFFER,oldBuffer)
+ }
+ getViewport(){return{x:0,y:0,width:this.framebufferWidth,height:this.framebufferHeight}}
+ dispose(){this.gl.deleteFramebuffer(this.framebuffer);this.gl.deleteTexture(this.texture);this.gl.deleteRenderbuffer(this.depth)}
+}
+// Advertise the newer API to reproduce the vendor branch-selection condition.
+// A projection path is deliberately unsupported by this simulated device.
+class TestBinding{createProjectionLayer(){projectionAttempts++;throw Error('Projection layer must not be selected in compatibility mode')}}
+Object.defineProperty(window,'XRWebGLLayer',{configurable:true,value:TestLayer})
+Object.defineProperty(window,'XRWebGLBinding',{configurable:true,value:TestBinding})
+class TestSession extends EventTarget{
+ constructor(){super();this.enabledFeatures=['dom-overlay','hit-test'];this.environmentBlendMode='alpha-blend';this.inputSources=[];this.renderState={depthNear:.1,depthFar:1000};this.visibilityState='visible';this.ended=false}
+ updateRenderState(update){Object.assign(this.renderState,update)}
+ requestReferenceSpace(){return Promise.resolve(space)}
+ requestHitTestSource(){return Promise.resolve({cancel(){}})}
+ requestAnimationFrame(callback){return window.requestAnimationFrame(time=>{if(this.ended)return;callback(time,this.frame());if(!this.ended)mirrorAndCheck()})}
+ cancelAnimationFrame(handle){window.cancelAnimationFrame(handle)}
+ frame(){
+  const camera=new THREE.PerspectiveCamera(60,layer.framebufferWidth/layer.framebufferHeight,this.renderState.depthNear,this.renderState.depthFar)
+  return{session:this,getViewerPose:()=>({transform:{matrix:viewer.elements},views:[{eye:'none',transform:{matrix:viewer.elements},projectionMatrix:camera.projectionMatrix.elements}]}),getHitTestResults:()=> $('surface').value==='none'?[]:[{getPose:()=>({transform:{matrix:new THREE.Matrix4().makeTranslation(0,1.3,-.65).elements}})}]}
+ }
+ async end(){this.ended=true;this.dispatchEvent(new Event('end'));layer?.dispose()}
+}
+function mirrorAndCheck(){
+ if(!layer||!real)return
+ const gl=real.getContext(),read=gl.getParameter(gl.READ_FRAMEBUFFER_BINDING),draw=gl.getParameter(gl.DRAW_FRAMEBUFFER_BINDING)
+ gl.bindFramebuffer(gl.READ_FRAMEBUFFER,layer.framebuffer)
+ if(++ticks%30===0){
+  const bytes=new Uint8Array(layer.framebufferWidth*layer.framebufferHeight*4);gl.readPixels(0,0,layer.framebufferWidth,layer.framebufferHeight,gl.RGBA,gl.UNSIGNED_BYTE,bytes)
+  let colored=0;for(let i=3;i<bytes.length;i+=4)if(bytes[i])colored++
+  const result={coloredPixels:colored,drawCalls:real.info.render.calls,triangles:real.info.render.triangles,projectionAttempts,actualManager:real.xr.isPresenting,layer:real.xr.getBaseLayer()?.constructor.name,framebuffer:[layer.framebufferWidth,layer.framebufferHeight],glError:gl.getError()}
+  const diagnostics=controller?.getDiagnostics()
+  $('gpu').textContent=JSON.stringify(result);$('gpu').dataset.passed=String(colored>100&&result.drawCalls>0&&projectionAttempts===0&&result.actualManager&&result.glError===0)
+  $('gpu').dataset.model=diagnostics?.modelReady?diagnostics.model:''
+ }
+ gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER,null);gl.blitFramebuffer(0,0,layer.framebufferWidth,layer.framebufferHeight,0,0,real.domElement.width,real.domElement.height,gl.COLOR_BUFFER_BIT,gl.NEAREST)
+ gl.bindFramebuffer(gl.READ_FRAMEBUFFER,read);gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER,draw)
+}
+$('start').onclick=async()=>{
+ abort=new AbortController();$('start').disabled=true;projectionAttempts=0
+ try{
+ controller=await startSurfaceAR({overlay:$('overlay'),product:products.find(p=>p.id===$('product').value),signal:abort.signal,onStatus:m=>$('message').textContent=m,onError:m=>{$('message').textContent=m;$('message').dataset.error='true'},onState:s=>{$('place').disabled=!s.ready||!s.hasSurface||!s.placing;$('manual').disabled=!s.ready||!s.tracking||!s.placing||s.hasSurface},onEnd:()=>{$('message').textContent='Session ended';$('start').disabled=false}},
+ {requestSession:async()=>{session=new TestSession();return session},createRenderer:options=>{
+  const canvas=document.createElement('canvas'),gl=canvas.getContext('webgl2',{alpha:true,antialias:false,preserveDrawingBuffer:true})
+  Object.defineProperty(gl,'makeXRCompatible',{configurable:true,value:async()=>{}})
+  real=new THREE.WebGLRenderer({...options,canvas,context:gl});return real
+ }})
+ }catch(error){$('message').textContent=error.stack;$('message').dataset.error='true'}
+}
+$('product').onchange=()=>controller?.setProduct(products.find(p=>p.id===$('product').value));$('manual').onclick=()=>controller?.placeManual();$('place').onclick=()=>controller?.place();$('move').onclick=()=>controller?.move();$('end').onclick=()=>controller?.end();$('details').onclick=()=>$('report').textContent=JSON.stringify(controller?.getDiagnostics(),null,2)
+window.addEventListener('pagehide',()=>abort?.abort())
+</script></body></html>

@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Language regression checks</title><script src="../assets/js/language.js"></script></head>
+<body><header class="site-header"><div class="header-actions"></div></header>
+<h1>Language regression checks</h1><button id="run">Run checks</button><pre id="report">Ready</pre>
+<section id="fixture"><p id="name">Golden Presence</p><p id="amount">68,000 MMK</p><button id="action" data-filter="Home Shrine" aria-label="Save to wishlist: Golden Presence">Add to bag +</button><select id="country"><option>Myanmar</option><option>Thailand</option></select><input id="customer" value="Golden Presence"><p id="orderCustomerName">Golden Presence</p><p id="dynamic"></p></section>
+<script>
+document.querySelector('#run').onclick=async()=>{
+ const api=window.SacredFormLanguage, report=document.querySelector('#report'), before=api.language, results=[];
+ const frame=()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+ const check=(ok,message)=>{if(!ok)throw Error(message);results.push('PASS '+message)};
+ try {
+  await document.querySelector('.language-toggle');
+  api.setLanguage('en'); await frame();
+  api.setLanguage('my'); await frame();
+  check(document.documentElement.lang==='my','document language');
+  check(document.querySelector('#name').textContent==='ရွှေရောင်တင့်တယ်မှု','product name');
+  check(document.querySelector('#amount').textContent==='68,000 ကျပ်','currency');
+  check(document.querySelector('#action').dataset.filter==='Home Shrine','filter ID unchanged');
+  check(document.querySelector('#country').value==='Myanmar','implicit option value preserved');
+  check(document.querySelector('#customer').value==='Golden Presence','customer input unchanged');
+  check(document.querySelector('#orderCustomerName').textContent==='Golden Presence','customer output unchanged');
+  document.querySelector('#dynamic').textContent='Quiet Meditation'; await frame();
+  check(document.querySelector('#dynamic').textContent==='အေးချမ်းသောသမာဓိ','new dynamic text translated');
+  api.setLanguage('en'); await frame();
+  check(document.querySelector('#name').textContent==='Golden Presence','exact English round trip');
+  check(document.querySelector('#action').textContent==='Add to bag +','button and icon round trip');
+  check(document.querySelector('#dynamic').textContent==='Quiet Meditation','dynamic English restored');
+  for(let i=0;i<3;i++){api.setLanguage('my');await frame();api.setLanguage('en');await frame()}
+  check(document.querySelector('#name').textContent==='Golden Presence','repeated switching stable');
+  report.dataset.passed='true';
+ }catch(error){results.push('FAIL '+error.message);report.dataset.passed='false'}
+ finally{api.setLanguage(before);report.textContent=results.join('\n')}
+};
+</script></body></html>

@@ -1,0 +1,36 @@
+/* Keep these rules with initShrine's fixed render viewport and grounding code.
+   Size buttons change --statue-scale, not the WebGL canvas dimensions. */
+#shrine-preview .shrine-measured-space .shrine-object {
+    bottom: 0;
+    transform: translateX(-50%) scale(var(--statue-scale, 1));
+    transform-origin: center bottom;
+    transition: transform 420ms cubic-bezier(.22, .68, .22, 1);
+    will-change: transform;
+}
+
+#shrine-preview .shrine-measured-space .shrine-object.is-positioning {
+    transition: none;
+}
+
+#shrine-preview .shrine-object model-viewer {
+    transform: translateY(var(--grounding-offset, 0px));
+}
+
+#shrine-preview .shrine-measured-space .shrine-object::before {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 24%;
+    width: 52%;
+    height: 5px;
+    border-radius: 50%;
+    background: #21170f55;
+    filter: blur(3px);
+    pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #shrine-preview .shrine-measured-space .shrine-object {
+        transition: none;
+    }
+}

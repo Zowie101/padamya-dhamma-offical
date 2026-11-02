@@ -1,0 +1,354 @@
+[
+  {
+    "id": "home",
+    "label": "Home",
+    "device": "desktop",
+    "width": 1440,
+    "height": 2223,
+    "file": "screens/home-desktop.svg"
+  },
+  {
+    "id": "home",
+    "label": "Home",
+    "device": "mobile",
+    "width": 390,
+    "height": 2558,
+    "file": "screens/home-mobile.svg"
+  },
+  {
+    "id": "shop",
+    "label": "Shop all",
+    "device": "desktop",
+    "width": 1440,
+    "height": 1684,
+    "file": "screens/shop-desktop.svg"
+  },
+  {
+    "id": "shop",
+    "label": "Shop all",
+    "device": "mobile",
+    "width": 390,
+    "height": 3538,
+    "file": "screens/shop-mobile.svg"
+  },
+  {
+    "id": "product",
+    "label": "Product detail",
+    "device": "desktop",
+    "width": 1440,
+    "height": 1729,
+    "file": "screens/product-desktop.svg"
+  },
+  {
+    "id": "product",
+    "label": "Product detail",
+    "device": "mobile",
+    "width": 390,
+    "height": 3074,
+    "file": "screens/product-mobile.svg"
+  },
+  {
+    "id": "shrine",
+    "label": "Shrine preview",
+    "device": "desktop",
+    "width": 1440,
+    "height": 1133,
+    "file": "screens/shrine-desktop.svg"
+  },
+  {
+    "id": "shrine",
+    "label": "Shrine preview",
+    "device": "mobile",
+    "width": 390,
+    "height": 1785,
+    "file": "screens/shrine-mobile.svg"
+  },
+  {
+    "id": "wishlist",
+    "label": "Wishlist",
+    "device": "desktop",
+    "width": 1440,
+    "height": 1664,
+    "file": "screens/wishlist-desktop.svg"
+  },
+  {
+    "id": "wishlist",
+    "label": "Wishlist",
+    "device": "mobile",
+    "width": 390,
+    "height": 3696,
+    "file": "screens/wishlist-mobile.svg"
+  },
+  {
+    "id": "compare",
+    "label": "Compare \u00b7 upload",
+    "device": "desktop",
+    "width": 1440,
+    "height": 1168,
+    "file": "screens/compare-desktop.svg"
+  },
+  {
+    "id": "compare",
+    "label": "Compare \u00b7 upload",
+    "device": "mobile",
+    "width": 390,
+    "height": 1747,
+    "file": "screens/compare-mobile.svg"
+  },
+  {
+    "id": "compare-uploaded",
+    "label": "Compare \u00b7 photo added",
+    "device": "desktop",
+    "width": 1440,
+    "height": 1168,
+    "file": "screens/compare-uploaded-desktop.svg"
+  },
+  {
+    "id": "compare-uploaded",
+    "label": "Compare \u00b7 photo added",
+    "device": "mobile",
+    "width": 390,
+    "height": 1747,
+    "file": "screens/compare-uploaded-mobile.svg"
+  },
+  {
+    "id": "comparison-result",
+    "label": "Comparison \u00b7 stronger match",
+    "device": "desktop",
+    "width": 1440,
+    "height": 1371,
+    "file": "screens/comparison-result-desktop.svg"
+  },
+  {
+    "id": "comparison-result",
+    "label": "Comparison \u00b7 stronger match",
+    "device": "mobile",
+    "width": 390,
+    "height": 2128,
+    "file": "screens/comparison-result-mobile.svg"
+  },
+  {
+    "id": "cart",
+    "label": "Shopping bag",
+    "device": "desktop",
+    "width": 1440,
+    "height": 922,
+    "file": "screens/cart-desktop.svg"
+  },
+  {
+    "id": "cart",
+    "label": "Shopping bag",
+    "device": "mobile",
+    "width": 390,
+    "height": 1373,
+    "file": "screens/cart-mobile.svg"
+  },
+  {
+    "id": "checkout",
+    "label": "Checkout request",
+    "device": "desktop",
+    "width": 1440,
+    "height": 1305,
+    "file": "screens/checkout-desktop.svg"
+  },
+  {
+    "id": "checkout",
+    "label": "Checkout request",
+    "device": "mobile",
+    "width": 390,
+    "height": 1907,
+    "file": "screens/checkout-mobile.svg"
+  },
+  {
+    "id": "order-success",
+    "label": "Request saved",
+    "device": "desktop",
+    "width": 1440,
+    "height": 1147,
+    "file": "screens/order-success-desktop.svg"
+  },
+  {
+    "id": "order-success",
+    "label": "Request saved",
+    "device": "mobile",
+    "width": 390,
+    "height": 1296,
+    "file": "screens/order-success-mobile.svg"
+  },
+  {
+    "id": "about",
+    "label": "Our story",
+    "device": "desktop",
+    "width": 1440,
+    "height": 1748,
+    "file": "screens/about-desktop.svg"
+  },
+  {
+    "id": "about",
+    "label": "Our story",
+    "device": "mobile",
+    "width": 390,
+    "height": 2074,
+    "file": "screens/about-mobile.svg"
+  },
+  {
+    "id": "shop-empty",
+    "label": "Shop \u00b7 no matches",
+    "device": "desktop",
+    "width": 1440,
+    "height": 1054,
+    "file": "screens/shop-empty-desktop.svg"
+  },
+  {
+    "id": "shop-empty",
+    "label": "Shop \u00b7 no matches",
+    "device": "mobile",
+    "width": 390,
+    "height": 1148,
+    "file": "screens/shop-empty-mobile.svg"
+  },
+  {
+    "id": "wishlist-empty",
+    "label": "Wishlist \u00b7 empty",
+    "device": "desktop",
+    "width": 1440,
+    "height": 1126,
+    "file": "screens/wishlist-empty-desktop.svg"
+  },
+  {
+    "id": "wishlist-empty",
+    "label": "Wishlist \u00b7 empty",
+    "device": "mobile",
+    "width": 390,
+    "height": 1202,
+    "file": "screens/wishlist-empty-mobile.svg"
+  },
+  {
+    "id": "cart-empty",
+    "label": "Bag \u00b7 empty",
+    "device": "desktop",
+    "width": 1440,
+    "height": 947,
+    "file": "screens/cart-empty-desktop.svg"
+  },
+  {
+    "id": "cart-empty",
+    "label": "Bag \u00b7 empty",
+    "device": "mobile",
+    "width": 390,
+    "height": 1023,
+    "file": "screens/cart-empty-mobile.svg"
+  },
+  {
+    "id": "compare-empty",
+    "label": "Compare \u00b7 needs two pieces",
+    "device": "desktop",
+    "width": 1440,
+    "height": 973,
+    "file": "screens/compare-empty-desktop.svg"
+  },
+  {
+    "id": "compare-empty",
+    "label": "Compare \u00b7 needs two pieces",
+    "device": "mobile",
+    "width": 390,
+    "height": 1075,
+    "file": "screens/compare-empty-mobile.svg"
+  },
+  {
+    "id": "upload-error",
+    "label": "Compare \u00b7 upload error",
+    "device": "desktop",
+    "width": 1440,
+    "height": 1168,
+    "file": "screens/upload-error-desktop.svg"
+  },
+  {
+    "id": "upload-error",
+    "label": "Compare \u00b7 upload error",
+    "device": "mobile",
+    "width": 390,
+    "height": 1829,
+    "file": "screens/upload-error-mobile.svg"
+  },
+  {
+    "id": "checkout-error",
+    "label": "Checkout \u00b7 validation",
+    "device": "desktop",
+    "width": 1440,
+    "height": 1385,
+    "file": "screens/checkout-error-desktop.svg"
+  },
+  {
+    "id": "checkout-error",
+    "label": "Checkout \u00b7 validation",
+    "device": "mobile",
+    "width": 390,
+    "height": 1997,
+    "file": "screens/checkout-error-mobile.svg"
+  },
+  {
+    "id": "comparison-close",
+    "label": "Comparison \u00b7 close match",
+    "device": "desktop",
+    "width": 1440,
+    "height": 1371,
+    "file": "screens/comparison-close-desktop.svg"
+  },
+  {
+    "id": "comparison-close",
+    "label": "Comparison \u00b7 close match",
+    "device": "mobile",
+    "width": 390,
+    "height": 2128,
+    "file": "screens/comparison-close-mobile.svg"
+  },
+  {
+    "id": "comparison-no-fit",
+    "label": "Comparison \u00b7 neither fits",
+    "device": "desktop",
+    "width": 1440,
+    "height": 1391,
+    "file": "screens/comparison-no-fit-desktop.svg"
+  },
+  {
+    "id": "comparison-no-fit",
+    "label": "Comparison \u00b7 neither fits",
+    "device": "mobile",
+    "width": 390,
+    "height": 2148,
+    "file": "screens/comparison-no-fit-mobile.svg"
+  },
+  {
+    "id": "components",
+    "label": "Shared components",
+    "device": "desktop",
+    "width": 1440,
+    "height": 1797,
+    "file": "screens/components-desktop.svg"
+  },
+  {
+    "id": "components",
+    "label": "Shared components",
+    "device": "mobile",
+    "width": 390,
+    "height": 1899,
+    "file": "screens/components-mobile.svg"
+  },
+  {
+    "id": "flow",
+    "label": "Shopping flow",
+    "device": "desktop",
+    "width": 1440,
+    "height": 1797,
+    "file": "screens/flow-desktop.svg"
+  },
+  {
+    "id": "flow",
+    "label": "Shopping flow",
+    "device": "mobile",
+    "width": 390,
+    "height": 1899,
+    "file": "screens/flow-mobile.svg"
+  }
+]

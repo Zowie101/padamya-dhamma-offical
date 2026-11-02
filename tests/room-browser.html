@@ -1,0 +1,49 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Room Studio device regression checks</title>
+<style>body{margin:0;font:14px system-ui;background:#eee9df;height:100dvh;display:flex;flex-direction:column;overflow:hidden}header{padding:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;flex-shrink:0;font-size:11px}button,select{padding:7px}iframe{border:0;width:100%;flex:1;min-height:0}#modelStage{height:65dvh}#modelStage canvas{width:100%;height:100%}#status{padding:8px;margin:0;font-size:10px;flex-shrink:0} [hidden]{display:none!important}</style>
+<script type="importmap">{"imports":{"three":"../assets/vendor/three/three.module.js?v=20261031-6","three/addons/":"../assets/vendor/three/addons/"}}</script>
+</head><body><header><b>Local QA only · synthetic camera feed</b><button id="cameraTest">Camera layout test</button><button id="modelTest">Test all six real GLBs</button></header>
+<iframe id="editor" title="Room editor test" src="../room.html?piece=golden-presence"></iframe><div id="modelStage" hidden></div><p id="status" role="status"></p>
+<script type="module">
+import * as THREE from 'three'
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js'
+import {prepareRoomModel} from '../assets/js/room-model.mjs'
+const frame=document.querySelector('#editor'), status=document.querySelector('#status')
+let videoLoop, stream, renderer, current
+document.querySelector('#cameraTest').onclick=()=>{
+ const win=frame.contentWindow, d=win.document
+ d.addEventListener('click',async event=>{
+  const link=event.target.closest('a[download]');if(!link)return
+  event.preventDefault()
+  const blob=await(await fetch(link.href)).blob(),image=await createImageBitmap(blob)
+  status.textContent=JSON.stringify({export:'PNG',width:image.width,height:image.height,bytes:blob.size})
+  status.dataset.export='complete';image.close()
+ },{capture:true})
+ const video=document.createElement('canvas');video.width=720;video.height=1280
+ const ctx=video.getContext('2d');let step=0
+ function tick(){step++;ctx.fillStyle='#b7c4b2';ctx.fillRect(0,0,720,1280);ctx.fillStyle='#e8e4d9';ctx.fillRect(50,70,620,700);ctx.strokeStyle='#879780';ctx.lineWidth=8;ctx.strokeRect(50,70,620,700);ctx.fillStyle='#78604a';ctx.fillRect(0,880,720,400);ctx.fillStyle='#393d35';ctx.font='28px system-ui';ctx.fillText('SIMULATED CAMERA · LAYOUT TEST',65,160);ctx.font='22px system-ui';ctx.fillText('Portrait 720 × 1280',65,205);ctx.fillRect(100+Math.sin(step/50)*20,690,110,190);videoLoop=requestAnimationFrame(tick)}tick()
+ stream=video.captureStream(15)
+ Object.defineProperty(win.navigator.mediaDevices,'getUserMedia',{configurable:true,value:async()=>stream})
+ d.querySelector('#roomWelcome').close();d.querySelector('#liveMode').click();d.querySelector('#startCameraOverlay').click()
+ status.textContent='Synthetic feed only. This checks layout and controls, not device camera permission or AR tracking.'
+}
+document.querySelector('#modelTest').onclick=async()=>{
+ frame.hidden=true;const mount=document.querySelector('#modelStage');mount.hidden=false
+ renderer ||= new THREE.WebGLRenderer({antialias:true});renderer.setSize(mount.clientWidth,mount.clientHeight);renderer.setPixelRatio(1);mount.append(renderer.domElement)
+ renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping
+ const scene=new THREE.Scene();scene.background=new THREE.Color('#eee9df');scene.add(new THREE.HemisphereLight(0xfff5df,0x625d51,3));const light=new THREE.DirectionalLight(0xffffff,2);light.position.set(1,3,2);scene.add(light)
+ const camera=new THREE.PerspectiveCamera(40,mount.clientWidth/mount.clientHeight,.01,30);camera.position.set(0,.2,.8);camera.lookAt(0,.14,0)
+ const products=frame.contentWindow.SacredForm.products, loader=new GLTFLoader(), results=[]
+ for(const p of products){
+  status.textContent='Loading actual GLB: '+p.name
+  try{
+   const gltf=await loader.loadAsync('../'+(p.arModel||p.model));current=prepareRoomModel(gltf.scene,p.height);scene.add(current);renderer.render(scene,camera)
+   const box=new THREE.Box3().setFromObject(current,true);const size=box.getSize(new THREE.Vector3());let meshes=0;current.traverse(o=>{if(o.isMesh)meshes++})
+   results.push({piece:p.name,height:size.y,base:box.min.y,meshes,passed:meshes>0&&Math.abs(size.y-parseFloat(p.height)/100)<.00001&&Math.abs(box.min.y)<.00001})
+   scene.remove(current);current.traverse(o=>{o.geometry?.dispose();for(const m of(Array.isArray(o.material)?o.material:[o.material]))if(m){for(const v of Object.values(m))if(v?.isTexture)v.dispose();m.dispose()}})
+  }catch(error){results.push({piece:p.name,passed:false,error:error.message})}
+ }
+ status.textContent=JSON.stringify(results);status.dataset.complete='true'
+}
+window.addEventListener('pagehide',()=>{cancelAnimationFrame(videoLoop);stream?.getTracks().forEach(t=>t.stop());renderer?.dispose()})
+</script></body></html>
+

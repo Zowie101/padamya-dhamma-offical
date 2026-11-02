@@ -1,0 +1,62 @@
+[
+  {
+    "asset": "buddha_1",
+    "originalBytes": 38929436,
+    "arBytes": 11483284,
+    "originalVertices": 483368,
+    "arVertices": 118006,
+    "originalTriangles": 925688,
+    "arTriangles": 203650,
+    "error": 0.00017255806596949697
+  },
+  {
+    "asset": "buddha_2",
+    "originalBytes": 45049000,
+    "arBytes": 11859916,
+    "originalVertices": 482046,
+    "arVertices": 113852,
+    "originalTriangles": 932626,
+    "arTriangles": 205176,
+    "error": 0.0003229673602618277
+  },
+  {
+    "asset": "buddha_3",
+    "originalBytes": 37122432,
+    "arBytes": 10861964,
+    "originalVertices": 488930,
+    "arVertices": 117040,
+    "originalTriangles": 946108,
+    "arTriangles": 208142,
+    "error": 0.00014635109982918948
+  },
+  {
+    "asset": "buddha_4",
+    "originalBytes": 42226856,
+    "arBytes": 11978436,
+    "originalVertices": 494916,
+    "arVertices": 118753,
+    "originalTriangles": 956176,
+    "arTriangles": 210356,
+    "error": 0.00015560656902380288
+  },
+  {
+    "asset": "buddha_5",
+    "originalBytes": 42616816,
+    "arBytes": 11457888,
+    "originalVertices": 494197,
+    "arVertices": 119615,
+    "originalTriangles": 945923,
+    "arTriangles": 208103,
+    "error": 0.00021576732979156077
+  },
+  {
+    "asset": "buddha_6",
+    "originalBytes": 36702916,
+    "arBytes": 10802548,
+    "originalVertices": 508442,
+    "arVertices": 121616,
+    "originalTriangles": 983112,
+    "arTriangles": 216282,
+    "error": 0.00021958646539133042
+  }
+]

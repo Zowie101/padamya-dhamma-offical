@@ -1,0 +1,38 @@
+[
+  {
+    "input": "assets/products/buddha_1/buddha_1 (01)-transparent.png",
+    "originalBytes": 1446099,
+    "poster": "assets/images/optimized/buddha_1-front.webp",
+    "posterBytes": 91712
+  },
+  {
+    "input": "assets/products/buddha_2/buddha_2 (01)-transparent.png",
+    "originalBytes": 1464188,
+    "poster": "assets/images/optimized/buddha_2-front.webp",
+    "posterBytes": 124200
+  },
+  {
+    "input": "assets/products/buddha_3/buddha_3 (01)-transparent.png",
+    "originalBytes": 1120631,
+    "poster": "assets/images/optimized/buddha_3-front.webp",
+    "posterBytes": 80166
+  },
+  {
+    "input": "assets/products/buddha_4/buddha_4 (01)-transparent.png",
+    "originalBytes": 1093299,
+    "poster": "assets/images/optimized/buddha_4-front.webp",
+    "posterBytes": 86484
+  },
+  {
+    "input": "assets/products/buddha_5/buddha_5 (01)-transparent.png",
+    "originalBytes": 1369502,
+    "poster": "assets/images/optimized/buddha_5-front.webp",
+    "posterBytes": 123584
+  },
+  {
+    "input": "assets/products/buddha_6/buddha_6 (01)-transparent.png",
+    "originalBytes": 1180653,
+    "poster": "assets/images/optimized/buddha_6-front.webp",
+    "posterBytes": 87792
+  }
+]

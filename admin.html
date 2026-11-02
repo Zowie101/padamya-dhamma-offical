@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <script src="assets/js/accessibility.js?v=20261102-padamya-1"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8f7f3">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Demo Order Desk | Padamya Dhamma</title>
+  <script src="assets/js/theme.js?v=20261101-icons"></script>
+  <link rel="stylesheet" href="assets/css/styles.css?v=20261102-padamya-1">
+  <link rel="stylesheet" href="assets/css/theme.css?v=20261101-icons">
+  <link rel="stylesheet" href="assets/css/header.css?v=20261102-account-panel-1">
+  <link rel="stylesheet" href="assets/css/interactions.css?v=20261101-filled-icons">
+  <link rel="stylesheet" href="assets/css/admin.css?v=20261101-1">
+  <link rel="stylesheet" href="assets/css/page-motion.css?v=20261101-1">
+  <script src="assets/js/page-motion.js?v=20261102-accessibility-1"></script>
+  <script src="assets/js/store-client.js?v=20261102-account-panel-1"></script>
+  <link rel="stylesheet" href="assets/css/sage.css?v=20261102-progressive-2">
+  <link rel="stylesheet" href="assets/css/account-panel.css?v=20261102-padamya-1">
+  <script src="assets/js/account-panel.js?v=20261102-padamya-1" defer></script>
+    <link rel="stylesheet" href="assets/css/icon-motion.css?v=20261102-1" />
+    <link rel="stylesheet" href="assets/css/accessibility.css?v=20261102-padamya-1" />
+</head>
+<body class="admin-page">
+  <header class="site-header">
+    <a class="brand" href="index.html"><span class="brand-mark">pd</span><span class="brand-name">PADAMYA DHAMMA<small>ORDER DESK</small></span></a>
+    <div class="header-actions" data-no-store-actions><a class="admin-back-store" href="index.html">Storefront</a><a href="track-order.html">Customer tracking <span aria-hidden="true">↗</span></a></div>
+  </header>
+  <main id="adminMain">
+    <div class="admin-heading">
+      <div><p class="eyebrow">PADAMYA DHAMMA / DEMO ADMIN</p><h1>Your order <em>desk.</em></h1><p class="admin-note">Local demo · Orders and updates stay in this browser. No login or customer notifications.</p></div>
+      <button class="admin-button" id="adminSeed" type="button">Add sample orders <span aria-hidden="true">＋</span></button>
+    </div>
+    <div class="admin-stats" aria-label="Order overview">
+      <button type="button" data-admin-filter="all" aria-pressed="true"><span>All orders</span><strong id="countAll">0</strong></button>
+      <button type="button" data-admin-filter="processing" aria-pressed="false"><span>Processing</span><strong id="countProcessing">0</strong></button>
+      <button type="button" data-admin-filter="out-for-delivery" aria-pressed="false"><span>Out for delivery</span><strong id="countDelivery">0</strong></button>
+      <button type="button" data-admin-filter="delivered" aria-pressed="false"><span>Delivered</span><strong id="countDelivered">0</strong></button>
+    </div>
+    <div class="admin-toolbar">
+      <label class="admin-search"><span class="sr-only">Search orders</span><span class="site-icon icon-search" aria-hidden="true"></span><input id="adminSearch" type="search" placeholder="Search order ID, name or email" autocomplete="off"></label>
+      <label class="admin-filter-label">Stage <select id="adminFilter"><option value="all">All orders</option><option value="processing">Processing</option><option value="placed">Order placed</option><option value="confirmed">Confirmed</option><option value="packed">Packed</option><option value="out-for-delivery">Out for delivery</option><option value="delivered">Delivered</option></select></label>
+      <span id="adminResultCount"></span>
+    </div>
+    <p id="adminFeedback" role="status" aria-live="polite"></p>
+    <div class="admin-layout">
+      <section aria-label="Saved orders"><div id="adminOrders" class="admin-orders"></div></section>
+      <section id="adminDetail" class="admin-detail" aria-label="Selected order"></section>
+    </div>
+  </main>
+  <footer class="admin-footer">Padamya Dhamma <span>Demo workspace · No backend or carrier connection</span></footer>
+  <script src="assets/js/orders.js?v=20261101-admin-1"></script>
+  <script src="assets/js/app.js?v=20261102-padamya-1"></script>
+  <script src="assets/js/admin.js?v=20261102-padamya-1"></script>
+  <script src="assets/js/admin-products.js?v=1"></script>
+<script src="assets/js/sage-core.js?v=20261102-1"></script>
+<script src="assets/js/sage.js?v=20261102-padamya-1"></script>
+</body>
+</html>

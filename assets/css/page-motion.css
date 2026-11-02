@@ -1,0 +1,27 @@
+/* Cross-document transitions: no overlay, loading curtain or layout morphing. */
+@view-transition { navigation: auto; }
+.site-header, .room-header { view-transition-name: sacred-header; }
+::view-transition-group(root), ::view-transition-group(sacred-header) { animation: none; }
+::view-transition-old(root) { animation: sacred-page-out 140ms ease both; }
+::view-transition-new(root) { animation: sacred-page-in 340ms cubic-bezier(.22,.7,.2,1) both; }
+::view-transition-old(sacred-header), ::view-transition-new(sacred-header) { animation: none; mix-blend-mode: normal; }
+
+/* The same restrained motion for browsers without cross-document support. */
+html[data-page-motion="fallback"] body:not(.room-page) > main { animation: sacred-page-in 340ms cubic-bezier(.22,.7,.2,1) both; }
+html[data-page-motion="fallback"] body > .site-footer { animation: sacred-footer-in 340ms ease both; }
+html[data-page-motion="fallback"].page-is-leaving body:not(.room-page) > main { animation: sacred-page-out 140ms ease both; pointer-events: none; }
+html[data-page-motion="fallback"].page-is-leaving body > .site-footer { animation: sacred-page-out 140ms ease both; }
+html[data-page-motion="fallback"] .room-layout { animation: sacred-footer-in 280ms ease both; }
+html[data-page-motion="fallback"].page-is-leaving .room-layout { animation: sacred-page-out 140ms ease both; }
+
+@keyframes sacred-page-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes sacred-page-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes sacred-footer-in { from { opacity: 0; } to { opacity: 1; } }
+@media(prefers-reduced-motion:reduce) {
+  @view-transition { navigation: none; }
+  ::view-transition-old(root), ::view-transition-new(root), ::view-transition-old(sacred-header), ::view-transition-new(sacred-header) { animation: none !important; }
+  html[data-page-motion] body > main, html[data-page-motion] body > .site-footer, html[data-page-motion] .room-layout { animation: none !important; transform: none !important; opacity: 1 !important; }
+}
+@media print {
+  html[data-page-motion] body > main, html[data-page-motion] body > .site-footer, html[data-page-motion] .room-layout { animation: none !important; transform: none !important; opacity: 1 !important; }
+}

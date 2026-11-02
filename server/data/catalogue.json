@@ -1,0 +1,194 @@
+[
+  {
+    "id": "golden-presence",
+    "name": "Golden Presence",
+    "category": "Home Shrine",
+    "material": "Resin with antique gold finish",
+    "height": "28 cm",
+    "price": 68000,
+    "tag": "Bestseller",
+    "desc": "A serene seated figure with a warm antique-gold finish, created to bring a sense of calm to a dedicated home shrine.",
+    "assetSet": "buddha_2",
+    "arModel": "assets/models/optimized/buddha_2.glb",
+    "previewModel": "assets/models/optimized/buddha_2.glb",
+    "previewImage": "assets/images/optimized/buddha_2-front.webp",
+    "model": "assets/products/buddha_2/buddha_2 3d model.glb",
+    "image": "assets/products/buddha_2/buddha_2 (01)-transparent.png",
+    "images": [
+      "assets/products/buddha_2/buddha_2 (01)-transparent.png",
+      "assets/products/buddha_2/buddha_2 (02)-transparent.png",
+      "assets/products/buddha_2/buddha_2 (03)-transparent.png"
+    ],
+    "imageLabels": [
+      "Front",
+      "Side",
+      "Back"
+    ],
+    "currency": "MMK",
+    "stock": null,
+    "active": true,
+    "colors": [
+      "gold"
+    ]
+  },
+  {
+    "id": "quiet-meditation",
+    "name": "Quiet Meditation",
+    "category": "Small & Simple",
+    "material": "Stone-look resin",
+    "height": "18 cm",
+    "price": 42000,
+    "tag": "Small spaces",
+    "desc": "A compact, understated piece for a bedside table, meditation corner, or a smaller altar arrangement.",
+    "assetSet": "buddha_1",
+    "arModel": "assets/models/optimized/buddha_1.glb",
+    "previewModel": "assets/models/optimized/buddha_1.glb",
+    "previewImage": "assets/images/optimized/buddha_1-front.webp",
+    "model": "assets/products/buddha_1/buddha_1 3d model.glb",
+    "image": "assets/products/buddha_1/buddha_1 (01)-transparent.png",
+    "images": [
+      "assets/products/buddha_1/buddha_1 (01)-transparent.png",
+      "assets/products/buddha_1/buddha_1 (02)-transparent.png",
+      "assets/products/buddha_1/buddha_1 (03)-transparent.png"
+    ],
+    "imageLabels": [
+      "Front",
+      "Side",
+      "Back"
+    ],
+    "currency": "MMK",
+    "stock": null,
+    "active": true,
+    "colors": []
+  },
+  {
+    "id": "earth-touching",
+    "name": "Earth Touching",
+    "category": "Home Shrine",
+    "material": "Bronze-tone resin",
+    "height": "32 cm",
+    "price": 89000,
+    "tag": "Statement piece",
+    "desc": "A warm bronze-toned seated figure on a layered lotus base, with flowing robes and a balanced silhouette for a home shrine.",
+    "assetSet": "buddha_4",
+    "arModel": "assets/models/optimized/buddha_4.glb",
+    "previewModel": "assets/models/optimized/buddha_4.glb",
+    "previewImage": "assets/images/optimized/buddha_4-front.webp",
+    "model": "assets/products/buddha_4/buddha_4 3d model.glb",
+    "image": "assets/products/buddha_4/buddha_4 (01)-transparent.png",
+    "images": [
+      "assets/products/buddha_4/buddha_4 (01)-transparent.png",
+      "assets/products/buddha_4/buddha_4 (02)-transparent.png",
+      "assets/products/buddha_4/buddha_4 (03)-transparent.png"
+    ],
+    "imageLabels": [
+      "Front",
+      "Side",
+      "Back"
+    ],
+    "currency": "MMK",
+    "stock": null,
+    "active": true,
+    "colors": [
+      "bronze"
+    ]
+  },
+  {
+    "id": "lotus-stillness",
+    "name": "Lotus Stillness",
+    "category": "Meaningful Gifts",
+    "material": "Ivory-tone resin with orange robe",
+    "height": "22 cm",
+    "price": 55000,
+    "tag": "Gift selection",
+    "desc": "An ivory-toned seated figure with a vivid orange robe and a raised blessing hand, chosen for a thoughtful gift or personal reflection space.",
+    "assetSet": "buddha_6",
+    "arModel": "assets/models/optimized/buddha_6.glb",
+    "previewModel": "assets/models/optimized/buddha_6.glb",
+    "previewImage": "assets/images/optimized/buddha_6-front.webp",
+    "model": "assets/products/buddha_6/buddha_6 3d model.glb",
+    "image": "assets/products/buddha_6/buddha_6 (01)-transparent.png",
+    "images": [
+      "assets/products/buddha_6/buddha_6 (01)-transparent.png",
+      "assets/products/buddha_6/buddha_6 (02)-transparent.png",
+      "assets/products/buddha_6/buddha_6 (03)-transparent.png"
+    ],
+    "imageLabels": [
+      "Front",
+      "Side",
+      "Back"
+    ],
+    "currency": "MMK",
+    "stock": null,
+    "active": true,
+    "colors": [
+      "ivory",
+      "orange"
+    ]
+  },
+  {
+    "id": "gentle-blessing",
+    "name": "Gentle Blessing",
+    "category": "Small & Simple",
+    "material": "Ivory-tone resin",
+    "height": "15 cm",
+    "price": 36000,
+    "tag": "Compact form",
+    "desc": "A small, light-toned statue with a quiet presence for compact shelves and personal reflection spaces.",
+    "assetSet": "buddha_3",
+    "arModel": "assets/models/optimized/buddha_3.glb",
+    "previewModel": "assets/models/optimized/buddha_3.glb",
+    "previewImage": "assets/images/optimized/buddha_3-front.webp",
+    "model": "assets/products/buddha_3/buddha_3 3d model.glb",
+    "image": "assets/products/buddha_3/buddha_3 (01)-transparent.png",
+    "images": [
+      "assets/products/buddha_3/buddha_3 (01)-transparent.png",
+      "assets/products/buddha_3/buddha_3 (02)-transparent.png",
+      "assets/products/buddha_3/buddha_3 (03)-transparent.png"
+    ],
+    "imageLabels": [
+      "Front",
+      "Side",
+      "Back"
+    ],
+    "currency": "MMK",
+    "stock": null,
+    "active": true,
+    "colors": [
+      "ivory"
+    ]
+  },
+  {
+    "id": "temple-gold",
+    "name": "Temple Gold",
+    "category": "Meaningful Gifts",
+    "material": "Black resin with gold detailing",
+    "height": "25 cm",
+    "price": 74000,
+    "tag": "Gift selection",
+    "desc": "A dark seated figure with intricate gold detailing, a patterned robe and a decorated base, selected for gifting and considered interiors.",
+    "assetSet": "buddha_5",
+    "arModel": "assets/models/optimized/buddha_5.glb",
+    "previewModel": "assets/models/optimized/buddha_5.glb",
+    "previewImage": "assets/images/optimized/buddha_5-front.webp",
+    "model": "assets/products/buddha_5/buddha_5 3d model.glb",
+    "image": "assets/products/buddha_5/buddha_5 (01)-transparent.png",
+    "images": [
+      "assets/products/buddha_5/buddha_5 (01)-transparent.png",
+      "assets/products/buddha_5/buddha_5 (02)-transparent.png",
+      "assets/products/buddha_5/buddha_5 (03)-transparent.png"
+    ],
+    "imageLabels": [
+      "Front",
+      "Side",
+      "Back"
+    ],
+    "currency": "MMK",
+    "stock": null,
+    "active": true,
+    "colors": [
+      "black",
+      "gold"
+    ]
+  }
+]

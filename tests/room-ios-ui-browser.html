@@ -1,0 +1,6 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>iPhone AR UI · simulated device</title><style>body{margin:0;font:10px system-ui;background:#eee9df}header{height:28px;padding:6px;box-sizing:border-box}iframe{width:100%;height:calc(100dvh - 28px);border:0}</style></head><body><header>SIMULATED iPHONE · actual AR file preparation · no physical AR test</header><iframe id="editor" title="iPhone room preview test"></iframe><script type="module">
+let html=await(await fetch('../room.html')).text();
+const shim=`<script>Object.defineProperty(navigator,'userAgent',{configurable:true,value:'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Version/18.0 Mobile/15E148 Safari/604.1'});Object.defineProperty(navigator,'platform',{configurable:true,value:'iPhone'});const support=DOMTokenList.prototype.supports;DOMTokenList.prototype.supports=function(t){return t==='ar'||support.call(this,t)};<`+'/script>';
+html=html.replace('<head>','<head><base href="'+new URL('../',location.href).href+'">'+shim);
+document.querySelector('#editor').srcdoc=html;
+</script></body></html>

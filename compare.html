@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <script src="assets/js/accessibility.js?v=20261102-padamya-1"></script>
+    <meta charset="utf-8" />
+    <script src="assets/js/theme.js?v=20261101-icons"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f8f7f3" />
+    <meta
+      name="description"
+      content="A considered collection of Buddha statues for home shrines and quiet spaces."
+    />
+    <title>Compare Your Pieces | Padamya Dhamma</title>
+    <link rel="stylesheet" href="assets/css/styles.css?v=20261102-padamya-1" />
+    <link rel="stylesheet" href="assets/css/theme.css?v=20261101-icons" />
+    <link rel="stylesheet" href="assets/css/interactions.css?v=20261101-filled-icons" />
+    <script src="assets/js/language.js?v=20261102-padamya-1"></script>
+    <link rel="stylesheet" href="assets/css/language.css?v=20261101-5" />
+    <link rel="stylesheet" href="assets/css/header.css?v=20261102-account-panel-1" />
+    <link rel="stylesheet" href="assets/css/page-motion.css?v=20261101-1" />
+    <script src="assets/js/page-motion.js?v=20261102-accessibility-1"></script>
+    <script src="assets/js/store-client.js?v=20261102-account-panel-1"></script>
+  <link rel="stylesheet" href="assets/css/sage.css?v=20261102-progressive-2">
+  <link rel="stylesheet" href="assets/css/account-panel.css?v=20261102-padamya-1">
+  <script src="assets/js/account-panel.js?v=20261102-padamya-1" defer></script>
+    <link rel="stylesheet" href="assets/css/icon-motion.css?v=20261102-1" />
+    <link rel="stylesheet" href="assets/css/accessibility.css?v=20261102-padamya-1" />
+</head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="index.html"
+        ><span class="brand-mark">pd</span
+        ><span class="brand-name"
+          >PADAMYA DHAMMA<small>OBJECTS FOR STILLNESS</small></span
+        ></a
+      ><button
+        class="menu-toggle"
+        id="menuToggle"
+        aria-label="Toggle navigation"
+        aria-expanded="false"
+      >
+        <span class="site-icon icon-menu" aria-hidden="true"></span>
+      </button>
+      <nav class="main-nav" id="mainNav">
+        <a href="shop.html">Shop all</a
+        ><a href="shrine.html#shrine-preview">Shrine preview</a
+        ><a href="about.html">Our story</a>
+      </nav>
+      <div class="header-actions">
+        <a class="cart-button" href="cart.html" aria-label="Shopping bag"
+          ><span class="header-icon-wrap"
+            ><span class="site-icon icon-bag" aria-hidden="true"></span
+            ><span class="cart-count" id="cartCount" aria-hidden="true"
+              >0</span
+            ></span
+          ><span class="bag-nav-label">Bag</span></a
+        >
+      </div>
+    </header>
+    <main>
+      <section
+        class="wishlist-adviser page-content"
+        id="wishlistAdviser"
+        aria-labelledby="adviserTitle"
+      >
+        <div class="adviser-heading">
+          <div>
+            <p class="eyebrow">Your wishlist / Compare</p>
+            <h1 id="adviserTitle">Two pieces. <em>Your place.</em></h1>
+          </div>
+          <a href="wishlist.html" class="text-link"
+            ><span
+              class="site-icon icon-arrow icon-arrow-left"
+              aria-hidden="true"
+            ></span>
+            Back to wishlist</a
+          >
+        </div>
+        <p id="compareEmpty" class="compare-empty">
+          Save at least two pieces to compare them here.
+          <a href="shop.html" class="text-link"
+            >Explore the collection
+            <span class="site-icon icon-arrow" aria-hidden="true"></span
+          ></a>
+        </p>
+        <form id="compareForm" hidden>
+          <div class="adviser-layout">
+            <div class="adviser-photo">
+              <p class="eyebrow">01 / Your space</p>
+              <label for="shrineUpload" class="upload-label"
+                ><span class="upload-symbol" aria-hidden="true">＋</span
+                ><strong>Add your shrine photo</strong
+                ><span>Choose a clear, front-facing photo.</span
+                ><span class="adviser-small"
+                  >JPG, PNG, WebP or AVIF · Up to 12 MB</span
+                ></label
+              >
+              <input
+                type="file"
+                id="shrineUpload"
+                class="visually-hidden"
+                accept="image/jpeg,image/png,image/webp,image/avif"
+                aria-describedby="uploadHint uploadStatus"
+              />
+              <input
+                type="file"
+                id="shrineCamera"
+                class="visually-hidden"
+                accept="image/*"
+                capture="environment"
+                aria-label="Take a photo of your shrine"
+                aria-describedby="uploadHint uploadStatus"
+                tabindex="-1"
+              />
+              <button
+                type="button"
+                id="takeShrinePhoto"
+                class="camera-action mobile-camera-action"
+                data-no-scramble
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  width="20"
+                  height="20"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M8 6l1.5-3h5L16 6h4a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1z"
+                  />
+                  <circle cx="12" cy="12" r="4" /></svg
+                >Take a photo
+              </button>
+              <div id="photoPreviewWrap" hidden>
+                <img id="comparePhoto" alt="Your uploaded shrine photo" />
+                <div class="photo-actions">
+                  <label
+                    for="shrineUpload"
+                    class="text-link"
+                    tabindex="0"
+                    id="changeComparePhoto"
+                    >Change photo</label
+                  ><button
+                    type="button"
+                    id="retakeShrinePhoto"
+                    class="text-link mobile-camera-action"
+                    data-no-scramble
+                  >
+                    Retake photo</button
+                  ><button
+                    type="button"
+                    id="clearComparePhoto"
+                    class="text-link"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+              <p id="uploadHint" class="adviser-small">
+                Your photo stays on your device.
+              </p>
+              <p id="uploadStatus" role="status" class="adviser-small"></p>
+            </div>
+            <div class="adviser-options">
+              <p class="eyebrow">02 / Choose two favourites</p>
+              <div class="compare-selects">
+                <div class="compare-pick">
+                  <img id="compareFirstPhoto" alt="" /><label class="field"
+                    ><span class="visually-hidden">First piece</span
+                    ><select id="compareFirst" required></select
+                  ></label>
+                  <p id="compareFirstMeta"></p>
+                </div>
+                <div class="compare-pick">
+                  <img id="compareSecondPhoto" alt="" /><label class="field"
+                    ><span class="visually-hidden">Second piece</span
+                    ><select id="compareSecond" required></select
+                  ></label>
+                  <p id="compareSecondMeta"></p>
+                </div>
+              </div>
+              <div class="compare-preferences">
+                <label class="field"
+                  >Shelf clearance <span class="field-hint">cm · optional</span
+                  ><input
+                    type="number"
+                    id="compareHeight"
+                    min="1"
+                    max="500"
+                    step="0.1"
+                    placeholder="e.g. 40"
+                    inputmode="decimal"
+                /></label>
+                <label class="field"
+                  >Your preferred feeling<select id="compareStyle">
+                    <option value="none">No preference</option>
+                    <option value="warm">Warm & traditional</option>
+                    <option value="calm">Quiet & understated</option>
+                    <option value="statement">A statement piece</option>
+                  </select></label
+                >
+              </div>
+              <button
+                type="submit"
+                class="button button-dark"
+                id="runComparison"
+                disabled
+              >
+                Compare for my space
+                <span
+                  ><span class="site-icon icon-arrow" aria-hidden="true"></span
+                ></span>
+              </button>
+            </div>
+          </div>
+          <p id="compareError" class="compare-error" role="alert"></p>
+        </form>
+        <section
+          id="comparisonResult"
+          class="comparison-result"
+          hidden
+          aria-labelledby="comparisonResultTitle"
+          tabindex="-1"
+        ></section>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="footer-top">
+        <a class="brand footer-brand" href="index.html"
+          ><span class="brand-mark">pd</span
+          ><span class="brand-name"
+            >PADAMYA DHAMMA<small>OBJECTS FOR STILLNESS</small></span
+          ></a
+        >
+        <p>Objects for a more intentional home.</p>
+        <div class="footer-links">
+          <a href="shop.html">Shop</a>　<a href="about.html">Our story</a>　<a
+            href="cart.html"
+            >Shopping bag</a
+          >
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Padamya Dhamma</span
+        ><span>Made with care</span
+        ><span>Myanmar · Worldwide</span>
+      </div>
+    </footer>
+    <div id="toastRoot" aria-live="polite"></div>
+    <script src="assets/js/app.js?v=20261102-padamya-1"></script>
+    <script src="assets/js/comparison.js?v=20261102-accessibility-1"></script>
+  <script src="assets/js/sage-core.js?v=20261102-1"></script>
+<script src="assets/js/sage.js?v=20261102-padamya-1"></script>
+</body>
+</html>

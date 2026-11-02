@@ -1,0 +1,612 @@
+/* Camera-first controls. These rules leave the room-photo editor unchanged. */
+.room-page.is-xr .room-stage { touch-action: none; }
+.room-page.is-live .room-stage-tools, .room-page.is-live .xr-placement-actions {
+    transition: bottom .34s cubic-bezier(.22, 1, .36, 1)
+}
+
+.room-page.is-live {
+    --room-panel: rgba(22, 29, 23, .72);
+    --room-ink: #fffdf5;
+    --room-muted: #e0dfd4;
+    --room-line: #ffffff30;
+    --room-soft: #ffffff1a;
+    --room-gold: #e0c28e;
+    overflow: hidden
+}
+
+.room-page.is-live .room-workspace {
+    height: 100dvh;
+    min-height: 0;
+    background: transparent
+}
+
+.room-page.is-live .room-header {
+    position: absolute;
+    inset: 0 0 auto;
+    height: 68px;
+    padding: 10px 18px;
+    border: 0;
+    background: linear-gradient(#07120c66, transparent);
+    color: #fffdf5;
+    gap: 12px;
+    pointer-events: none
+}
+
+.room-page.is-live .room-header :is(a, button, nav) {
+    pointer-events: auto
+}
+
+.room-page.is-live .room-brand>span:last-child {
+    display: none
+}
+
+.room-page.is-live .room-brand .brand-mark {
+    width: 32px;
+    height: 32px;
+    font-size: 25px;
+    color: inherit;
+    border-color: #ffffff80
+}
+
+.room-page.is-live .room-modes {
+    background: #14221938;
+    border: 1px solid #ffffff30;
+    backdrop-filter: blur(10px);
+    padding: 3px
+}
+
+.room-page.is-live .room-modes button {
+    font-size: 11px;
+    padding: 9px 13px;
+    color: #fffdf5
+}
+
+.room-page.is-live .room-modes button[aria-pressed=true] {
+    background: #ffffff24;
+    box-shadow: none
+}
+
+.room-page.is-live .room-header-actions {
+    gap: 5px
+}
+
+.room-page.is-live .room-header-actions :is(a, button) {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    padding: 6px;
+    border-radius: 50%;
+    color: inherit;
+    font-size: 19px
+}
+
+.room-page.is-live .room-header-actions button span {
+    display: none
+}
+
+.room-page.is-live .room-header-actions :is(a, button):hover {
+    background: #ffffff24
+}
+
+.room-page.is-live .room-layout {
+    display: block;
+    position: relative;
+    min-height: 0;
+    flex: 1
+}
+
+.room-page.is-live .room-stage {
+    position: absolute;
+    inset: 0;
+    height: auto;
+    min-height: 0;
+    padding: 0;
+    background: transparent
+}
+
+.room-page.is-live .room-canvas-wrap {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%
+}
+
+.room-page.is-live .room-stage-top {
+    top: 78px;
+    left: 18px;
+    right: 18px;
+    z-index: 2
+}
+
+.room-page.is-live .room-mode-badge {
+    background: #14221938;
+    border: 1px solid #ffffff30;
+    color: #fffdf5;
+    border-radius: 999px;
+    font-size: 8px;
+    padding: 8px 11px;
+    backdrop-filter: blur(8px)
+}
+
+.room-page.is-live .room-private, .room-page.is-live .room-stage-caption {
+    display: none
+}
+
+.room-page.is-live .room-instruction {
+    top: 115px;
+    left: 18px;
+    transform: none;
+    max-width: calc(100% - 36px);
+    width: auto;
+    bottom: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: #fffdf5;
+    text-shadow: 0 1px 5px #000b;
+    text-align: left;
+    font-size: 11px;
+    line-height: 1.5;
+    pointer-events: none
+}
+
+.room-page.is-live .room-panel {
+    position: absolute;
+    inset: auto 18px calc(16px + env(safe-area-inset-bottom));
+    width: auto;
+    height: auto;
+    max-height: none;
+    min-height: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    overflow: visible;
+    background: transparent;
+    color: #fffdf5;
+    z-index: 4
+}
+
+.room-page.is-live .room-live-summary {
+    display: block;
+    font-size: 12px;
+    line-height: 1.6;
+    max-width: 57%;
+    text-shadow: 0 1px 6px #000c
+}
+
+.room-page.is-live .room-controls-scroll {
+    display: none
+}
+
+.room-page.is-live .room-panel-bottom {
+    padding: 0;
+    margin: 0;
+    border: 0;
+    flex-shrink: 0
+}
+
+.room-page.is-live .room-panel-bottom .room-primary {
+    background: #fffcf0df;
+    color: #20291f;
+    border: 1px solid #ffffff60;
+    min-height: 42px;
+    border-radius: 999px;
+    padding: 10px 17px;
+    width: auto;
+    gap: 18px;
+    font-size: 12px;
+    backdrop-filter: blur(10px)
+}
+
+.room-page.is-live .room-panel-bottom .room-primary:hover {
+    background: #fffdf5
+}
+
+.room-page.is-live .room-panel-bottom>p:empty, .room-page.is-live .room-start-over {
+    display: none
+}
+
+.room-page.is-live .room-panel-bottom>p:not(:empty) {
+    position: absolute;
+    bottom: 48px;
+    right: 0;
+    background: #142219b0;
+    color: #fffdf5;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 10px
+}
+
+.room-page.is-live .room-stage-tools {
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: calc(79px + env(safe-area-inset-bottom));
+    z-index: 5;
+    gap: 3px;
+    padding: 4px;
+    border-radius: 999px;
+    background: #14221960;
+    color: #fffdf5;
+    border: 1px solid #ffffff30;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 3px 15px #0001;
+    max-width: calc(100% - 28px)
+}
+
+.room-page.is-live .room-stage-tools :is(button, select) {
+    min-height: 40px;
+    border-radius: 999px;
+    padding: 9px 13px;
+    font-size: 11px;
+    color: inherit;
+    background: transparent
+}
+
+.room-page.is-live .room-stage-tools button:hover, .room-page.is-live .room-stage-tools button[aria-expanded=true] {
+    background: #ffffff24
+}
+
+.room-page.is-live .room-stage-tools select {
+    max-width: 125px
+}
+
+.room-page.is-live select option {
+    background: #20291f;
+    color: #fffdf5
+}
+
+.room-page.is-live #toggleRoomControls {
+    display: block
+}
+
+.room-page.is-live #uploadRoomButton, .room-page.is-live #shareRoom {
+    display: none
+}
+
+.room-page.is-live .xr-placement-actions {
+    display: flex;
+    justify-content: center;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: calc(140px + env(safe-area-inset-bottom));
+    width: auto;
+    max-width: calc(100% - 36px);
+    z-index: 3
+}
+
+.room-page.is-live .xr-placement-actions button, .room-page.is-live .xr-placement-actions #moveSurface {
+    grid-column: auto;
+    min-height: 44px;
+    white-space: nowrap;
+    padding: 11px 24px;
+    border-radius: 999px;
+    font-size: 12px;
+    background: #14221960;
+    color: #fffdf5;
+    border: 1px solid #ffffff70;
+    backdrop-filter: blur(10px)
+}
+
+.room-page.is-live .xr-placement-actions #placeSurface {
+    background: #fffdf5df;
+    color: #20291f
+}
+
+.room-page.is-live .xr-placement-actions button:hover {
+    box-shadow: 0 0 0 3px #ffffff18
+}
+
+.room-page.is-live .room-notice {
+    top: 155px;
+    background: #142219d9;
+    color: #fffdf5;
+    border-color: #ffffff40;
+    backdrop-filter: blur(10px);
+    z-index: 8
+}
+
+.room-page.is-live.is-controls-open .room-panel {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    height: 44dvh;
+    max-height: none;
+    min-height: 245px;
+    padding: 16px;
+    border: 1px solid #ffffff30;
+    border-radius: 20px;
+    background: #142219a6;
+    backdrop-filter: blur(18px);
+    overflow: hidden;
+    box-shadow: 0 8px 30px #0002
+}
+
+.room-page.is-live.is-controls-open .room-live-summary {
+    max-width: 100%;
+    flex-shrink: 0
+}
+
+.room-page.is-live.is-controls-open .room-controls-scroll {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-content: start;
+    gap: 16px;
+    overflow: auto;
+    min-height: 0;
+    flex: 1;
+    padding: 2px 4px 4px 0
+}
+
+.room-page.is-live.is-controls-open .room-panel-heading, .room-page.is-live.is-controls-open .room-product {
+    display: none
+}
+
+.room-page.is-live.is-controls-open :is(.room-field, .room-edit-actions, .room-add-another, .room-placements, .room-measure, .room-ar-details) {
+    grid-column: 1/-1
+}
+
+.room-page.is-live.is-controls-open .room-panel-bottom {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 10px;
+    border-top: 1px solid #ffffff25
+}
+
+.room-page.is-live.is-controls-open .room-stage-tools {
+    bottom: calc(max(44dvh, 245px) + 24px + env(safe-area-inset-bottom))
+}
+
+.room-page.is-live.is-controls-open .xr-placement-actions {
+    bottom: calc(max(44dvh, 245px) + 84px + env(safe-area-inset-bottom))
+}
+
+.room-page.is-live .room-field select {
+    background: #10201745;
+    color: #fffdf5;
+    border-color: #ffffff40;
+    min-height: 42px
+}
+
+.room-page.is-live .room-slider-field output, .room-page.is-live .room-measure, .room-page.is-live .room-ar-details {
+    color: #e0dfd4
+}
+
+.room-page.is-live .room-slider-field label {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px 8px;
+    line-height: 1.5;
+    align-items: baseline
+}
+
+.room-page.is-live .room-slider-field output {
+    font-size: 9px
+}
+
+.room-page.is-live .room-controls-scroll>.room-field {
+    margin: 0;
+    padding-top: 3px;
+    line-height: 1.5
+}
+
+.room-page.is-live .room-edit-actions button {
+    background: transparent;
+    border-color: #ffffff40;
+    color: #fffdf5
+}
+
+.room-page.is-live .room-edit-actions button:hover {
+    background: #ffffff20
+}
+
+.room-page.is-live :is(button, a, select, input):focus-visible {
+    outline: 2px solid #e0c28e;
+    outline-offset: 3px
+}
+
+.room-capture-help {
+    position: fixed;
+    z-index: 30;
+    bottom: calc(195px + env(safe-area-inset-bottom));
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(340px, calc(100% - 32px));
+    padding: 18px 20px;
+    border: 1px solid #ffffff40;
+    border-radius: 18px;
+    background: #142219e6;
+    backdrop-filter: blur(16px);
+    color: #fffdf5;
+    box-shadow: 0 8px 24px #0003
+}
+
+.room-capture-help h2 {
+    font: 500 16px 'DM Sans', sans-serif;
+    margin: 0 0 10px;
+    letter-spacing: -.02em
+}
+
+.room-capture-help p {
+    font-size: 12px;
+    line-height: 1.6;
+    margin: 8px 0;
+    color: #e0dfd4
+}
+
+.room-capture-help>div {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px
+}
+
+.room-page .room-capture-help button {
+    border-radius: 999px;
+    font-size: 11px;
+    min-height: 42px;
+    border-color: #ffffff40;
+    background: transparent;
+    color: #fffdf5;
+    padding: 9px 14px
+}
+
+.room-page .room-capture-help #captureHelpClose {
+    background: #fffdf5;
+    color: #20291f
+}
+
+.room-page .room-capture-help button:hover {
+    box-shadow: 0 0 0 3px #ffffff18
+}
+
+@media(min-width:1001px) {
+    .room-page.is-live.is-controls-open .room-panel {
+        inset: 78px 18px auto auto;
+        width: 330px;
+        height: auto;
+        max-height: calc(100dvh - 100px);
+        min-height: 0
+    }
+
+    .room-page.is-live.is-controls-open .room-controls-scroll {
+        max-height: calc(100dvh - 255px)
+    }
+
+    .room-page.is-live.is-controls-open .room-stage-tools {
+        bottom: 80px
+    }
+
+    .room-page.is-live.is-controls-open .xr-placement-actions {
+        bottom: 140px
+    }
+}
+
+@media(max-width:1000px) and (orientation:landscape) {
+    .room-page.is-live .room-header {
+        height: 58px;
+        padding: 5px 16px
+    }
+
+    .room-page.is-live .room-stage-top {
+        top: 64px
+    }
+
+    .room-page.is-live .room-instruction {
+        top: 100px;
+        max-width: 45%;
+        font-size: 10px
+    }
+
+    .room-page.is-live .room-panel {
+        left: auto;
+        right: 16px;
+        width: 270px;
+        bottom: 14px
+    }
+
+    .room-page.is-live .room-live-summary {
+        font-size: 10px;
+        max-width: 53%
+    }
+
+    .room-page.is-live .room-panel-bottom .room-primary {
+        font-size: 11px;
+        padding: 9px 12px
+    }
+
+    .room-page.is-live .room-stage-tools, .room-page.is-live.is-controls-open .room-stage-tools {
+        left: 16px;
+        transform: none;
+        bottom: 14px
+    }
+
+    .room-page.is-live .xr-placement-actions, .room-page.is-live.is-controls-open .xr-placement-actions {
+        left: 16px;
+        transform: none;
+        bottom: 75px
+    }
+
+    .room-page.is-live.is-controls-open .room-panel {
+        top: 64px;
+        bottom: 12px;
+        width: 300px;
+        height: auto;
+        max-height: none;
+        min-height: 0
+    }
+
+    .room-page.is-live.is-controls-open .room-live-summary {
+        max-width: 100%
+    }
+
+    .room-capture-help {
+        bottom: 75px;
+        left: 16px;
+        transform: none;
+        width: min(325px, calc(100% - 32px));
+        max-height: calc(100dvh - 145px);
+        overflow: auto
+    }
+}
+
+@media(max-width:380px) {
+    .room-page.is-live .room-header {
+        padding: 8px 12px;
+        gap: 6px
+    }
+
+    .room-page.is-live .room-modes button {
+        padding: 9px;
+        font-size: 10px
+    }
+
+    .room-page.is-live .room-header-actions :is(a, button) {
+        width: 32px
+    }
+
+    .room-page.is-live .room-stage-tools :is(button, select) {
+        padding: 9px 10px
+    }
+}
+
+/* Return the toolbar at the same time as the sheet, rather than after it. */
+.room-page.is-live.is-controls-closing .room-panel {
+    pointer-events: none
+}
+
+.room-page.is-live.is-controls-closing .room-stage-tools {
+    bottom: calc(79px + env(safe-area-inset-bottom));
+    transition: bottom .15s cubic-bezier(.4, 0, 1, 1)
+}
+
+.room-page.is-live.is-controls-closing .xr-placement-actions {
+    bottom: calc(140px + env(safe-area-inset-bottom));
+    transition: bottom .15s cubic-bezier(.4, 0, 1, 1)
+}
+
+@media(min-width:1001px) {
+    .room-page.is-live.is-controls-closing .room-stage-tools {
+        bottom: 80px
+    }
+
+    .room-page.is-live.is-controls-closing .xr-placement-actions {
+        bottom: 140px
+    }
+}
+
+@media(max-width:1000px) and (orientation:landscape) {
+    .room-page.is-live.is-controls-closing .room-stage-tools {
+        bottom: 14px
+    }
+
+    .room-page.is-live.is-controls-closing .xr-placement-actions {
+        bottom: 75px
+    }
+}

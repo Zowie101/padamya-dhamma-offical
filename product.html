@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <script src="assets/js/accessibility.js?v=20261102-padamya-1"></script>
+    <meta charset="utf-8" />
+    <script src="assets/js/theme.js?v=20261101-icons"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f8f7f3" />
+    <meta
+      name="description"
+      content="A considered collection of Buddha statues for home shrines and quiet spaces."
+    />
+    <title>Product Details | Padamya Dhamma</title>
+    <link rel="stylesheet" href="assets/css/styles.css?v=20261102-padamya-1" />
+    <link rel="stylesheet" href="assets/css/theme.css?v=20261101-icons" />
+    <link rel="stylesheet" href="assets/css/interactions.css?v=20261101-filled-icons" />
+    <link rel="stylesheet" href="assets/css/product-room.css?v=20261031-1" />
+    <link rel="stylesheet" href="assets/css/room-entry.css?v=20261031-14" />
+    <script
+      type="module"
+      src="./assets/vendor/model-viewer/model-viewer.min.js?v=4.1.0"
+    ></script>
+    <script src="assets/js/language.js?v=20261102-padamya-1"></script>
+    <link rel="stylesheet" href="assets/css/language.css?v=20261101-5" />
+    <link rel="stylesheet" href="assets/css/header.css?v=20261102-account-panel-1" />
+    <link rel="stylesheet" href="assets/css/page-motion.css?v=20261101-1" />
+    <script src="assets/js/page-motion.js?v=20261102-accessibility-1"></script>
+    <script src="assets/js/store-client.js?v=20261102-account-panel-1"></script>
+  <link rel="stylesheet" href="assets/css/sage.css?v=20261102-progressive-2">
+  <link rel="stylesheet" href="assets/css/account-panel.css?v=20261102-padamya-1">
+  <script src="assets/js/account-panel.js?v=20261102-padamya-1" defer></script>
+    <link rel="stylesheet" href="assets/css/icon-motion.css?v=20261102-1" />
+    <link rel="stylesheet" href="assets/css/accessibility.css?v=20261102-padamya-1" />
+</head>
+  <body class="product-page">
+    <header class="site-header">
+      <a class="brand" href="index.html"
+        ><span class="brand-mark">pd</span
+        ><span class="brand-name"
+          >PADAMYA DHAMMA<small>OBJECTS FOR STILLNESS</small></span
+        ></a
+      ><button
+        class="menu-toggle"
+        id="menuToggle"
+        aria-label="Toggle navigation"
+        aria-expanded="false"
+      >
+        <span class="site-icon icon-menu" aria-hidden="true"></span>
+      </button>
+      <nav class="main-nav" id="mainNav">
+        <a href="shop.html">Shop all</a
+        ><a href="shrine.html#shrine-preview">Shrine preview</a
+        ><a href="about.html">Our story</a>
+      </nav>
+      <div class="header-actions">
+        <a class="cart-button" href="cart.html" aria-label="Shopping bag"
+          ><span class="header-icon-wrap"
+            ><span class="site-icon icon-bag" aria-hidden="true"></span
+            ><span class="cart-count" id="cartCount" aria-hidden="true"
+              >0</span
+            ></span
+          ><span class="bag-nav-label">Bag</span></a
+        >
+      </div>
+    </header>
+    <main>
+      <section class="page-content product-feature">
+        <div class="detail-layout">
+          <div class="detail-gallery">
+            <div class="thumbs" id="productThumbs"></div>
+            <div class="detail-main-image model-active" id="detailImage">
+              <model-viewer
+                id="buddhaViewer"
+                alt="Interactive 3D Buddha statue"
+                camera-controls
+                touch-action="pan-y"
+                interaction-prompt="auto"
+                auto-rotate
+                auto-rotate-delay="1800"
+                rotation-per-second="12deg"
+                camera-orbit="0deg 75deg auto"
+                field-of-view="30deg"
+                min-field-of-view="15deg"
+                max-field-of-view="70deg"
+                shadow-intensity="1"
+                shadow-softness="0.8"
+                exposure="1"
+                environment-image="neutral"
+                loading="eager"
+              >
+                <div slot="progress-bar" class="model-progress">
+                  <span></span>
+                </div>
+                <div slot="error" class="model-error">
+                  Unable to load the 3D model. Choose a photo thumbnail or
+                  refresh to try again.
+                </div>
+              </model-viewer>
+              <img id="mainProductImage" src="" alt="Product view" hidden />
+              <span class="zoom-hint" id="galleryHint"
+                >DRAG TO ROTATE · SCROLL TO ZOOM
+                <span class="site-icon icon-arrow" aria-hidden="true"></span
+              ></span>
+              <div class="inline-viewer-controls" id="viewerControls">
+                <button type="button" id="zoomOut" aria-label="Zoom out">
+                  −</button
+                ><button type="button" id="zoomIn" aria-label="Zoom in">
+                  +</button
+                ><button
+                  type="button"
+                  id="rotateButton"
+                  aria-label="Pause rotation"
+                >
+                  Ⅱ</button
+                ><button type="button" id="resetButton">RESET</button>
+              </div>
+              <a class="room-launch" id="viewInRoom" href="room.html"><span aria-hidden="true">⌗</span> View in Your Room <span class="site-icon icon-arrow" aria-hidden="true"></span></a>
+            </div>
+          </div>
+          <div class="detail-info">
+            <p class="eyebrow" id="detailCategory">THE COLLECTION</p>
+            <h1 id="detailName">A considered piece.</h1>
+            <p class="detail-price" id="detailPrice"></p>
+            <p class="detail-description" id="detailDescription"></p>
+            <div class="detail-specs" id="detailSpecs"></div>
+            <div class="add-row">
+              <div class="quantity-control">
+                <button id="detailMinus" aria-label="Decrease quantity">
+                  −</button
+                ><span id="detailQty">1</span
+                ><button id="detailPlus" aria-label="Increase quantity">
+                  +
+                </button>
+              </div>
+              <button class="button button-dark" id="addDetail">
+                Add to bag
+                <span
+                  ><span class="site-icon icon-arrow" aria-hidden="true"></span
+                ></span>
+              </button>
+            </div>
+            <div class="product-secondary-actions">
+              <a class="text-link" href="shrine.html#shrine-preview"
+                >Preview in a shrine setting
+                <span class="site-icon icon-arrow" aria-hidden="true"></span
+              ></a>
+            </div>
+            <p class="detail-note">
+              Product dimensions are listed above. Please measure your intended
+              display space before ordering.
+            </p>
+          </div>
+        </div>
+      </section>
+      <section class="shop-section">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Continue exploring</p>
+            <h2>More to <em>consider.</em></h2>
+          </div>
+          <a class="text-link" href="shop.html"
+            >View all pieces
+            <span class="site-icon icon-arrow" aria-hidden="true"></span
+          ></a>
+        </div>
+        <div class="product-grid" id="relatedGrid"></div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="footer-top">
+        <a class="brand footer-brand" href="index.html"
+          ><span class="brand-mark">pd</span
+          ><span class="brand-name"
+            >PADAMYA DHAMMA<small>OBJECTS FOR STILLNESS</small></span
+          ></a
+        >
+        <p>Objects for a more intentional home.</p>
+        <div class="footer-links">
+          <a href="shop.html">Shop</a>　<a href="about.html">Our story</a>　<a
+            href="cart.html"
+            >Shopping bag</a
+          >
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Padamya Dhamma</span
+        ><span>Made with care</span
+        ><span>Myanmar · Worldwide</span>
+      </div>
+    </footer>
+  <dialog class="room-dialog room-entry" id="roomEntry" aria-labelledby="welcomeTitle">
+    <div class="room-welcome-art"><img id="welcomeProductImage" alt="" /><span>YOUR PIECE. YOUR PLACE.</span></div>
+    <div class="room-dialog-copy"><a class="dialog-close" id="welcomeClose" href="product.html" aria-label="Close room preview"><span class="site-icon icon-cross" aria-hidden="true"></span></a><p class="room-eyebrow">PADAMYA DHAMMA / ROOM STUDIO</p><h2 id="welcomeTitle">A little stillness.<br /><em>In your own space.</em></h2><p>See how your chosen piece feels at home.</p>
+      <button type="button" class="room-mode-card" id="choosePhoto"><span class="mode-card-icon" aria-hidden="true">▧</span><span><strong>Upload room photo</strong><small>Place, resize and arrange your pieces.</small></span><span aria-hidden="true">↗</span></button>
+      <button type="button" class="room-mode-card" id="chooseLive"><span class="mode-card-icon" aria-hidden="true">◎</span><span><strong>Live AR camera</strong><small id="welcomeArHint">Checking device compatibility…</small></span><span aria-hidden="true">↗</span></button>
+      <button type="button" class="room-sample-link" id="chooseSample">Explore an illustrated room first →</button><p class="room-fine-print">Photos and camera images are processed on this device.</p>
+    </div>
+  </dialog>
+    <div id="toastRoot" aria-live="polite"></div>
+    <script src="assets/js/app.js?v=20261102-padamya-1"></script>
+    <script type="module" src="assets/js/room-entry.js?v=20261101-page-motion"></script>
+  <script src="assets/js/sage-core.js?v=20261102-1"></script>
+<script src="assets/js/sage.js?v=20261102-padamya-1"></script>
+</body>
+</html>

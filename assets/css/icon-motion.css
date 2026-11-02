@@ -1,0 +1,23 @@
+/* Shared icon feedback: individual transforms retain arrow directions and masks. */
+:where(.site-icon, button>svg, a>svg, summary>svg){
+  transform-origin:center;
+  transition:scale .24s cubic-bezier(.22,1,.36,1),rotate .3s ease,translate .24s ease,opacity .2s ease;
+}
+@media(hover:hover) and (pointer:fine){
+  :where(button,a,label,summary):not(:disabled):hover :where(.site-icon,svg){scale:1.08}
+  :where(button,a):not(:disabled):hover .icon-arrow{translate:3px 0}
+  :where(button,a):not(:disabled):hover .icon-arrow-left{translate:-3px 0}
+  :where(button,a):not(:disabled):hover :is(.icon-rotate,.icon-undo,.sage-clear-icon){rotate:-35deg}
+  :where(button,a):not(:disabled):hover :is(.icon-cross,.sage-close-icon){rotate:90deg}
+  :where(button,a):not(:disabled):hover :is(.icon-menu,.icon-account,.sage-chat-icon,.sage-avatar-icon){translate:0 -1px}
+}
+:where(button,a,label,summary):focus-visible :where(.site-icon,svg){scale:1.08}
+:where(button,a,label,summary):not(:disabled):active :where(.site-icon,svg){scale:.91}
+/* A small acknowledgment when a saved heart becomes filled. */
+.wishlist-toggle[aria-pressed="true"] .icon-heart{animation:sf-heart-saved .36s ease-out}
+.order-timeline>.current .site-icon{animation:sf-icon-arrive .36s ease-out}
+@keyframes sf-heart-saved{0%{scale:.88}55%{scale:1.13}100%{scale:1}}
+@keyframes sf-icon-arrive{from{scale:.85;opacity:.5}to{scale:1;opacity:1}}
+@media(prefers-reduced-motion:reduce){
+  :where(.site-icon,button svg,a svg,summary svg){animation:none!important;transition:none!important;scale:none!important;rotate:none!important;translate:none!important}
+}

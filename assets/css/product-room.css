@@ -1,0 +1,53 @@
+.detail-gallery .detail-main-image {
+    position: relative;
+}
+
+.room-launch {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 5;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 12px;
+    box-shadow: 0 4px 18px #211b1210;
+    transition: border-color .2s, box-shadow .2s;
+}
+
+.room-launch:hover {
+    border-color: var(--accent);
+    box-shadow: 0 6px 22px #211b1222;
+}
+
+.room-launch:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
+.room-launch>span:first-child {
+    font-size: 21px;
+    color: var(--accent);
+    line-height: .8;
+}
+
+.room-launch .icon-arrow {
+    width: 13px;
+    height: 13px;
+}
+
+@media(max-width:650px) {
+    .room-launch {
+        top: 12px;
+        right: 12px;
+        font-size: 11px;
+        padding: 11px 13px;
+        gap: 8px;
+    }
+}

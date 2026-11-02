@@ -1,0 +1,89 @@
+.account-drawer .icon-receipt{--icon-image:url('../icons/receipt_icon.svg')}.account-drawer .icon-package{--icon-image:url('../icons/package_icon.svg')}
+.icon-account{--icon-image:url('../icons/acc_icon.svg')}.icon-login{--icon-image:url('../icons/login_icon.svg')}
+.site-header .account-toggle{display:grid;place-items:center;flex-shrink:0;width:42px;height:42px;padding:7px;background:transparent;border:1px solid transparent;border-radius:50%;color:var(--ink);cursor:pointer;transition:background .2s,border-color .2s,transform .2s}
+.site-header .account-toggle .site-icon{width:28px;height:28px;transition:transform .2s}
+.site-header .account-toggle:is(:hover,:focus-visible){background:color-mix(in srgb,var(--ink) 7%,transparent);border-color:var(--line)}
+.site-header .account-toggle:hover .site-icon{transform:scale(1.07)}
+.site-header .header-actions>.account-toggle{order:3}
+.site-header .header-actions>:is(.theme-toggle,.language-toggle){display:none}
+.site-header .header-actions>.menu-toggle{display:none}
+.drawer-mobile-navigation{display:none}
+.account-drawer-layer{position:fixed;inset:0;z-index:11000;visibility:hidden;pointer-events:none;transition:visibility 0s linear .26s;color:var(--ink);font-family:"DM Sans",sans-serif}
+.account-drawer-layer.is-open{visibility:visible;pointer-events:auto;transition-delay:0s}
+.account-drawer-backdrop{position:absolute;inset:0;background:#0005;opacity:0;transition:opacity .24s ease;backdrop-filter:blur(3px)}
+.account-drawer{position:absolute;right:0;top:0;bottom:0;width:min(420px,100%);display:flex;flex-direction:column;background:var(--paper);border-left:1px solid var(--line);box-shadow:-15px 0 60px #0002;transform:translateX(100%);transition:transform .26s cubic-bezier(.22,.8,.25,1);padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);outline:none;line-height:1.6}
+.is-open .account-drawer-backdrop{opacity:1}.is-open .account-drawer{transform:translateX(0)}
+.account-drawer-heading{display:flex;align-items:center;justify-content:space-between;padding:22px 28px;border-bottom:1px solid var(--line);font-size:15px;flex-shrink:0}
+.account-drawer-close{width:38px;height:38px;display:grid;place-items:center;border:0;border-radius:50%;padding:10px;background:transparent;color:var(--ink);cursor:pointer}
+.account-drawer-close .site-icon{width:19px;height:19px}.account-drawer-close:hover{background:color-mix(in srgb,var(--ink) 7%,transparent)}
+.account-drawer-body{padding:30px 28px;overflow-y:auto;overscroll-behavior:contain;flex:1;min-height:0}
+.account-drawer-profile{display:flex;align-items:center;gap:15px;margin-bottom:24px;min-width:0}.account-drawer-profile>.site-icon{width:40px;height:40px;flex-shrink:0;color:var(--accent)}
+.account-drawer-profile>div{min-width:0}.account-drawer-profile h2{font:500 19px/1.5 "DM Sans",sans-serif;letter-spacing:-.02em;margin:0 0 6px;overflow-wrap:anywhere}
+.account-drawer-profile p{font-size:12px;color:var(--muted);line-height:1.8;margin:0;overflow-wrap:anywhere}
+.account-drawer-auth{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:30px}
+.account-drawer-auth a{display:flex;align-items:center;justify-content:center;min-height:46px;border:1px solid var(--line);border-radius:6px;padding:10px;font-size:12px;line-height:1.7;text-align:center;transition:background .2s,border-color .2s,color .2s}
+.account-drawer-auth .drawer-primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}.account-drawer-auth a:hover{background:var(--accent);border-color:var(--accent);color:var(--paper)}
+.account-drawer-links{display:grid;border-block:1px solid var(--line);padding:10px 0}
+.account-drawer-links a{display:grid;grid-template-columns:22px minmax(0,1fr) 17px;gap:13px;align-items:center;padding:17px 8px;border-radius:6px;font-size:13px;line-height:1.8;transition:background .2s,color .2s}
+.account-drawer-links .site-icon{width:21px;height:21px}.account-drawer-links .icon-arrow{width:16px;height:16px;color:var(--muted);transition:transform .2s}.account-drawer-links a:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}.account-drawer-links a:hover .icon-arrow{transform:translateX(3px)}
+.account-drawer-preferences{margin-top:30px}.account-drawer-caption{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin:0 0 13px}
+.account-preference{display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:63px;font-size:13px}.account-preference>div{display:flex;align-items:center;min-width:40px;min-height:40px}
+.account-drawer .language-toggle{display:inline-flex;justify-content:center;align-items:center;min-height:40px;min-width:64px;border-radius:20px;font-size:12px;line-height:1.7;padding:6px 12px;color:var(--ink);border:1px solid var(--line);background:transparent;cursor:pointer}
+.account-drawer .theme-toggle{display:inline-grid;place-items:center;position:relative;width:40px;height:40px;color:var(--ink);border:1px solid var(--line);border-radius:50%;background:transparent;cursor:pointer}
+.account-drawer .theme-toggle .site-icon{width:23px;height:23px}
+.account-drawer-footer{margin-top:auto;padding:19px 28px;border-top:1px solid var(--line);flex-shrink:0;display:grid;gap:19px}.account-drawer-footer>span{font-size:9px;letter-spacing:.16em;color:var(--muted)}
+#drawerSignOut{display:flex;align-items:center;justify-content:space-between;min-height:40px;padding:4px 0;border:0;background:transparent;font:inherit;font-size:12px;color:var(--ink);cursor:pointer}#drawerSignOut .site-icon{width:20px;height:20px}#drawerSignOut:hover{color:var(--accent)}#drawerSignOut:disabled{opacity:.5;cursor:wait}
+#drawerAccountError{font-size:12px;line-height:1.8;margin:16px 0 0}.account-drawer-layer [hidden]{display:none!important}
+:is(.account-drawer-layer,.site-header) :is(.account-toggle,.account-drawer-close,a,button):focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+html[lang=my] .account-drawer{font-family:"Myanmar Text",sans-serif}html[lang=my] .account-drawer-profile h2{font-family:inherit;font-size:17px;line-height:1.8}html[lang=my] .account-drawer-caption{letter-spacing:0;line-height:1.9}
+@media(max-width:600px){.account-drawer{width:min(370px,calc(100% - 22px))}.account-drawer-heading{padding:16px 22px}.account-drawer-body{padding:24px 22px}.account-drawer-footer{padding:16px 22px}.site-header .account-toggle{width:36px;height:40px;padding:5px}.site-header .account-toggle .site-icon{width:27px;height:27px}}
+/* One compact mobile menu; its width never exceeds half of the viewport. */
+@media(max-width:1000px){
+  .site-header>.brand{flex:1;min-width:0}
+  .site-header>.header-actions{margin-left:auto;gap:9px}
+  .site-header .header-actions>.account-toggle{display:none}
+  .site-header .header-actions>.wishlist-link{order:0}
+  .site-header .header-actions>.cart-button{order:1}
+  .site-header .header-actions>.menu-toggle{display:grid;place-items:center;order:4;width:40px;height:44px;margin:0;padding:8px;border-radius:7px;flex-shrink:0;line-height:1}
+  .site-header .header-actions>.menu-toggle .site-icon{width:24px;height:24px}
+  .site-header>.main-nav{display:none!important}
+  .account-drawer{width:50vw;max-width:50vw;box-sizing:border-box}
+  .account-drawer-heading{gap:8px;padding:14px 16px;font-size:15px;min-height:64px}
+  .account-drawer-close{width:32px;height:32px;padding:7px;flex-shrink:0}
+  .account-drawer-close .site-icon{width:17px;height:17px}
+  .account-drawer-body{padding:16px 16px 22px;overflow-x:hidden}
+  .drawer-mobile-navigation{display:grid;gap:3px;padding-bottom:16px;margin-bottom:18px;border-bottom:1px solid var(--line)}
+  .drawer-mobile-navigation a{display:flex;align-items:center;min-height:48px;padding:10px 0;font-size:15px;line-height:1.6;overflow-wrap:anywhere;transition:color .2s}
+  .drawer-mobile-navigation a:is(:hover,:focus-visible){color:var(--accent)}
+  .account-drawer-profile{display:block;margin:0 0 14px}
+  .account-drawer-profile>.site-icon{display:none}
+  .account-drawer-profile h2{font-size:15px;line-height:1.7;letter-spacing:0;margin:0 0 5px}
+  .account-drawer-profile p{font-size:12px;line-height:1.7}
+  .account-drawer-layer[data-signed-in=false] .account-drawer-profile{display:none}
+  .account-drawer-auth{display:none}
+  .account-drawer-links{padding:3px 0;border-top:0}
+  .account-drawer-links a{grid-template-columns:20px minmax(0,1fr);gap:9px;min-height:51px;padding:12px 0;font-size:14px;line-height:1.6;overflow-wrap:anywhere}
+  .account-drawer-links .site-icon{width:20px;height:20px}
+  .account-drawer-links .icon-arrow{display:none}
+  .account-drawer-preferences{margin-top:24px}
+  .account-drawer-caption{font-size:11px;letter-spacing:.04em;margin-bottom:12px}
+  .account-preference{flex-direction:row;align-items:center;justify-content:space-between;gap:8px;min-height:62px;font-size:14px;padding:9px 0}
+  .account-preference>span{min-width:0;overflow-wrap:anywhere;line-height:1.7}
+  .account-preference>div{flex-shrink:0}
+  .account-drawer .language-toggle{font-size:12px;min-width:54px;min-height:40px;padding:6px 8px}
+  .account-drawer .theme-toggle{width:40px;height:40px}
+  .account-drawer-footer{padding:16px;gap:12px}
+  .account-drawer-footer>span{font-size:10px;letter-spacing:.08em}
+  #drawerSignOut{min-height:40px;font-size:14px;gap:8px}
+  html[lang=my] .account-drawer-profile h2{font-size:14px}
+}
+@media(prefers-reduced-motion:reduce){.account-drawer-layer,.account-drawer-layer *,.account-toggle{transition:none!important}}
+@media print{.account-drawer-layer,.account-toggle{display:none!important}}
+
+@media(max-width:360px){.account-drawer-body{padding-inline:12px}.account-drawer-heading,.account-drawer-footer{padding-inline:12px}.account-preference{font-size:13px}.drawer-mobile-navigation a{font-size:14px}.account-drawer-links a{font-size:13px;gap:7px}}
+
+/* Keep these two mobile destinations text-only, aligned with the page links. */
+@media(max-width:1000px){
+  .account-drawer-links #drawerAccountDetails,.account-drawer-links a[href="track-order.html"]{grid-template-columns:minmax(0,1fr);gap:0}
+  .account-drawer-links #drawerAccountDetails>.icon-account,.account-drawer-links a[href="track-order.html"]>.icon-receipt{display:none}
+}

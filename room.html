@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <script src="assets/js/accessibility.js?v=20261102-padamya-1"></script>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#f8f7f3" />
+    <meta
+      name="description"
+      content="Place a Padamya Dhamma Buddha statue in a photo of your room, or explore live surface AR on a compatible device."
+    />
+    <title>View in Your Room | Padamya Dhamma</title>
+    <script src="assets/js/theme.js?v=20261101-icons"></script>
+    <link
+      rel="stylesheet"
+      href="assets/css/styles.css?v=20261102-padamya-1"
+    />
+    <link rel="stylesheet" href="assets/css/theme.css?v=20261101-icons" />
+    <link rel="stylesheet" href="assets/css/room-preview.css?v=20261031-15" />
+    <link
+      rel="stylesheet"
+      href="assets/css/room-live.css?v=20261101-gestures"
+    />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "./assets/vendor/three/three.module.js?v=20261031-6",
+          "three/addons/": "./assets/vendor/three/addons/"
+        }
+      }
+    </script>
+    <script src="assets/js/language.js?v=20261102-padamya-1"></script>
+    <link rel="stylesheet" href="assets/css/language.css?v=20261101-5" />
+    <link rel="stylesheet" href="assets/css/header.css?v=20261102-account-panel-1" />
+    <link rel="stylesheet" href="assets/css/page-motion.css?v=20261101-1" />
+    <script src="assets/js/page-motion.js?v=20261102-accessibility-1"></script>
+    <script src="assets/js/store-client.js?v=20261102-account-panel-1"></script>
+  <link rel="stylesheet" href="assets/css/sage.css?v=20261102-progressive-2">
+  <link rel="stylesheet" href="assets/css/room-header.css?v=20261102-4">
+    <link rel="stylesheet" href="assets/css/icon-motion.css?v=20261102-1" />
+    <link rel="stylesheet" href="assets/css/accessibility.css?v=20261102-padamya-1" />
+</head>
+  <body class="room-page">
+    <div id="roomOverlay">
+      <div class="room-workspace" id="roomWorkspace">
+        <header class="room-header" data-xr-ui>
+          <a class="room-brand" href="index.html" aria-label="Padamya Dhamma home"
+            ><span class="brand-mark">pd</span
+            ><span>PADAMYA DHAMMA<small>ROOM STUDIO</small></span></a
+          >
+          <nav class="room-modes" aria-label="Room preview mode">
+            <button type="button" id="photoMode" aria-pressed="true">
+              Room photo
+            </button>
+            <button type="button" id="liveMode" aria-pressed="false">
+              <span class="camera-dot"></span> Live camera
+            </button>
+          </nav>
+          <div class="room-header-actions">
+            <a
+              id="closeRoom"
+              href="product.html"
+              aria-label="Close room preview"
+              ><span class="site-icon icon-cross" aria-hidden="true"></span
+            ></a>
+          </div>
+        </header>
+
+        <main class="room-layout">
+          <section
+            class="room-stage"
+            id="roomStage"
+            aria-label="Room placement workspace"
+          >
+            <div class="room-stage-top" data-xr-ui>
+              <span class="room-mode-badge" id="modeIndicator"
+                >PHOTO PREVIEW</span
+              ><button
+              type="button"
+              id="undoPlacement" class="room-undo-action"
+              aria-label="Undo last statue edit"
+              title="Undo last statue edit"
+            >
+              <span class="site-icon icon-undo" aria-hidden="true"></span>
+              <span class="room-action-label">Undo</span></button
+            >
+              <span class="room-private" id="privacyNote"
+                >Your photos stay on your device</span
+              >
+            </div>
+            <div class="room-canvas-wrap" id="canvasWrap">
+              <canvas
+                id="roomCanvas"
+                tabindex="0"
+                role="img"
+                aria-label="Interactive room preview. Select a statue and drag to move it. Use arrow keys to nudge the selected statue."
+              ></canvas>
+              <div class="room-photo-empty" id="roomPhotoEmpty" hidden>
+                <p>Your room. Your piece.</p>
+                <button type="button" id="chooseEmptyPhoto">
+                  Choose a room photo
+                </button>
+              </div>
+              <button
+                type="button"
+                id="deleteSelected"
+                class="room-delete-handle"
+                aria-label="Remove selected statue"
+                title="Remove statue"
+                hidden
+              >
+                <span class="site-icon icon-cross" aria-hidden="true"></span>
+              </button>
+              <div class="room-loading" id="roomLoading" role="status" hidden>
+                <span></span>
+                <p>Preparing your piece…</p>
+              </div>
+            </div>
+            <div class="room-stage-caption" data-xr-ui>
+              <span id="sceneCaption"
+                >Illustrated room · approximate photo scale</span
+              ><span id="placementCount">0 pieces</span>
+            </div>
+            <div class="room-stage-tools" data-xr-ui>
+              <label id="cameraLayoutField" hidden
+                ><span class="sr-only">Camera layout</span
+                ><select id="cameraLayout">
+                  <option value="auto">Fill screen</option>
+                  <option value="portrait">Portrait</option>
+                  <option value="landscape">Landscape</option>
+                </select></label
+              >
+              <button
+                type="button"
+                id="toggleRoomControls"
+                aria-expanded="false"
+                aria-controls="roomControlPanel"
+                hidden
+              >
+                Statue controls
+              </button>
+              <button type="button" id="uploadRoomButton">
+                <span aria-hidden="true">＋</span> Room photo
+              </button>
+              <label id="backgroundField"
+                ><span class="sr-only">Room background</span
+                ><select id="roomBackground">
+                  <option value="empty" disabled hidden>Your room photo</option>
+                  <option value="console">Quiet console</option>
+                  <option value="nook">Reading corner</option>
+                </select></label
+              >
+              <button
+                type="button"
+                id="downloadRoom"
+                aria-label="Save room preview image"
+              >
+                ↓ <span>Save image</span>
+              </button>
+            </div>
+            <p class="room-instruction" id="roomInstruction" data-xr-ui>
+              Drag your piece into place. Use the sliders to find your balance.
+            </p>
+            <div
+              class="xr-placement-actions"
+              id="xrPlacementActions"
+              data-xr-ui
+              hidden
+            >
+              <button type="button" id="placeSurface" class="room-primary">
+                Place on surface</button
+              ><button type="button" id="placeManual">Place manually</button
+              ><button type="button" id="moveSurface">Move statue</button>
+            </div>
+            <div
+              class="room-notice"
+              id="roomNotice"
+              role="status"
+              aria-live="polite"
+              hidden
+            ></div>
+          </section>
+
+          <aside
+            class="room-panel"
+            id="roomControlPanel"
+            aria-label="Statue controls"
+            data-xr-ui
+          >
+            <p class="room-live-summary" id="livePieceSummary"></p>
+            <div class="room-controls-scroll">
+              <div class="room-panel-heading">
+                <p class="room-eyebrow">A PLACE FOR YOUR PIECE</p>
+                <h1>Make yourself <em>at home.</em></h1>
+              </div>
+              <div class="room-product">
+                <div class="room-product-image">
+                  <img id="roomProductImage" alt="" />
+                </div>
+                <div>
+                  <h2 id="roomProductName"></h2>
+                  <p id="roomProductPrice"></p>
+                  <a id="roomProductDetails" href="product.html"
+                    >Piece details ↗</a
+                  >
+                </div>
+              </div>
+              <label class="room-field"
+                >Change statue<select id="roomProductSelect"></select
+              ></label>
+              <div class="room-slider-field">
+                <label for="roomSize"
+                  >Size
+                  <output id="roomSizeValue" for="roomSize"></output></label
+                ><input
+                  id="roomSize"
+                  type="range"
+                  min="10"
+                  max="80"
+                  step="1"
+                  value="32"
+                />
+              </div>
+              <div class="room-slider-field">
+                <label for="roomRotation"
+                  >Rotation
+                  <output id="roomRotationValue" for="roomRotation"
+                    >0°</output
+                  ></label
+                ><input
+                  id="roomRotation"
+                  type="range"
+                  min="-180"
+                  max="180"
+                  step="1"
+                  value="0"
+                />
+              </div>
+              <div class="room-slider-field" id="manualDistanceField" hidden>
+                <label for="manualDistance"
+                  >Manual preview distance
+                  <output id="manualDistanceValue" for="manualDistance"
+                    >0.65 m</output
+                  ></label
+                ><input
+                  id="manualDistance"
+                  type="range"
+                  min="35"
+                  max="200"
+                  step="5"
+                  value="65"
+                />
+              </div>
+              
+              <div class="room-edit-actions">
+                <button type="button" id="resetPosition">
+                  <span class="site-icon icon-rotate" aria-hidden="true"></span>
+                  Reset position</button
+                ><button type="button" id="removePlacement">
+                  <span class="site-icon icon-cross" aria-hidden="true"></span>
+                  Remove
+                </button>
+              </div>
+              <label class="room-field" id="suggestedField"
+                >Try a position<select id="suggestedPosition">
+                  <option value="">Choose a placement</option>
+                  <option value="table">Centre table</option>
+                  <option value="shelf">Bookshelf</option>
+                  <option value="altar">Home altar</option>
+                  <option value="floor">Floor</option>
+                </select></label
+              >
+              <button type="button" id="addPlacement" class="room-add-another">
+                ＋ Add another statue
+              </button>
+              <div
+                class="room-placements"
+                id="roomPlacements"
+                role="group"
+                aria-label="Placed statues"
+              ></div>
+              <details class="room-ar-details" id="arDiagnostics" hidden>
+                <summary>AR troubleshooting</summary>
+                <p>This checks 3D drawing, not camera images.</p>
+                <button type="button" id="checkArDisplay">
+                  Check 3D display</button
+                ><button type="button" id="copyArDetails">Copy details</button>
+                <pre id="arDisplayReport">
+Start AR, then check the display here.</pre
+                >
+              </details>
+            </div>
+            <div class="room-panel-bottom">
+              <button type="button" class="room-primary" id="roomAddToBag">
+                Add to bag <span>＋</span>
+              </button>
+              <p id="roomCartFeedback" role="status"></p>
+              <button type="button" class="room-start-over" id="resetRoom">
+                <span class="site-icon icon-rotate" aria-hidden="true"></span>
+                Reset workspace
+              </button>
+            </div>
+          </aside>
+        </main>
+      </div>
+
+      <input
+        type="file"
+        id="roomUpload"
+        accept="image/jpeg,image/png,image/webp,image/avif"
+        class="sr-only"
+        tabindex="-1"
+        aria-label="Upload a room photo"
+      />
+      <video id="roomCamera" autoplay playsinline muted hidden></video>
+      <div id="toastRoot" aria-live="polite"></div>
+
+      <dialog
+        class="room-dialog"
+        id="roomWelcome"
+        aria-labelledby="welcomeTitle"
+      >
+        <div class="room-welcome-art">
+          <img id="welcomeProductImage" alt="" /><span
+            >YOUR PIECE. YOUR PLACE.</span
+          >
+        </div>
+        <div class="room-dialog-copy">
+          <a
+            class="dialog-close"
+            id="welcomeClose"
+            href="product.html"
+            aria-label="Close room preview"
+            ><span class="site-icon icon-cross" aria-hidden="true"></span
+          ></a>
+          <p class="room-eyebrow">PADAMYA DHAMMA / ROOM STUDIO</p>
+          <h2 id="welcomeTitle">
+            A little stillness.<br /><em>In your own space.</em>
+          </h2>
+          <p>See how your chosen piece feels at home.</p>
+          <button type="button" class="room-mode-card" id="choosePhoto">
+            <span class="mode-card-icon" aria-hidden="true">▧</span
+            ><span
+              ><strong>Upload room photo</strong
+              ><small>Place, resize and arrange your pieces.</small></span
+            ><span aria-hidden="true">↗</span>
+          </button>
+          <button type="button" class="room-mode-card" id="chooseLive">
+            <span class="mode-card-icon" aria-hidden="true">◎</span
+            ><span
+              ><strong>Live AR camera</strong
+              ><small id="welcomeArHint"
+                >Checking device compatibility…</small
+              ></span
+            ><span aria-hidden="true">↗</span>
+          </button>
+          <button type="button" class="room-sample-link" id="chooseSample">
+            Explore an illustrated room first →
+          </button>
+          <p class="room-fine-print">
+            Photos and camera images are processed on this device.
+          </p>
+        </div>
+      </dialog>
+
+      <dialog
+        class="room-dialog room-live-dialog"
+        id="roomLiveDialog"
+        aria-labelledby="liveTitle"
+      >
+        <div class="room-dialog-copy">
+          <button
+            type="button"
+            class="dialog-close"
+            id="closeLiveDialog"
+            aria-label="Close camera options"
+          >
+            <span class="site-icon icon-cross" aria-hidden="true"></span>
+          </button>
+          <p class="room-eyebrow">LIVE ROOM PREVIEW</p>
+          <h2 id="liveTitle">Find your<br /><em>quiet corner.</em></h2>
+          <p id="arCompatibility" role="status">Checking this device…</p>
+          <button
+            type="button"
+            id="startSurfaceAr"
+            class="room-primary"
+            disabled
+          >
+            Start 3D AR
+          </button>
+          <p class="room-fine-print" id="arHardwareNote">
+            3D AR needs a compatible device and HTTPS. Automatic surface
+            placement also needs hit testing.
+          </p>
+          <div id="iosArSection" hidden>
+            <p id="iosArStatus" class="room-fine-print" role="status">
+              Preparing iPhone AR…
+            </p>
+            <a id="iosArLink" class="room-ios-link" rel="ar" hidden
+              ><img id="iosArImage" alt="" /><span>Open iPhone AR</span></a
+            >
+            <p class="room-fine-print">
+              Opens Apple AR Quick Look. Use its native placement, rotate and
+              resize controls. Return here for your bag or camera overlay.
+            </p>
+            <div
+              id="iosArModel"
+              class="room-ios-model"
+              aria-hidden="true"
+            ></div>
+          </div>
+          <div class="room-camera-fallback">
+            <h3>Or use a camera overlay</h3>
+            <p>
+              A live camera with a movable product cutout. Manual placement
+              only—no surface detection or room tracking.
+            </p>
+            <button type="button" id="startCameraOverlay">
+              Use camera overlay
+            </button>
+            <p id="cameraCompatibility" class="room-fine-print"></p>
+          </div>
+          <button type="button" class="room-sample-link" id="fallbackPhoto">
+            Use a room photo instead →
+          </button>
+        </div>
+      </dialog>
+      <section
+        class="room-capture-help"
+        id="arCaptureHelp"
+        aria-labelledby="captureTitle"
+        data-xr-ui
+        hidden
+      >
+        <h2 id="captureTitle">Capture this view</h2>
+        <p>
+          Use your phone’s screenshot buttons to save your camera view with the
+          statue.
+        </p>
+        <p>For a downloadable image, use Camera overlay.</p>
+        <div>
+          <button type="button" id="captureHelpClose">Got it</button
+          ><button type="button" id="captureUseOverlay">
+            Use camera overlay
+          </button>
+        </div>
+      </section>
+      <noscript
+        ><p class="room-noscript">
+          Room Studio needs JavaScript.
+          <a href="shop.html">Return to the shop</a>.
+        </p></noscript
+      >
+    </div>
+    <script src="assets/js/app.js?v=20261102-padamya-1"></script>
+    <script
+      type="module"
+      src="assets/js/room-preview.js?v=20261102-padamya-1"
+    ></script>
+  <script src="assets/js/sage-core.js?v=20261102-1"></script>
+<script src="assets/js/sage.js?v=20261102-padamya-1"></script>
+</body>
+</html>

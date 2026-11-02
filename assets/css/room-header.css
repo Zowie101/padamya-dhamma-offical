@@ -1,0 +1,57 @@
+/* Keep the room tools balanced across photo, camera-overlay and surface AR. */
+.room-page .room-header{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:16px}
+.room-page .room-brand{justify-self:start;min-width:0}
+.room-page .room-modes{justify-self:center;min-width:0;align-items:center}
+.room-page .room-modes button{white-space:nowrap;line-height:1.5}
+.room-page .room-header-actions{justify-self:end;gap:8px;min-width:0}
+.room-page .room-header-actions .language-toggle{display:none!important}
+.room-page .room-header-actions :is(button,a){min-height:40px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%}
+.room-page .room-header-actions :is(button,a):focus-visible{outline:2px solid var(--room-gold);outline-offset:2px}
+.room-page #privacyNote,.room-page .room-stage-caption,.room-page:not(.is-xr) #roomInstruction{display:none!important}
+.room-page .room-undo-action{pointer-events:auto;grid-column:1/-1;justify-self:start;align-self:flex-start;display:inline-flex;align-items:center;justify-content:center;gap:8px;width:max-content;min-height:32px;padding:5px 7px;background:transparent;border:0;border-radius:6px;font-size:11px;color:var(--room-muted)}
+.room-page .room-undo-action .site-icon{display:inline-block;width:19px;height:19px}
+.room-page .room-undo-action:hover:not(:disabled){color:var(--room-ink);background:var(--room-soft)}
+.room-page .room-undo-action:disabled{opacity:.4;cursor:default}
+.room-page .room-stage-tools,.room-page.is-live .room-stage-tools{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:min(300px,calc(100% - 40px));gap:4px;padding:5px}
+.room-page.is-xr .room-stage-tools{grid-template-columns:repeat(2,minmax(0,1fr));width:min(230px,calc(100% - 40px))}
+.room-page .room-stage-tools>*{min-width:0;width:100%;margin:0}
+.room-page .room-stage-tools>[hidden]{display:none!important}
+.room-page .room-stage-tools label{display:grid;align-items:center}
+.room-page .room-stage-tools :is(button,select),.room-page.is-live .room-stage-tools :is(button,select){width:100%;max-width:none;min-width:0;min-height:42px;padding:9px 5px;font-size:11px;line-height:1.4;white-space:nowrap;background:transparent;color:inherit;border:0;border-radius:10px}
+.room-page .room-stage-tools select{overflow:hidden;text-overflow:ellipsis}
+.room-page:not(.is-live) .room-stage{padding-bottom:82px}
+.room-page:not(.is-live) .room-stage-tools{bottom:20px}
+@media(max-width:700px),(max-width:1000px) and (orientation:portrait){
+  .room-page .room-header,.room-page.is-live .room-header{grid-template-columns:34px minmax(0,1fr) 36px;gap:8px;height:66px;padding:10px 12px}
+  .room-page .room-brand>span:last-child{display:none}
+  .room-page .room-brand .brand-mark{width:34px;height:34px;font-size:25px}
+  .room-page .room-modes{width:100%;max-width:230px;padding:3px;gap:2px}
+  .room-page .room-modes button,.room-page.is-live .room-modes button{flex:1;min-width:0;min-height:38px;padding:8px 6px;font-size:11px;line-height:1.5;white-space:nowrap}
+  .room-page .camera-dot{width:5px;height:5px;margin-right:4px}
+  .room-page .room-header-actions{gap:4px}
+  .room-page .room-header-actions :is(button,a),.room-page.is-live .room-header-actions :is(button,a){width:36px;height:40px;min-height:40px;padding:7px;flex-shrink:0}
+  .room-page .room-header-actions .room-action-label{display:none}
+  .room-page .room-header-actions button .site-icon,.room-page.is-live .room-header-actions button .site-icon{display:inline-block;width:20px;height:20px}
+  .room-page .room-header-actions a .site-icon{width:22px;height:22px}
+  html[lang=my] .room-page .room-modes button{font-size:10px;padding:7px 3px;white-space:normal;line-height:1.7}
+}
+@media(max-width:360px){
+  .room-page .room-header,.room-page.is-live .room-header{grid-template-columns:30px minmax(0,1fr) 36px;gap:5px;padding-inline:10px}
+  .room-page .room-brand .brand-mark{width:30px;height:30px;font-size:23px}
+  .room-page .room-header-actions{gap:0}
+  .room-page .room-modes button,.room-page.is-live .room-modes button{font-size:10px;padding-inline:4px}
+  .room-page .room-stage-tools :is(button,select),.room-page.is-live .room-stage-tools :is(button,select){font-size:10px}
+}
+
+.room-page.is-xr .room-undo-action{display:none}
+
+/* Tight, centred dropdowns share the same compact toolbar cells. */
+.room-page .room-stage-tools label{position:relative}
+.room-page .room-stage-tools label::after{content:"";position:absolute;right:5px;top:50%;width:12px;height:12px;pointer-events:none;background:currentColor;mask:url('../icons/arrow_icon.svg') center/contain no-repeat;transform:translateY(-50%) rotate(90deg)}
+.room-page .room-stage-tools select,.room-page.is-live .room-stage-tools select{appearance:none;padding-inline:3px 18px;text-align:center;text-align-last:center}
+/* Only illustrated rooms cover the workspace; uploaded photos keep their full frame. */
+.room-page.is-illustrated .room-stage{padding:0}
+.room-page.is-illustrated .room-canvas-wrap{position:absolute;inset:0;width:100%;height:100%;overflow:hidden}
+.room-page.is-illustrated #roomCanvas{max-width:none;max-height:none;flex-shrink:0;border-radius:0;box-shadow:none}
+.room-page.is-illustrated .room-stage-top{z-index:3}
+.room-page.is-illustrated .room-undo-action{background:var(--room-panel);border:1px solid var(--room-line);border-radius:16px}

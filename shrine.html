@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <script src="assets/js/accessibility.js?v=20261102-padamya-1"></script>
+    <meta charset="utf-8" />
+    <script src="assets/js/theme.js?v=20261101-icons"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f8f7f3" />
+    <meta
+      name="description"
+      content="A considered collection of Buddha statues for home shrines and quiet spaces."
+    />
+    <title>Shrine Size Preview | Padamya Dhamma</title>
+    <link rel="stylesheet" href="assets/css/styles.css?v=20261102-padamya-1" />
+    <link rel="stylesheet" href="assets/css/theme.css?v=20261101-icons" />
+    <link rel="stylesheet" href="assets/css/interactions.css?v=20261101-filled-icons" />
+    <link rel="stylesheet" href="assets/css/shrine-viewer.css?v=20261031-size-fix" />
+    <script
+      type="module"
+      src="./assets/vendor/model-viewer/model-viewer.min.js?v=4.1.0"
+    ></script>
+    <script src="assets/js/language.js?v=20261102-padamya-1"></script>
+    <link rel="stylesheet" href="assets/css/language.css?v=20261101-5" />
+    <link rel="stylesheet" href="assets/css/header.css?v=20261102-account-panel-1" />
+    <link rel="stylesheet" href="assets/css/page-motion.css?v=20261101-1" />
+    <script src="assets/js/page-motion.js?v=20261102-accessibility-1"></script>
+    <script src="assets/js/store-client.js?v=20261102-account-panel-1"></script>
+  <link rel="stylesheet" href="assets/css/sage.css?v=20261102-progressive-2">
+  <link rel="stylesheet" href="assets/css/account-panel.css?v=20261102-padamya-1">
+  <script src="assets/js/account-panel.js?v=20261102-padamya-1" defer></script>
+    <link rel="stylesheet" href="assets/css/icon-motion.css?v=20261102-1" />
+    <link rel="stylesheet" href="assets/css/accessibility.css?v=20261102-padamya-1" />
+</head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="index.html"
+        ><span class="brand-mark">pd</span
+        ><span class="brand-name"
+          >PADAMYA DHAMMA<small>OBJECTS FOR STILLNESS</small></span
+        ></a
+      ><button
+        class="menu-toggle"
+        id="menuToggle"
+        aria-label="Toggle navigation"
+        aria-expanded="false"
+      >
+        <span class="site-icon icon-menu" aria-hidden="true"></span>
+      </button>
+      <nav class="main-nav" id="mainNav">
+        <a href="shop.html">Shop all</a
+        ><a href="shrine.html#shrine-preview">Shrine preview</a
+        ><a href="about.html">Our story</a>
+      </nav>
+      <div class="header-actions">
+        <a class="cart-button" href="cart.html" aria-label="Shopping bag"
+          ><span class="header-icon-wrap"
+            ><span class="site-icon icon-bag" aria-hidden="true"></span
+            ><span class="cart-count" id="cartCount" aria-hidden="true"
+              >0</span
+            ></span
+          ><span class="bag-nav-label">Bag</span></a
+        >
+      </div>
+    </header>
+    <main>
+      <section class="preview-section shrine-preview" id="shrine-preview">
+        <div class="preview-head">
+          <div>
+            <p class="eyebrow">Your shrine composition</p>
+            <h1>Find the <em>right scale.</em></h1>
+          </div>
+          <p class="shrine-intro">A quiet space to imagine your piece.</p>
+        </div>
+        <div class="shrine-customise" data-no-scramble>
+          <fieldset class="shrine-design-options">
+            <legend>Choose your shrine</legend>
+            <div class="shrine-design-buttons">
+              <button
+                type="button"
+                class="shrine-design-option"
+                data-shrine-design="arch"
+                aria-pressed="true"
+              >
+                <span
+                  class="shrine-design-swatch swatch-arch"
+                  aria-hidden="true"
+                ></span
+                >Golden arch
+              </button>
+              <button
+                type="button"
+                class="shrine-design-option"
+                data-shrine-design="oak"
+                aria-pressed="false"
+              >
+                <span
+                  class="shrine-design-swatch swatch-oak"
+                  aria-hidden="true"
+                ></span
+                >Warm oak
+              </button>
+              <button
+                type="button"
+                class="shrine-design-option"
+                data-shrine-design="stone"
+                aria-pressed="false"
+              >
+                <span
+                  class="shrine-design-swatch swatch-stone"
+                  aria-hidden="true"
+                ></span
+                >Quiet stone
+              </button>
+              <button type="button" class="shrine-design-option" data-shrine-design="walnut" aria-pressed="false"><span class="shrine-design-swatch swatch-walnut" aria-hidden="true"></span>Walnut alcove</button>
+              <button type="button" class="shrine-design-option" data-shrine-design="lotus" aria-pressed="false"><span class="shrine-design-swatch swatch-lotus" aria-hidden="true"></span>Lotus niche</button>
+            </div>
+          </fieldset>
+          <fieldset class="shrine-dimension-options">
+            <legend>Your shrine dimensions <span>cm</span></legend>
+            <div class="shrine-dimension-fields">
+              <label for="shrineWidth"
+                >Shelf width<input
+                  id="shrineWidth"
+                  type="number"
+                  min="40"
+                  max="300"
+                  step="1"
+                  value="120"
+                  inputmode="numeric"
+                  aria-describedby="shrineDimensionError"
+              /></label>
+              <label for="shrineHeight"
+                >Clear height<input
+                  id="shrineHeight"
+                  type="number"
+                  min="30"
+                  max="250"
+                  step="1"
+                  value="80"
+                  inputmode="numeric"
+                  aria-describedby="shrineDimensionError"
+              /></label>
+            </div>
+            <p id="shrineDimensionError" role="status" hidden></p>
+          </fieldset>
+        </div>
+        <div class="shrine-workspace">
+          <div class="shrine-scene">
+            <div class="shrine-stage" id="shrineStage" data-design="arch">
+              <div class="shrine-measured-space" id="shrineMeasuredSpace">
+                <div class="shrine-wall" aria-hidden="true">
+                  <div class="shrine-halo"></div>
+                </div>
+                <div class="shrine-shelf" aria-hidden="true"></div>
+                <div class="shrine-pedestal" aria-hidden="true"></div>
+                <div class="shrine-candle candle-left" aria-hidden="true">
+                  <i></i>
+                </div>
+                <div class="shrine-candle candle-right" aria-hidden="true">
+                  <i></i>
+                </div>
+                <div class="offering offering-left" aria-hidden="true"></div>
+                <div class="offering offering-right" aria-hidden="true"></div>
+                <div class="shrine-object" id="shrineObject">
+                  <model-viewer
+                    id="shrineViewer"
+                    alt="Buddha statue in your chosen shrine. Drag to rotate."
+                    camera-controls
+                    disable-zoom
+                    disable-pan
+                    touch-action="pan-y"
+                    camera-orbit="0deg 85deg auto"
+                    min-camera-orbit="auto 85deg auto"
+                    max-camera-orbit="auto 85deg auto"
+                    field-of-view="30deg"
+                    environment-image="neutral"
+                    exposure="1"
+                    shadow-intensity="0"
+                    loading="eager"
+                  ></model-viewer>
+                </div>
+                <div
+                  class="shrine-dimension-line dimension-width"
+                  aria-label="Shelf width"
+                >
+                  <span id="shrineWidthLabel">120 cm</span>
+                </div>
+                <div
+                  class="shrine-dimension-line dimension-height"
+                  aria-label="Clear height"
+                >
+                  <span id="shrineHeightLabel">80 cm</span>
+                </div>
+              </div>
+              <div class="shrine-loading" id="shrineLoading" role="status">
+                Preparing your 3D shrine…
+              </div>
+              <div class="shrine-label">A place for stillness</div>
+            </div>
+
+            <div class="shrine-scene-footer">
+              <div>
+                <strong id="shrineCurrent">25 cm statue</strong>
+                <p
+                  class="shrine-fit-message"
+                  id="shrineFitMessage"
+                  role="status"
+                  hidden
+                ></p>
+                <p>
+                  Drag to rotate · Approximate proportions; check the listed
+                  dimensions.
+                </p>
+              </div>
+              <button
+                class="size-option shrine-reset"
+                id="shrineReset"
+                type="button"
+              >
+                Reset view ↺
+              </button>
+            </div>
+          </div>
+          <aside class="shrine-settings" aria-label="Shrine controls">
+            <div>
+              <p class="eyebrow">01 / Choose your piece</p>
+              <div class="preview-controls" id="shrineProductOptions"></div>
+            </div>
+            <div>
+              <p class="eyebrow">02 / Explore the height</p>
+              <div class="preview-controls" id="sizeOptions">
+                <button class="size-option" data-size="15">15 cm</button
+                ><button class="size-option" data-size="18">18 cm</button
+                ><button class="size-option active" data-size="25">25 cm</button
+                ><button class="size-option" data-size="32">32 cm</button>
+              </div>
+            </div>
+
+            <a
+              class="cta split-cta shrine-cta"
+              id="shrineProductLink"
+              href="product.html"
+            >
+              <span class="button-text">VIEW SELECTED PIECE</span
+              ><span class="cta-arrow" aria-hidden="true"
+                ><span
+                  class="site-icon icon-arrow"
+                  aria-hidden="true"
+                ></span></span
+            ></a>
+          </aside>
+        </div>
+      </section>
+      <section class="section">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">A helpful reminder</p>
+            <h2>Measure before <em>you place.</em></h2>
+          </div>
+        </div>
+        <p style="max-width: 600px; color: var(--muted)">
+          This visual is an approximate scale guide to help you imagine
+          proportions. Measure the width, depth, and height of your shelf or
+          shrine, and allow space around the statue for any additional items you
+          plan to display.
+        </p>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="footer-top">
+        <a class="brand footer-brand" href="index.html"
+          ><span class="brand-mark">pd</span
+          ><span class="brand-name"
+            >PADAMYA DHAMMA<small>OBJECTS FOR STILLNESS</small></span
+          ></a
+        >
+        <p>Objects for a more intentional home.</p>
+        <div class="footer-links">
+          <a href="shop.html">Shop</a>　<a href="about.html">Our story</a>　<a
+            href="cart.html"
+            >Shopping bag</a
+          >
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Padamya Dhamma</span
+        ><span>Made with care</span
+        ><span>Myanmar · Worldwide</span>
+      </div>
+    </footer>
+    <div id="toastRoot" aria-live="polite"></div>
+    <script src="assets/js/app.js?v=20261102-padamya-1"></script>
+  <script src="assets/js/sage-core.js?v=20261102-1"></script>
+<script src="assets/js/sage.js?v=20261102-padamya-1"></script>
+</body>
+</html>

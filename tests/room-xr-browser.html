@@ -1,0 +1,53 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AR no-surface regression test</title>
+<script type="importmap">{"imports":{"three":"../assets/vendor/three/three.module.js?v=20261031-6","three/addons/":"../assets/vendor/three/addons/"}}</script>
+<style>body{margin:0;background:#eeeadf;font:12px system-ui;color:#252820}canvas{position:fixed;inset:0;width:100%;height:100%;z-index:0}#overlay{position:relative;z-index:1;pointer-events:none}header,footer{padding:12px;background:#fffdf5ed;pointer-events:auto}header{display:flex;flex-wrap:wrap;gap:7px;align-items:center}button,select{padding:8px;font:inherit}footer{position:fixed;bottom:0;left:0;right:0;max-height:24vh;overflow:auto}p{margin:6px 0}#state,#renderState{font-size:10px;overflow-wrap:anywhere}#message{font-weight:600}</style>
+</head><body><div id="overlay"><header><b>Actual GLB · simulated XR tracking</b><button id="start">Start test</button><select id="product" aria-label="Test statue"></select><select id="surface" aria-label="Simulated surface"><option value="none">No surface hits</option><option value="floor">Horizontal surface</option><option value="reversed">Reversed normal</option><option value="wall">Wall only</option></select><button id="place">Place on surface</button><button id="manual">Place manually</button><button id="move">Move statue</button><button id="remove">Remove</button><button id="right">Move viewer right</button><button id="tracking">Lose tracking</button><button id="end">End test</button></header><footer><p id="message" role="status">Local regression test. No physical camera or surface detection is used.</p><p id="state"></p><p id="renderState"></p></footer></div>
+<script src="../assets/js/app.js?v=20261031-room-studio-6"></script><script type="module">
+import * as THREE from 'three'
+import {startSurfaceAR} from '../assets/js/room-xr.js?v=20261031-6'
+const $=id=>document.getElementById(id), products=window.SacredForm.products.map(p=>({...p,model:new URL('../'+p.model,location.href).href,arModel:new URL('../'+p.arModel,location.href).href}))
+for(const p of products)$('product').add(new Option(p.name,p.id))
+let controller, tracking=true, viewerX=0, ticks=0, callback, frameHandle, realRenderer, abort
+const viewerMatrix=()=>new THREE.Matrix4().makeTranslation(viewerX,1.5,0)
+const space={}
+class TestSession extends EventTarget{
+ requestReferenceSpace(){return Promise.resolve(space)}
+ requestHitTestSource(){return Promise.resolve({cancel(){ $('state').dataset.cancelled='true' }})}
+ async end(){this.dispatchEvent(new Event('end'))}
+}
+const frame={getViewerPose:()=>tracking?{transform:{matrix:viewerMatrix().elements}}:null,getHitTestResults:()=>{
+ const kind=$('surface').value;if(kind==='none')return[]
+ const matrix=new THREE.Matrix4();if(kind==='wall')matrix.makeRotationX(Math.PI/2);if(kind==='reversed')matrix.makeRotationX(Math.PI)
+ matrix.setPosition(0,1.3,-.65)
+ return[{getPose:()=>({transform:{matrix:matrix.elements}})}]
+}}
+function createRenderer(options){
+ const real=new THREE.WebGLRenderer({...options,preserveDrawingBuffer:true});realRenderer=real
+ return {domElement:real.domElement,xr:{enabled:false,setReferenceSpaceType(){},async setSession(){},getReferenceSpace:()=>space},
+ setPixelRatio:value=>real.setPixelRatio(value),setSize:(w,h)=>real.setSize(w,h),setClearColor:(c,a)=>real.setClearColor(c,a),
+ set outputColorSpace(v){real.outputColorSpace=v},set toneMapping(v){real.toneMapping=v},
+ setAnimationLoop(fn){callback=fn;cancelAnimationFrame(frameHandle);if(fn){const loop=time=>{callback?.(time,frame);if(callback)frameHandle=requestAnimationFrame(loop)};frameHandle=requestAnimationFrame(loop)}},
+ render(scene,camera){camera.position.setFromMatrixPosition(viewerMatrix());camera.updateMatrixWorld();real.render(scene,camera)
+  if(++ticks%10)return
+  let model=null;scene.traverseVisible(o=>{if(o.isMesh&&o.geometry?.attributes.position.count>1000)model=o})
+  const box=model?new THREE.Box3().setFromObject(model,true):null,centre=box?.getCenter(new THREE.Vector3()),projected=centre?.clone().project(camera)
+  const gl=real.getContext(),pixels=new Uint8Array(gl.drawingBufferWidth*gl.drawingBufferHeight*4);gl.readPixels(0,0,gl.drawingBufferWidth,gl.drawingBufferHeight,gl.RGBA,gl.UNSIGNED_BYTE,pixels)
+  let opaque=0;for(let i=3;i<pixels.length;i+=4)if(pixels[i])opaque++
+  const result={visible:!!model,opaquePixels:opaque,centre:centre?.toArray(),inView:!!projected&&Math.abs(projected.x)<1&&Math.abs(projected.y)<1&&projected.z>-1&&projected.z<1}
+  $('renderState').textContent=JSON.stringify(result);$('renderState').dataset.visible=String(result.visible&&result.inView&&opaque>50)
+ },dispose:()=>real.dispose(),forceContextLoss:()=>real.forceContextLoss()}
+}
+$('start').onclick=async()=>{
+ abort=new AbortController();$('start').disabled=true
+ controller=await startSurfaceAR({overlay:$('overlay'),product:products.find(p=>p.id===$('product').value),signal:abort.signal,
+ onStatus:message=>$('message').textContent=message,onError:message=>{$('message').textContent=message;$('message').dataset.error='true'},
+ onState:state=>{$('state').textContent=JSON.stringify(state);for(const key of ['ready','placed','placing','hasSurface','tracking','manuallyPlaced','removed'])$('state').dataset[key]=String(state[key]);$('place').disabled=!state.ready||!state.hasSurface||!state.placing||state.removed;$('manual').disabled=!state.ready||!state.tracking||!state.placing||state.hasSurface||state.removed},
+ onEnd:()=>{$('message').textContent='Test session ended';$('start').disabled=false}}, {requestSession:async()=>new TestSession(),createRenderer})
+}
+$('manual').onclick=()=>controller?.placeManual();$('place').onclick=()=>controller?.place();$('move').onclick=()=>controller?.move();$('remove').onclick=()=>controller?.remove();$('right').onclick=()=>{viewerX+=.1}
+$('product').onchange=()=>controller?.setProduct(products.find(p=>p.id===$('product').value))
+$('tracking').onclick=()=>{tracking=!tracking;$('tracking').textContent=tracking?'Lose tracking':'Restore tracking'}
+$('end').onclick=()=>controller?.end()
+window.addEventListener('pagehide',()=>{abort?.abort();cancelAnimationFrame(frameHandle)})
+</script></body></html>
+

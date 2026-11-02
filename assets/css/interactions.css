@@ -1,0 +1,387 @@
+/* Shared interaction states. Text scrambling stays scoped to split CTAs in app.js. */
+:root {
+    --hover-surface: color-mix(in srgb, var(--accent) 12%, var(--paper));
+    --hover-ring: color-mix(in srgb, var(--accent) 28%, transparent);
+    --on-accent: #211b12;
+    --remove-hover: #9b4937;
+    --interaction-ink: #866137;
+}
+
+[data-theme="dark"] {
+    --remove-hover: #f0b49b;
+    --interaction-ink: #d2ad78;
+}
+
+:where(.main-nav a, .footer-links a, .header-actions a, .theme-toggle, .menu-toggle,
+    .size-option, .shrine-design-option, .wishlist-toggle, .camera-action,
+    .remove-button, #resetBudget, .quantity-control button, .text-link,
+    .saved-compare, .saved-bag, .quick-add, .inline-viewer-controls button,
+    .product-name a, .saved-piece-title a, .newsletter-form button) {
+    transition: color .2s ease, background-color .2s ease, border-color .2s ease,
+        box-shadow .2s ease, translate .2s ease, scale .2s ease;
+}
+
+/* Navigation: steady text with a fine accent line drawn from the left. */
+.site-header .main-nav a, .footer-links a {
+    position: relative;
+    display: inline-block;
+    padding-block: 8px;
+}
+
+.site-header .main-nav a::after, .footer-links a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 3px;
+    height: 1px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .24s cubic-bezier(.22, 1, .36, 1);
+    pointer-events: none;
+}
+
+.site-header .main-nav a:is(:hover, :focus-visible),
+.footer-links a:is(:hover, :focus-visible) {
+    color: var(--interaction-ink);
+    opacity: 1;
+}
+
+.site-footer .footer-links a:is(:hover, :focus-visible) {
+    color: #d2ad78;
+}
+
+.site-header .main-nav a:is(:hover, :focus-visible)::after,
+.footer-links a:is(:hover, :focus-visible)::after {
+    transform: scaleX(1);
+}
+
+.site-header .brand:is(:hover, :focus-visible) .brand-mark {
+    color: var(--interaction-ink);
+    border-color: var(--interaction-ink);
+}
+
+.site-header :is(.wishlist-link, .cart-button):is(:hover, :focus-visible) {
+    color: var(--interaction-ink);
+}
+
+.header-icon-wrap {
+    isolation: isolate;
+}
+
+.header-icon-wrap::before {
+    content: '';
+    position: absolute;
+    inset: -5px;
+    border-radius: 50%;
+    background: var(--hover-surface);
+    opacity: 0;
+    transform: scale(.82);
+    transition: opacity .2s, transform .24s;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.header-icon-wrap>.site-icon {
+    transition: translate .24s;
+}
+
+.header-actions a:is(:hover, :focus-visible) .header-icon-wrap::before {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.header-actions a:is(:hover, :focus-visible) .header-icon-wrap>.site-icon {
+    translate: 0 -2px;
+}
+
+.theme-toggle :is(svg, .site-icon) {
+    transition: rotate .3s ease, scale .3s ease;
+    transform-origin: center;
+}
+
+.theme-toggle:is(:hover, :focus-visible) {
+    color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+
+.theme-toggle:is(:hover, :focus-visible) :is(svg, .site-icon) {
+    rotate: 20deg;
+    scale: 1.12;
+}
+
+.theme-toggle:is(:hover, :focus-visible) .theme-icon-sun { rotate: 45deg; }
+.theme-toggle:is(:hover, :focus-visible) .theme-icon-moon { rotate: -20deg; }
+
+.menu-toggle {
+    border-radius: 4px;
+}
+
+.menu-toggle:is(:hover, :focus-visible) {
+    color: var(--interaction-ink);
+    background: var(--hover-surface);
+}
+
+/* Text links and directional actions keep their existing dimensions. */
+.site-icon.icon-arrow {
+    --arrow-step: 3px;
+    transition: translate .22s ease;
+}
+
+.site-icon.icon-arrow-left {
+    --arrow-step: -3px;
+}
+
+:is(.text-link, .saved-compare, .feature-link, .button, .feature-controls button, .shrine-slide-arrow):is(:hover, :focus-visible) .icon-arrow {
+    translate: var(--arrow-step) 0;
+}
+
+.text-link:is(:hover, :focus-visible), .saved-compare:is(:hover, :focus-visible) {
+    color: var(--interaction-ink);
+    border-color: var(--interaction-ink);
+}
+
+:is(.product-name, .saved-piece-title) a:is(:hover, :focus-visible) {
+    color: var(--interaction-ink);
+}
+
+.photo-actions :is(button, label):is(:hover, :focus-visible) {
+    color: var(--interaction-ink);
+    border-bottom-color: var(--interaction-ink);
+}
+
+.photo-actions label:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+}
+
+/* Filled and outlined actions, with the same readable states in both themes. */
+.button-dark:not(:disabled):is(:hover, :focus-visible),
+.camera-action:not(:disabled):is(:hover, :focus-visible) {
+    background: var(--accent);
+    border-color: var(--interaction-ink);
+    color: var(--on-accent);
+    box-shadow: 0 4px 14px #00000012;
+}
+
+.button-outline:is(:hover, :focus-visible) {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+}
+
+.quick-add:not(:disabled):is(:hover, :focus-visible) {
+    background: var(--ink);
+    color: var(--paper);
+    box-shadow: 0 3px 12px #00000018;
+}
+
+.saved-bag:not(:disabled):is(:hover, :focus-visible) {
+    color: var(--interaction-ink);
+    border-color: var(--interaction-ink);
+}
+
+.product-page .product-feature .product-secondary-actions> :is(:hover, :focus-visible) {
+    background: var(--hover-surface);
+    color: var(--ink);
+    border-color: var(--interaction-ink);
+    box-shadow: inset 0 0 0 1px var(--hover-ring);
+}
+
+.wishlist-toggle .icon-heart {
+    transition: scale .2s ease;
+}
+
+.wishlist-toggle:not(:disabled):is(:hover, :focus-visible) .icon-heart {
+    scale: 1.08;
+}
+
+.wishlist-toggle:not(:disabled):active .icon-heart {
+    scale: .94;
+}
+
+/* Layer supplied outline/filled artwork so saved and hover states crossfade. */
+.wishlist-toggle .icon-heart,
+.site-icon.icon-bag {
+    position: relative;
+    background: transparent;
+    -webkit-mask: none;
+    mask: none;
+}
+
+.wishlist-toggle .icon-heart::before,
+.wishlist-toggle .icon-heart::after,
+.site-icon.icon-bag::before,
+.site-icon.icon-bag::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: currentColor;
+    -webkit-mask: var(--state-icon) center / contain no-repeat;
+    mask: var(--state-icon) center / contain no-repeat;
+    transition: opacity .22s ease, transform .28s cubic-bezier(.22, 1, .36, 1);
+}
+
+.wishlist-toggle .icon-heart::before { --state-icon: url('../icons/heart_icon.svg'); }
+.wishlist-toggle .icon-heart::after { --state-icon: url('../icons/heart_fill_icon.svg'); }
+.site-icon.icon-bag::before { --state-icon: url('../icons/bag_icon.svg'); }
+.site-icon.icon-bag::after { --state-icon: url('../icons/bag_fill_icon.svg'); }
+
+.wishlist-toggle .icon-heart::after,
+.site-icon.icon-bag::after {
+    opacity: 0;
+    transform: scale(.82);
+}
+
+.wishlist-toggle[aria-pressed="true"] .icon-heart::before {
+    opacity: 0;
+    transform: scale(.9);
+}
+.wishlist-toggle[aria-pressed="true"] .icon-heart::after {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Hover-only: touch taps and cart contents never leave the bag filled. */
+@media (hover: hover) and (pointer: fine) {
+    .cart-button:hover .icon-bag::before { opacity: 0; }
+    .cart-button:hover .icon-bag::after { opacity: 1; transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .wishlist-toggle .icon-heart::before,
+    .wishlist-toggle .icon-heart::after,
+    .site-icon.icon-bag::before,
+    .site-icon.icon-bag::after { transition: none; }
+}
+
+/* Small controls: clear response without moving the surrounding layout. */
+.size-option:not(.active):not(:disabled):is(:hover, :focus-visible) {
+    background: var(--hover-surface);
+    color: var(--ink);
+    border-color: var(--interaction-ink);
+}
+
+.size-option.active:is(:hover, :focus-visible) {
+    border-color: var(--interaction-ink);
+    box-shadow: 0 0 0 2px var(--hover-ring);
+}
+
+.shrine-design-option:not([aria-pressed="true"]):is(:hover, :focus-visible) {
+    background: var(--hover-surface);
+    color: var(--ink);
+    border-color: var(--interaction-ink);
+}
+
+.shrine-design-option[aria-pressed="true"]:is(:hover, :focus-visible) {
+    box-shadow: 0 0 0 2px var(--hover-ring);
+}
+
+.shrine-design-swatch {
+    transition: translate .2s;
+}
+
+.shrine-design-option:is(:hover, :focus-visible) .shrine-design-swatch {
+    translate: 0 -2px;
+}
+
+.product-page .product-feature .quantity-control button:is(:hover, :focus-visible),
+.quantity-control button:is(:hover, :focus-visible),
+.inline-viewer-controls button:is(:hover, :focus-visible) {
+    background: var(--hover-surface);
+    color: var(--ink);
+}
+
+.quantity-control button:active, .inline-viewer-controls button:active {
+    scale: .94;
+}
+
+.thumb:is(:hover, :focus-visible) {
+    border-color: var(--interaction-ink);
+    box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+#resetBudget:not(:disabled):is(:hover, :focus-visible) {
+    color: var(--interaction-ink);
+    border-color: var(--interaction-ink);
+}
+
+.remove-button:is(:hover, :focus-visible) {
+    color: var(--remove-hover);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+}
+
+#wishlistAdviser .upload-label:is(:hover, :focus-visible) {
+    background: var(--hover-surface);
+    border-color: var(--interaction-ink);
+}
+
+.upload-symbol {
+    transition: scale .2s;
+}
+
+.upload-label:is(:hover, :focus-visible) .upload-symbol {
+    scale: 1.1;
+}
+
+.newsletter-form button:is(:hover, :focus-visible) {
+    color: var(--interaction-ink);
+}
+
+:is(.piece-reasons, .comparison-method) summary {
+    cursor: pointer;
+    transition: color .2s;
+}
+
+:is(.piece-reasons, .comparison-method) summary:is(:hover, :focus-visible) {
+    color: var(--interaction-ink);
+}
+
+:is(.piece-reasons, .comparison-method) summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+}
+
+button.button:disabled, #runComparison:disabled {
+    background: var(--line);
+    border-color: var(--line);
+    color: var(--muted);
+    cursor: not-allowed;
+    transform: none;
+    translate: none;
+    box-shadow: none;
+}
+
+/* Keep motion restrained for keyboard users and people requesting less animation. */
+@media(prefers-reduced-motion:reduce) {
+    :where(a, button, label, summary) {
+        transition: none !important;
+    }
+
+    .site-icon, .theme-toggle svg, .shrine-design-swatch, .upload-symbol,
+    .header-icon-wrap::before, .main-nav a::after, .footer-links a::after {
+        transition: none !important;
+    }
+
+    .header-actions a:is(:hover, :focus-visible) .header-icon-wrap>.site-icon,
+    :is(.text-link, .saved-compare, .feature-link, .button, .feature-controls button, .shrine-slide-arrow):is(:hover, :focus-visible) .icon-arrow,
+    .shrine-design-option:is(:hover, :focus-visible) .shrine-design-swatch {
+        translate: none;
+    }
+
+    .theme-toggle:is(:hover, :focus-visible) :is(svg, .site-icon) {
+        rotate: none !important;
+        scale: none !important;
+    }
+
+    .wishlist-toggle .icon-heart, .upload-symbol,
+    .quantity-control button, .inline-viewer-controls button {
+        scale: none !important;
+    }
+
+    .button:hover {
+        transform: none;
+    }
+}

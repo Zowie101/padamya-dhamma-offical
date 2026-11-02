@@ -1,0 +1,6 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Room UI regression · simulated XR</title><style>body{margin:0;background:#eee9df;font:10px system-ui}header{height:25px;display:flex;gap:10px;align-items:center;padding:0 10px}iframe{display:block;width:100%;height:calc(100dvh - 25px);border:0}#status{margin-left:auto;font-size:9px}</style></head><body><header><b>SIMULATED DEVICE · actual Room UI</b><span id="status">Loading</span></header><iframe id="editor" title="Actual Room Studio"></iframe><script type="module">
+let html=await(await fetch('../room.html')).text();
+html=html.replace('<script type="module" src="room-preview', '<script>for(const p of window.SacredForm.products){p.model=new URL(p.model,document.baseURI).href;p.arModel=new URL(p.arModel,document.baseURI).href}<'+ '/script><script type="module" src="room-preview');
+document.querySelector('#editor').srcdoc=html.replace('<head>','<head><base href="'+new URL('../',location.href).href+'"><script type="module" src="tests/xr-ui-device.js"><'+ '/script><style>.room-page.is-xr{background:url(assets/images/room-console.svg) center/cover!important}</style>');
+document.querySelector('#status').textContent='No physical camera · native XR renderer';
+</script></body></html>

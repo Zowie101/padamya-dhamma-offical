@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <script src="assets/js/accessibility.js?v=20261102-padamya-1"></script>
+    <meta charset="utf-8" />
+    <script src="assets/js/theme.js?v=20261101-icons"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f8f7f3" />
+    <meta
+      name="description"
+      content="A considered collection of Buddha statues for home shrines and quiet spaces."
+    />
+    <title>Shop the Collection | Padamya Dhamma</title>
+    <link rel="stylesheet" href="assets/css/styles.css?v=20261102-padamya-1" />
+    <link rel="stylesheet" href="assets/css/theme.css?v=20261101-icons" />
+    <link rel="stylesheet" href="assets/css/interactions.css?v=20261101-filled-icons" />
+    <script src="assets/js/language.js?v=20261102-padamya-1"></script>
+    <link rel="stylesheet" href="assets/css/language.css?v=20261101-5" />
+    <link rel="stylesheet" href="assets/css/header.css?v=20261102-account-panel-1" />
+    <link rel="stylesheet" href="assets/css/page-motion.css?v=20261101-1" />
+    <script src="assets/js/page-motion.js?v=20261102-accessibility-1"></script>
+    <script src="assets/js/store-client.js?v=20261102-account-panel-1"></script>
+  <link rel="stylesheet" href="assets/css/sage.css?v=20261102-progressive-2">
+  <link rel="stylesheet" href="assets/css/account-panel.css?v=20261102-padamya-1">
+  <script src="assets/js/account-panel.js?v=20261102-padamya-1" defer></script>
+    <link rel="stylesheet" href="assets/css/icon-motion.css?v=20261102-1" />
+    <link rel="stylesheet" href="assets/css/accessibility.css?v=20261102-padamya-1" />
+</head>
+  <body class="shop-page">
+    <header class="site-header">
+      <a class="brand" href="index.html"
+        ><span class="brand-mark">pd</span
+        ><span class="brand-name"
+          >PADAMYA DHAMMA<small>OBJECTS FOR STILLNESS</small></span
+        ></a
+      ><button
+        class="menu-toggle"
+        id="menuToggle"
+        aria-label="Toggle navigation"
+        aria-expanded="false"
+      >
+        <span class="site-icon icon-menu" aria-hidden="true"></span>
+      </button>
+      <nav class="main-nav" id="mainNav">
+        <a href="shop.html">Shop all</a
+        ><a href="shrine.html#shrine-preview">Shrine preview</a
+        ><a href="about.html">Our story</a>
+      </nav>
+      <div class="header-actions">
+        <a class="cart-button" href="cart.html" aria-label="Shopping bag"
+          ><span class="header-icon-wrap"
+            ><span class="site-icon icon-bag" aria-hidden="true"></span
+            ><span class="cart-count" id="cartCount" aria-hidden="true"
+              >0</span
+            ></span
+          ><span class="bag-nav-label">Bag</span></a
+        >
+      </div>
+    </header>
+    <main>
+      <section class="page-hero shop-hero">
+        <div class="shop-intro-copy">
+          <p class="eyebrow">The collection</p>
+          <h1>Find a form that<br /><em>feels like yours.</em></h1>
+          <p class="shop-intro-description">
+            Considered pieces for home shrines, small spaces, and meaningful
+            gifts.
+          </p>
+          <div class="shop-intro-footnote">
+            <span>Objects for stillness</span><span>Chosen with care</span>
+          </div>
+        </div>
+        <figure class="shop-intro-art">
+          <div class="shop-art-frame">
+            <img
+              src="assets/images/Buddha_statue(1).avif"
+              alt="A gold Buddha statue in a quiet, naturally lit home setting"
+              fetchpriority="high"
+            />
+          </div>
+          <figcaption>
+            <span>A little stillness, every day.</span
+            ><span>01 / PADAMYA DHAMMA</span>
+          </figcaption>
+        </figure>
+      </section>
+      <section class="page-content">
+        <div class="shop-controls">
+          <div class="shop-toolbar">
+            <label class="search-box"
+              ><span>⌕</span
+              ><input
+                id="searchInput"
+                type="search"
+                placeholder="Search pieces..."
+                aria-label="Search products"
+            /></label>
+            <div class="filter-row" id="filterRow" data-no-scramble>
+              <button class="filter-chip active" data-filter="All">
+                All pieces</button
+              ><button class="filter-chip" data-filter="Home Shrine">
+                Home shrine</button
+              ><button class="filter-chip" data-filter="Small & Simple">
+                Small & simple</button
+              ><button class="filter-chip" data-filter="Meaningful Gifts">
+                Gifts
+              </button>
+            </div>
+          </div>
+          <div
+            class="shop-budget"
+            data-no-scramble
+            role="group"
+            aria-labelledby="budgetTitle"
+          >
+            <div class="budget-heading">
+              <strong id="budgetTitle">Your budget</strong
+              ><button type="button" id="resetBudget">Reset budget</button>
+            </div>
+            <div class="budget-ranges">
+              <div class="budget-range-values">
+                <span
+                  >From
+                  <output id="budgetMinValue" for="budgetMin"></output></span
+                ><span
+                  >To <output id="budgetMaxValue" for="budgetMax"></output
+                ></span>
+              </div>
+              <div class="budget-dual-track" id="budgetTrack">
+                <div class="budget-track-line" aria-hidden="true"></div>
+                <div class="budget-track-fill" aria-hidden="true"></div>
+                <input
+                  type="range"
+                  id="budgetMin"
+                  aria-label="Minimum budget"
+                /><input
+                  type="range"
+                  id="budgetMax"
+                  aria-label="Maximum budget"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="product-grid" id="productGrid"></div>
+        <p class="empty-state" id="emptyState" hidden>
+          No pieces in this selection. Adjust your budget, search or category.
+        </p>
+        <div class="shop-bottom">
+          <span>Thoughtfully chosen, never rushed.</span>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="footer-top">
+        <a class="brand footer-brand" href="index.html"
+          ><span class="brand-mark">pd</span
+          ><span class="brand-name"
+            >PADAMYA DHAMMA<small>OBJECTS FOR STILLNESS</small></span
+          ></a
+        >
+        <p>Objects for a more intentional home.</p>
+        <div class="footer-links">
+          <a href="shop.html">Shop</a>　<a href="about.html">Our story</a>　<a
+            href="cart.html"
+            >Shopping bag</a
+          >
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Padamya Dhamma</span
+        ><span>Made with care</span
+        ><span>Myanmar · Worldwide</span>
+      </div>
+    </footer>
+    <div id="toastRoot" aria-live="polite"></div>
+    <script src="assets/js/app.js?v=20261102-padamya-1"></script>
+  <script src="assets/js/sage-core.js?v=20261102-1"></script>
+<script src="assets/js/sage.js?v=20261102-padamya-1"></script>
+</body>
+</html>
