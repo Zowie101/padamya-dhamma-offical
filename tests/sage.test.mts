@@ -84,3 +84,9 @@ test('NVIDIA errors and invalid tool responses fall back without exposing keys o
     assert.ok(!JSON.stringify(response).includes('fixture-private-key'))
   }
 })
+
+test('Gemini failures expose a safe status code without provider body or API key',async()=>{
+  const result=await createSage({provider:'gemini',key:'private-test-key',model:'test',fetch:async()=>({ok:false,status:404,json:async()=>({error:{message:'private-test-key confidential body'}})})})({store,profile,messages:ask('Show gold statues'),language:'en'})
+  assert.equal(result.mode,'guided-fallback');assert.equal(result.aiError,'HTTP_404')
+  assert.doesNotMatch(JSON.stringify(result),/private-test-key|confidential body/)
+})

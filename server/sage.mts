@@ -68,7 +68,7 @@ export function createSage(options:any={}){
         const contents:any[]=turns.map((m:any)=>({role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]}))
         for(let round=0;round<5;round++){
           const response=await fetcher(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,{method:'POST',headers:{'content-type':'application/json','x-goog-api-key':key},signal:controller.signal,body:JSON.stringify({systemInstruction:{parts:[{text:instructions}]},contents,tools:[{functionDeclarations:definitions.map(d=>({...d,parameters:geminiSchema(d.parameters)}))}],toolConfig:{functionCallingConfig:{mode:'ANY'}},generationConfig:{maxOutputTokens:1200,temperature:.2}})})
-          if(!response.ok)throw Error('Provider unavailable')
+          if(!response.ok)throw Object.assign(new Error('Provider unavailable'),{httpStatus:response.status})
           const payload=await response.json(),content=payload.candidates?.[0]?.content,calls=content?.parts?.filter((part:any)=>part.functionCall)
           if(!calls?.length)throw Error('No validated function response')
           contents.push(content);const parts=[]
@@ -79,7 +79,7 @@ export function createSage(options:any={}){
         const conversation:any[]=[{role:'system',content:instructions},...turns.map((m:any)=>({role:m.role,content:m.content}))]
         for(let round=0;round<5;round++){
           const response=await fetcher('https://integrate.api.nvidia.com/v1/chat/completions',{method:'POST',headers:{'content-type':'application/json',authorization:`Bearer ${key}`},signal:controller.signal,body:JSON.stringify({model,messages:conversation,tools:definitions.map(d=>({type:'function',function:d})),tool_choice:'required',max_tokens:4096,stream:false})})
-          if(!response.ok)throw Error('Provider unavailable')
+          if(!response.ok)throw Object.assign(new Error('Provider unavailable'),{httpStatus:response.status})
           const payload=await response.json(),message=payload.choices?.[0]?.message,calls=message?.tool_calls
           if(!Array.isArray(calls)||!calls.length||calls.length>8)throw Error('No validated function response')
           // Preserve any provider reasoning metadata required for subsequent tool turns.
@@ -97,14 +97,20 @@ export function createSage(options:any={}){
         const input:any[]=turns.map((m:any)=>({role:m.role,content:m.content}))
         for(let round=0;round<5;round++){
           const response=await fetcher('https://api.openai.com/v1/responses',{method:'POST',headers:{'content-type':'application/json',authorization:`Bearer ${key}`},signal:controller.signal,body:JSON.stringify({model,instructions,input,tools:definitions.map(d=>({type:'function',...d,strict:false})),tool_choice:'required',max_output_tokens:1200,store:false})})
-          if(!response.ok)throw Error('Provider unavailable')
+          if(!response.ok)throw Object.assign(new Error('Provider unavailable'),{httpStatus:response.status})
           const payload=await response.json(),output=payload.output||[];input.push(...output)
           const calls=output.filter((part:any)=>part.type==='function_call');if(!calls.length)throw Error('No validated function response')
           for(const call of calls){let result;try{result=tools.execute(call.name,JSON.parse(call.arguments))}catch{result={error:'Invalid tool arguments. Use allowed IDs and schemas.'}}if(tools.state.done)return {...tools.state,mode:'ai'};input.push({type:'function_call_output',call_id:call.call_id,output:JSON.stringify(result)})}
         }
       }
       throw Error('Tool limit reached')
-    }catch{return {...fallback(),mode:'guided-fallback',warning:'The AI service could not respond. Showing rule-based catalogue help instead.'}}
+    }catch(error:any){
+      // Never log provider bodies, request headers, chat messages or API keys.
+      const status=Number(error?.httpStatus)
+      const code=Number.isInteger(status)&&status>=400&&status<=599?'HTTP_'+status:error?.name==='AbortError'?'TIMEOUT':'INVALID_RESPONSE'
+      console.warn(`Sage ${provider}: ${code}`)
+      return {...fallback(),mode:'guided-fallback',aiError:code,warning:'The AI service could not respond. Showing rule-based catalogue help instead.'}
+    }
     finally{clearTimeout(timer)}
   }
 }
