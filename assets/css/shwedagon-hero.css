@@ -25,7 +25,7 @@
 @media(max-width:700px){.shwedagon-illustration{object-position:50% 100%;opacity:.3}[data-theme=dark] .shwedagon-illustration{opacity:.4}.shwedagon-hero::after{height:65px}}
 @media(max-width:700px){
  .shwedagon-home{--home-header-height:68px}
- .shwedagon-home .shwedagon-hero{min-height:100svh;padding-block:calc(22px + var(--home-header-height))}
+ .shwedagon-home .shwedagon-hero{min-height:100vh;min-height:100dvh;padding-block:calc(22px + var(--home-header-height))}
  .shwedagon-hero .center-content .cta{margin-top:24px}
 }
 @media(prefers-reduced-motion:reduce){.shwedagon-illustration,.shwedagon-scene{animation:none}}
@@ -199,4 +199,23 @@ html[data-a11y-motion] .sky-lantern { display: none; }
 
 html[data-a11y-motion]:not([data-theme="dark"]) .shwedagon-day-birds {
   display: none;
+}
+@media (max-width: 700px) {
+  .shwedagon-scene {
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+
+  .shwedagon-hero::after {
+    display: none;
+  }
+
+  .shwedagon-illustration {
+    /* The artwork has a transparent terrace margin below the base. */
+    top: 9%;
+  }
+
+  :root:not([data-theme="dark"]) .shwedagon-scene {
+    background: linear-gradient(180deg, #65afe2, #8ec8ee 38%, #b8def4 72%, #d9edf7);
+  }
 }
