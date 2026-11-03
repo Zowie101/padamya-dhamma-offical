@@ -20,7 +20,7 @@
       rel="stylesheet"
       href="assets/css/interactions.css?v=20261101-filled-icons"
     />
-    <script src="assets/js/language.js?v=20261103-loading-1"></script>
+    <script src="assets/js/language.js?v=20261104-hero"></script>
     <link rel="stylesheet" href="assets/css/language.css?v=20261101-5" />
     <link
       rel="stylesheet"
@@ -52,7 +52,8 @@
       href="assets/css/page-loading.css?v=20261103-loading-1"
     />
     <script src="assets/js/page-loading.js?v=20261103-loading-1" defer></script>
-    <link rel="stylesheet" href="assets/css/shwedagon-hero.css?v=20261103-9" />
+    <link rel="stylesheet" href="assets/css/shwedagon-hero.css?v=20261104-30" />
+    <script src="assets/js/lotus-motion.js?v=7" defer></script>
     <script src="assets/js/home-header.js?v=20261103-1" defer></script>
   </head>
   <body class="shwedagon-home">
@@ -87,63 +88,192 @@
       </div>
     </header>
     <main>
-      <section class="hero reference-gallery shwedagon-hero">
+      <section class="hero reference-gallery shwedagon-hero" aria-labelledby="home-hero-title">
         <div class="shwedagon-scene" aria-hidden="true" data-no-translate>
-          <div class="shwedagon-day-birds">
-            <span class="sky-bird" style="--height:21%; --size:19px; --delay:-5s"><svg viewBox="0 0 24 10"><path d="M1 2Q7 1 12 8Q17 1 23 2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
-            <span class="sky-bird" style="--height:24%; --size:14px; --delay:-3.8s"><svg viewBox="0 0 24 10"><path d="M1 2Q7 1 12 8Q17 1 23 2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
-            <span class="sky-bird" style="--height:49%; --size:15px; --delay:-19s"><svg viewBox="0 0 24 10"><path d="M1 2Q7 1 12 8Q17 1 23 2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
+          <svg class="hero-starfield" viewBox="0 0 1920 730" preserveAspectRatio="xMidYMid slice" focusable="false">
+            <g fill="#f6dda1">
+              <circle cx="303" cy="197" r="1.8" opacity="0.69"/>
+              <circle cx="214" cy="291" r="1.7" opacity="0.60"/>
+              <circle cx="1449" cy="339" r="1.8" opacity="0.73"/>
+              <circle cx="1839" cy="376" r="0.6" opacity="0.47"/>
+              <circle cx="188" cy="512" r="1.3" opacity="0.73"/>
+              <circle cx="147" cy="694" r="0.9" opacity="0.75"/>
+              <circle cx="1438" cy="573" r="1.9" opacity="0.43"/>
+              <circle cx="1432" cy="289" r="1.2" opacity="0.64"/>
+              <circle cx="1875" cy="447" r="1.1" opacity="0.61"/>
+              <circle cx="1352" cy="465" r="0.9" opacity="0.45"/>
+              <circle cx="404" cy="613" r="1.5" opacity="0.69"/>
+              <circle cx="1190" cy="306" r="0.6" opacity="0.43"/>
+              <circle cx="590" cy="355" r="1.7" opacity="0.59"/>
+              <circle cx="544" cy="488" r="1.4" opacity="0.69"/>
+              <circle cx="117" cy="66" r="1.9" opacity="0.71"/>
+              <circle cx="1619" cy="66" r="1.0" opacity="0.52"/>
+              <circle cx="1291" cy="443" r="1.0" opacity="0.68"/>
+              <circle cx="656" cy="134" r="1.1" opacity="0.43"/>
+              <circle cx="1697" cy="243" r="1.4" opacity="0.71"/>
+              <circle cx="506" cy="673" r="1.1" opacity="0.77"/>
+              <circle cx="236" cy="47" r="1.0" opacity="0.61"/>
+              <circle cx="759" cy="227" r="0.9" opacity="0.72"/>
+              <circle cx="1606" cy="316" r="0.8" opacity="0.54"/>
+              <circle cx="1900" cy="628" r="1.5" opacity="0.77"/>
+              <circle cx="1396" cy="694" r="0.9" opacity="0.46"/>
+              <circle cx="66" cy="616" r="1.5" opacity="0.34"/>
+              <circle cx="1869" cy="5" r="0.7" opacity="0.38"/>
+              <circle cx="1623" cy="322" r="0.9" opacity="0.74"/>
+              <circle cx="1185" cy="48" r="1.1" opacity="0.45"/>
+              <circle cx="387" cy="617" r="1.7" opacity="0.44"/>
+              <circle cx="348" cy="428" r="0.9" opacity="0.49"/>
+              <circle cx="615" cy="362" r="1.5" opacity="0.75"/>
+              <circle cx="332" cy="161" r="1.0" opacity="0.71"/>
+              <circle cx="1380" cy="199" r="1.4" opacity="0.53"/>
+              <circle cx="1532" cy="651" r="0.8" opacity="0.42"/>
+              <circle cx="1143" cy="479" r="0.7" opacity="0.57"/>
+              <circle cx="886" cy="108" r="1.6" opacity="0.67"/>
+              <circle cx="1859" cy="94" r="1.3" opacity="0.51"/>
+              <circle cx="1807" cy="15" r="1.7" opacity="0.37"/>
+              <circle cx="303" cy="201" r="0.7" opacity="0.62"/>
+              <circle cx="1891" cy="695" r="0.6" opacity="0.43"/>
+              <circle cx="386" cy="638" r="1.5" opacity="0.60"/>
+              <circle cx="893" cy="700" r="1.4" opacity="0.45"/>
+              <circle cx="1755" cy="228" r="1.6" opacity="0.62"/>
+              <circle cx="857" cy="580" r="1.7" opacity="0.66"/>
+              <circle cx="1120" cy="26" r="1.4" opacity="0.71"/>
+              <circle cx="1029" cy="42" r="1.9" opacity="0.66"/>
+              <circle cx="782" cy="121" r="1.8" opacity="0.32"/>
+              <circle cx="165" cy="667" r="1.0" opacity="0.30"/>
+              <circle cx="997" cy="137" r="1.7" opacity="0.44"/>
+              <circle cx="1132" cy="111" r="0.9" opacity="0.41"/>
+              <circle cx="36" cy="208" r="1.3" opacity="0.65"/>
+              <circle cx="395" cy="79" r="1.3" opacity="0.64"/>
+              <circle cx="920" cy="520" r="1.9" opacity="0.60"/>
+              <circle cx="896" cy="540" r="1.2" opacity="0.73"/>
+              <circle cx="250" cy="369" r="1.0" opacity="0.72"/>
+              <circle cx="802" cy="260" r="1.2" opacity="0.38"/>
+              <circle cx="1085" cy="31" r="1.8" opacity="0.62"/>
+              <circle cx="1321" cy="490" r="1.5" opacity="0.77"/>
+              <circle cx="16" cy="466" r="1.0" opacity="0.76"/>
+              <circle cx="633" cy="114" r="1.6" opacity="0.55"/>
+              <circle cx="312" cy="22" r="1.1" opacity="0.36"/>
+              <circle cx="218" cy="429" r="0.6" opacity="0.42"/>
+              <circle cx="1585" cy="660" r="1.9" opacity="0.39"/>
+              <circle cx="1324" cy="111" r="0.9" opacity="0.56"/>
+              <circle cx="203" cy="638" r="1.1" opacity="0.56"/>
+              <circle cx="1412" cy="656" r="1.9" opacity="0.36"/>
+              <circle cx="1433" cy="170" r="0.9" opacity="0.75"/>
+              <circle cx="1565" cy="488" r="0.7" opacity="0.72"/>
+              <circle cx="1743" cy="475" r="1.7" opacity="0.72"/>
+              <circle cx="34" cy="628" r="0.7" opacity="0.67"/>
+              <circle cx="640" cy="345" r="1.9" opacity="0.70"/>
+              <circle cx="1053" cy="302" r="1.2" opacity="0.44"/>
+              <circle cx="721" cy="11" r="1.1" opacity="0.59"/>
+              <circle cx="318" cy="687" r="1.0" opacity="0.64"/>
+              <circle cx="922" cy="571" r="0.8" opacity="0.59"/>
+              <circle cx="520" cy="537" r="1.3" opacity="0.37"/>
+              <circle cx="764" cy="112" r="1.1" opacity="0.47"/>
+              <circle cx="1633" cy="423" r="1.9" opacity="0.49"/>
+              <circle cx="14" cy="513" r="1.8" opacity="0.62"/>
+              <circle cx="809" cy="77" r="0.9" opacity="0.75"/>
+              <circle cx="455" cy="699" r="1.3" opacity="0.73"/>
+              <circle cx="226" cy="119" r="0.6" opacity="0.64"/>
+              <circle cx="44" cy="128" r="1.4" opacity="0.29"/>
+              <circle cx="598" cy="514" r="1.6" opacity="0.30"/>
+              <circle cx="677" cy="412" r="1.6" opacity="0.65"/>
+              <circle cx="1355" cy="613" r="1.3" opacity="0.33"/>
+              <circle cx="1734" cy="554" r="1.2" opacity="0.40"/>
+              <circle cx="154" cy="48" r="1.0" opacity="0.53"/>
+              <circle cx="1765" cy="390" r="1.4" opacity="0.54"/>
+              <circle cx="1356" cy="432" r="1.0" opacity="0.43"/>
+              <circle cx="494" cy="160" r="1.3" opacity="0.69"/>
+              <circle cx="1168" cy="99" r="1.7" opacity="0.32"/>
+            </g>
+          </svg>
+          <svg class="hero-horizon" viewBox="0 0 1920 100" preserveAspectRatio="none" focusable="false">
+            <path fill="#142b46" d="M0 56Q225 18 430 52T828 40T1240 49T1600 26T1920 40V100H0Z"/>
+            <path fill="#151f31" d="M0 78L94 68L178 76L275 64L355 74L410 54L462 72L596 64L736 75L864 60L978 74L1117 70L1245 58L1388 74L1534 68L1698 76L1810 62L1920 73V100H0Z"/>
+          </svg>
+          <div class="hero-lotus">
+            <div class="lotus-sparks" aria-hidden="true">
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <svg class="hero-lotus-layers" viewBox="0 0 1774 887" focusable="false" aria-hidden="true">
+              <defs>
+                <image id="lotus-artwork" href="assets/images/hero-lotus-concept.png" width="1774" height="887"/>
+<clipPath id="lotus-petal-0-0"><path d="M0 505H302Q375 548 538 658Q334 713 104 631L0 631Z" /></clipPath>
+<clipPath id="lotus-petal-0-1"><path d="M0 505H302Q375 548 538 658Q334 713 104 631L0 631Z" transform="translate(1774 0) scale(-1 1)" /></clipPath>
+<clipPath id="lotus-petal-1-0"><path d="M0 270H466L505 455Q539 565 682 667Q505 637 401 574L302 505H0Z" /></clipPath>
+<clipPath id="lotus-petal-1-1"><path d="M0 270H466L505 455Q539 565 682 667Q505 637 401 574L302 505H0Z" transform="translate(1774 0) scale(-1 1)" /></clipPath>
+<clipPath id="lotus-petal-2-0"><path d="M405 103H727Q674 206 660 306Q640 414 689 478L505 455Q437 393 466 270Z" /></clipPath>
+<clipPath id="lotus-petal-2-1"><path d="M405 103H727Q674 206 660 306Q640 414 689 478L505 455Q437 393 466 270Z" transform="translate(1774 0) scale(-1 1)" /></clipPath>
+<clipPath id="lotus-petal-3-0"><path d="M427 690Q546 720 730 700L769 740Q607 830 425 793L249 736Z" /></clipPath>
+<clipPath id="lotus-petal-3-1"><path d="M427 690Q546 720 730 700L769 740Q607 830 425 793L249 736Z" transform="translate(1774 0) scale(-1 1)" /></clipPath>
+<clipPath id="lotus-petal-4-0"><path d="M505 455Q716 458 801 553Q850 599 887 663Q837 725 730 700Q575 652 505 455Z" /></clipPath>
+<clipPath id="lotus-petal-4-1"><path d="M505 455Q716 458 801 553Q850 599 887 663Q837 725 730 700Q575 652 505 455Z" transform="translate(1774 0) scale(-1 1)" /></clipPath>
+<clipPath id="lotus-petal-5-0"><path d="M727 15H1047V103Q1100 206 1114 306Q1134 414 1085 478Q963 464 887 423Q811 464 689 478Q640 414 660 306Q674 206 727 103Z" /></clipPath>
+<clipPath id="lotus-petal-6-0"><path d="M887 423Q943 492 973 541Q925 593 887 663Q849 593 801 541Q831 492 887 423Z" /></clipPath>
+                <mask id="lotus-fixed-area" maskUnits="userSpaceOnUse" x="0" y="0" width="1774" height="887">
+                  <rect width="1774" height="887" fill="#fff"/>
+                  <g fill="#000"><path d="M0 505H302Q375 548 538 658Q334 713 104 631L0 631Z" />
+<path d="M0 505H302Q375 548 538 658Q334 713 104 631L0 631Z" transform="translate(1774 0) scale(-1 1)" />
+<path d="M0 270H466L505 455Q539 565 682 667Q505 637 401 574L302 505H0Z" />
+<path d="M0 270H466L505 455Q539 565 682 667Q505 637 401 574L302 505H0Z" transform="translate(1774 0) scale(-1 1)" />
+<path d="M405 103H727Q674 206 660 306Q640 414 689 478L505 455Q437 393 466 270Z" />
+<path d="M405 103H727Q674 206 660 306Q640 414 689 478L505 455Q437 393 466 270Z" transform="translate(1774 0) scale(-1 1)" />
+<path d="M427 690Q546 720 730 700L769 740Q607 830 425 793L249 736Z" />
+<path d="M427 690Q546 720 730 700L769 740Q607 830 425 793L249 736Z" transform="translate(1774 0) scale(-1 1)" />
+<path d="M505 455Q716 458 801 553Q850 599 887 663Q837 725 730 700Q575 652 505 455Z" />
+<path d="M505 455Q716 458 801 553Q850 599 887 663Q837 725 730 700Q575 652 505 455Z" transform="translate(1774 0) scale(-1 1)" />
+<path d="M727 15H1047V103Q1100 206 1114 306Q1134 414 1085 478Q963 464 887 423Q811 464 689 478Q640 414 660 306Q674 206 727 103Z" />
+<path d="M887 423Q943 492 973 541Q925 593 887 663Q849 593 801 541Q831 492 887 423Z" /></g>
+                </mask>
+                <mask id="lotus-seam-backing" maskUnits="userSpaceOnUse" x="0" y="0" width="1774" height="887">
+                  <g fill="none" stroke="#fff" stroke-width="72" stroke-linejoin="round"><path d="M0 505H302Q375 548 538 658Q334 713 104 631L0 631Z" />
+<path d="M0 505H302Q375 548 538 658Q334 713 104 631L0 631Z" transform="translate(1774 0) scale(-1 1)" />
+<path d="M0 270H466L505 455Q539 565 682 667Q505 637 401 574L302 505H0Z" />
+<path d="M0 270H466L505 455Q539 565 682 667Q505 637 401 574L302 505H0Z" transform="translate(1774 0) scale(-1 1)" />
+<path d="M405 103H727Q674 206 660 306Q640 414 689 478L505 455Q437 393 466 270Z" />
+<path d="M405 103H727Q674 206 660 306Q640 414 689 478L505 455Q437 393 466 270Z" transform="translate(1774 0) scale(-1 1)" />
+<path d="M427 690Q546 720 730 700L769 740Q607 830 425 793L249 736Z" />
+<path d="M427 690Q546 720 730 700L769 740Q607 830 425 793L249 736Z" transform="translate(1774 0) scale(-1 1)" />
+<path d="M505 455Q716 458 801 553Q850 599 887 663Q837 725 730 700Q575 652 505 455Z" />
+<path d="M505 455Q716 458 801 553Q850 599 887 663Q837 725 730 700Q575 652 505 455Z" transform="translate(1774 0) scale(-1 1)" />
+<path d="M727 15H1047V103Q1100 206 1114 306Q1134 414 1085 478Q963 464 887 423Q811 464 689 478Q640 414 660 306Q674 206 727 103Z" />
+<path d="M887 423Q943 492 973 541Q925 593 887 663Q849 593 801 541Q831 492 887 423Z" /></g>
+                </mask>
+              </defs>
+              <use href="#lotus-artwork" mask="url(#lotus-seam-backing)"/>
+              <use href="#lotus-artwork" mask="url(#lotus-fixed-area)"/>
+<g class="lotus-petal" style="--pivot: 480px 650px; --phase: -0.00s; --tilt: .65deg"><use href="#lotus-artwork" clip-path="url(#lotus-petal-0-0)"/></g>
+<g class="lotus-petal" style="--pivot: 1294px 650px; --phase: -0.71s; --tilt: -.65deg"><use href="#lotus-artwork" clip-path="url(#lotus-petal-0-1)"/></g>
+<g class="lotus-petal" style="--pivot: 640px 650px; --phase: -1.42s; --tilt: .65deg"><use href="#lotus-artwork" clip-path="url(#lotus-petal-1-0)"/></g>
+<g class="lotus-petal" style="--pivot: 1134px 650px; --phase: -2.13s; --tilt: -.65deg"><use href="#lotus-artwork" clip-path="url(#lotus-petal-1-1)"/></g>
+<g class="lotus-petal" style="--pivot: 670px 474px; --phase: -2.84s; --tilt: .65deg"><use href="#lotus-artwork" clip-path="url(#lotus-petal-2-0)"/></g>
+<g class="lotus-petal" style="--pivot: 1104px 474px; --phase: -3.55s; --tilt: -.65deg"><use href="#lotus-artwork" clip-path="url(#lotus-petal-2-1)"/></g>
+<g class="lotus-petal" style="--pivot: 730px 709px; --phase: -4.26s; --tilt: .65deg"><use href="#lotus-artwork" clip-path="url(#lotus-petal-3-0)"/></g>
+<g class="lotus-petal" style="--pivot: 1044px 709px; --phase: -4.97s; --tilt: -.65deg"><use href="#lotus-artwork" clip-path="url(#lotus-petal-3-1)"/></g>
+<g class="lotus-petal" style="--pivot: 871px 657px; --phase: -5.68s; --tilt: .65deg"><use href="#lotus-artwork" clip-path="url(#lotus-petal-4-0)"/></g>
+<g class="lotus-petal" style="--pivot: 903px 657px; --phase: -6.39s; --tilt: -.65deg"><use href="#lotus-artwork" clip-path="url(#lotus-petal-4-1)"/></g>
+<g class="lotus-petal" style="--pivot: 887px 424px; --phase: -7.10s; --tilt: .65deg"><use href="#lotus-artwork" clip-path="url(#lotus-petal-5-0)"/></g>
+<g class="lotus-petal" style="--pivot: 887px 656px; --phase: -7.81s; --tilt: .65deg"><use href="#lotus-artwork" clip-path="url(#lotus-petal-6-0)"/></g>
+            </svg>
+            <img class="hero-lotus-still" src="assets/images/hero-lotus-concept.png" width="1774" height="887" alt=""/>
           </div>
-          <div class="shwedagon-sky">
-            <span class="sky-star" style="--x:8%; --y:17%; --delay:-0.00s"></span>
-            <span class="sky-star" style="--x:15%; --y:29%; --delay:-0.73s"></span>
-            <span class="sky-star" style="--x:22%; --y:13%; --delay:-1.46s"></span>
-            <span class="sky-star" style="--x:27%; --y:23%; --delay:-2.19s"></span>
-            <span class="sky-star" style="--x:34%; --y:17%; --delay:-2.92s"></span>
-            <span class="sky-star" style="--x:39%; --y:30%; --delay:-3.65s"></span>
-            <span class="sky-star" style="--x:44%; --y:12%; --delay:-4.38s"></span>
-            <span class="sky-star" style="--x:48%; --y:22%; --delay:-5.11s"></span>
-            <span class="sky-star" style="--x:54%; --y:16%; --delay:-5.84s"></span>
-            <span class="sky-star" style="--x:59%; --y:27%; --delay:-6.57s"></span>
-            <span class="sky-star" style="--x:64%; --y:12%; --delay:-7.30s"></span>
-            <span class="sky-star" style="--x:69%; --y:20%; --delay:-8.03s"></span>
-            <span class="sky-star" style="--x:75%; --y:31%; --delay:-8.76s"></span>
-            <span class="sky-star" style="--x:81%; --y:15%; --delay:-9.49s"></span>
-            <span class="sky-star" style="--x:86%; --y:24%; --delay:-10.22s"></span>
-            <span class="sky-star" style="--x:93%; --y:13%; --delay:-10.95s"></span>
-            <span class="sky-star" style="--x:96%; --y:31%; --delay:-11.68s"></span>
-            <span class="sky-star" style="--x:5%; --y:33%; --delay:-12.41s"></span>
             <span class="sky-lantern" style="--x:17%; --size:16px; --drift:58px; --flight:34s; --delay:-12s"></span>
             <span class="sky-lantern" style="--x:77%; --size:13px; --drift:-46px; --flight:41s; --delay:-22s"></span>
             <span class="sky-lantern" style="--x:89%; --size:9px; --drift:-67px; --flight:47s; --delay:-34s"></span>
             <span class="sky-lantern" style="--x:29%; --size:10px; --drift:35px; --flight:44s; --delay:-3s"></span>
-          </div>
-          <img
-            class="shwedagon-illustration"
-            src="assets/images/shwedagon-hero.svg?v=20261103-2"
-            width="1920"
-            height="1000"
-            alt=""
-            decoding="async"
-          />
         </div>
-
-        <section class="center-content">
-          <p class="eyebrow">A more considered space for</p>
-
-          <h1>
-            Objects that<br />
-            <em>make peace.</em>
-          </h1>
-
-          <a class="cta" href="#collection">
-            <span class="button-text">START EXPLORE</span
-            ><span class="cta-arrow" aria-hidden="true"
-              ><span class="site-icon icon-arrow" aria-hidden="true"></span
-            ></span>
-          </a>
-        </section>
-
+        <div class="hero-copy home-hero-copy">
+          <p class="eyebrow">Padamya Dhamma</p>
+          <h1 id="home-hero-title">Make room for<br /><em>stillness.</em></h1>
+          <p>Thoughtfully chosen Buddha statues for home shrines and quiet spaces.</p>
+          <div class="hero-actions">
+            <a class="button button-outline" href="shrine.html#shrine-preview">Preview your shrine</a>
+            <a class="cta split-cta" href="#collection">
+              <span class="button-text">Explore the collection</span
+              ><span class="cta-arrow" aria-hidden="true"><span class="site-icon icon-arrow"></span></span>
+            </a>
+          </div>
+        </div>
       </section>
       <section
         class="collection-discovery"

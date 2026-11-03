@@ -1,74 +1,95 @@
-/* A single, quiet architectural reveal. The illustration is never stretched. */
-.shwedagon-hero{isolation:isolate}
-/* Let the existing sticky navigation float above the opening scene. */
-.shwedagon-home{--home-header-height:82px}
-.shwedagon-home>.site-header{transition:background-color .45s ease,border-color .45s ease,box-shadow .45s ease,backdrop-filter .45s ease}
-.shwedagon-home>.site-header.is-over-home-hero{background:color-mix(in srgb,var(--paper) 4%,transparent);border-bottom-color:transparent;box-shadow:none;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
-.shwedagon-home>.site-header.is-over-home-hero>.main-nav{background:transparent}
-.shwedagon-home .shwedagon-hero{margin-top:calc(-1 * var(--home-header-height))}
-.shwedagon-hero .center-content .cta{margin-top:30px}
-@media(min-width:701px){
- .shwedagon-home .shwedagon-hero{height:100dvh}
- .shwedagon-home .shwedagon-hero .center-content{top:50%;left:50%}
-}
-.shwedagon-scene{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;animation:shwedagon-scene-reveal 1.8s ease-out both;background:linear-gradient(180deg,#65afe2 0%,#8ec8ee 38%,#b8def4 72%,#d9edf7 90%,var(--paper) 100%);mask-image:linear-gradient(#000 0 86%,transparent 100%);-webkit-mask-image:linear-gradient(#000 0 86%,transparent 100%)}
-.shwedagon-illustration{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover;object-position:50% 100%;opacity:.3;animation:shwedagon-reveal 1.8s cubic-bezier(.2,.65,.3,1) both}
-.shwedagon-scene::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 54% 48%,var(--paper) 0,transparent 67%);opacity:.12}
-.shwedagon-hero .center-content :is(.eyebrow,.description){color:var(--ink);opacity:.8}
-[data-theme=dark] .shwedagon-scene{background:linear-gradient(180deg,#020e17 0%,#081922 55%,#161f26 87%,var(--paper) 100%)}
-[data-theme=dark] .shwedagon-illustration{opacity:.45}
-.shwedagon-hero::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:90px;pointer-events:none;z-index:1;background:linear-gradient(transparent,var(--paper))}
-.shwedagon-hero+.collection-discovery{--collection-paper:#fffefa;background:linear-gradient(var(--paper),var(--collection-paper) 150px);border-top-left-radius:0;border-top-right-radius:0}
-[data-theme=dark] .shwedagon-hero+.collection-discovery{--collection-paper:var(--paper)}
-@keyframes shwedagon-scene-reveal{from{opacity:0}to{opacity:1}}
-@keyframes shwedagon-reveal{from{filter:blur(5px) saturate(var(--pagoda-saturation, 1));transform:translateY(16px)}to{filter:blur(0) saturate(var(--pagoda-saturation, 1));transform:translateY(0)}}
-@media(max-width:700px){.shwedagon-illustration{object-position:50% 100%;opacity:.3}[data-theme=dark] .shwedagon-illustration{opacity:.4}.shwedagon-hero::after{height:65px}}
-@media(max-width:700px){
- .shwedagon-home{--home-header-height:68px}
- .shwedagon-home .shwedagon-hero{min-height:100vh;min-height:100dvh;padding-block:calc(22px + var(--home-header-height))}
- .shwedagon-hero .center-content .cta{margin-top:24px}
-}
-@media(prefers-reduced-motion:reduce){.shwedagon-illustration,.shwedagon-scene{animation:none}}
-html[data-a11y-motion] .shwedagon-illustration,html[data-a11y-motion] .shwedagon-scene{animation:none}
-@media(prefers-reduced-motion:reduce){.shwedagon-home>.site-header{transition:none}}
-html[data-a11y-motion] .shwedagon-home>.site-header{transition:none}
-@media print{.shwedagon-scene{display:none}}
-
-.shwedagon-home .shwedagon-hero .center-content {
-  width: min(90%, 1100px);
+.shwedagon-home {
+  --home-header-height: 82px;
 }
 
-.shwedagon-hero .center-content h1 {
-  font-size: clamp(56px, min(8.1vw, 17svh), 156px);
-  text-shadow: 0 3px 24px color-mix(in srgb, var(--paper) 64%, transparent);
+.shwedagon-home > .site-header {
+  transition: background-color .45s ease, border-color .45s ease, color .45s ease;
 }
 
-.shwedagon-sky {
-  display: none;
+.shwedagon-home > .site-header.is-over-home-hero {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--paper) 9%, transparent);
+  border-bottom-color: transparent;
+  backdrop-filter: blur(10px);
+}
+
+.shwedagon-home > .site-header.is-over-home-hero > .main-nav {
+  background: transparent;
+}
+
+.shwedagon-home .shwedagon-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: block;
+  margin-top: calc(-1 * var(--home-header-height));
+  padding: 0;
+  height: 100vh;
+  height: 100dvh;
+  min-height: var(--home-header-height);
+  background: var(--paper);
+}
+
+.shwedagon-scene {
   position: absolute;
   inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 52% 62%, #dce8e7, transparent 70%),
+              linear-gradient(#9ab8c7, #d0dcd8 78%, var(--paper));
+  mask-image: linear-gradient(#000 73%, rgb(0 0 0 / .72) 86%, transparent);
 }
 
-[data-theme="dark"] .shwedagon-sky {
-  display: block;
+[data-theme="dark"] .shwedagon-scene {
+  background: radial-gradient(ellipse at 55% 54%, #253e47, transparent 72%),
+              linear-gradient(#09171e, #15272b 76%, var(--paper));
 }
 
-.sky-star {
+.shwedagon-hero + .collection-discovery {
+  background: linear-gradient(var(--paper), #fffefa 120px);
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+[data-theme="dark"] .shwedagon-hero + .collection-discovery {
+  background: var(--paper);
+}
+
+.hero-starfield {
   position: absolute;
-  left: var(--x);
-  top: var(--y);
-  width: 2px;
-  height: 2px;
-  border-radius: 50%;
-  background: #f5e9cf;
-  box-shadow: 0 0 6px #eac481b3;
-  animation: sky-twinkle 5.8s var(--delay) ease-in-out infinite;
+  inset: 0;
+  width: 100%;
+  height: 100%;
 }
 
-.sky-star:nth-child(3n) {
-  width: 3px;
-  height: 3px;
+.hero-horizon {
+  position: absolute;
+  inset: auto 0 0;
+  width: 100%;
+  height: 13%;
 }
+
+
+.hero-horizon path:first-child { fill: #a0b8b8; }
+.hero-horizon path:last-child { fill: #839e9e; }
+[data-theme="dark"] .hero-horizon path:first-child { fill: #263939; }
+[data-theme="dark"] .hero-horizon path:last-child { fill: #1d2b2c; }
+
+@media (max-width: 700px) {
+  .shwedagon-home { --home-header-height: 68px; }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shwedagon-home > .site-header { transition: none; }
+}
+
+html[data-a11y-motion] .shwedagon-home > .site-header { transition: none; }
+
+@media print {
+  .shwedagon-home .shwedagon-hero { display: none; }
+}
+
 
 .sky-lantern {
   position: absolute;
@@ -82,6 +103,7 @@ html[data-a11y-motion] .shwedagon-home>.site-header{transition:none}
   animation: lantern-rise var(--flight) var(--delay) linear infinite;
 }
 
+
 .sky-lantern::after {
   content: "";
   position: absolute;
@@ -91,11 +113,6 @@ html[data-a11y-motion] .shwedagon-home>.site-header{transition:none}
   background: radial-gradient(ellipse, #fff5bf 12%, #f5ab53 45%, #723f29 82%);
 }
 
-@keyframes sky-twinkle {
-  0%, 100% { opacity: .24; transform: scale(.8); }
-  45% { opacity: .92; transform: scale(1.2); }
-  60% { opacity: .42; }
-}
 
 @keyframes lantern-rise {
   0% { opacity: 0; transform: translate(0, 0) rotate(-6deg) scale(1); }
@@ -105,117 +122,188 @@ html[data-a11y-motion] .shwedagon-home>.site-header{transition:none}
   100% { opacity: 0; transform: translate(var(--drift), -77svh) rotate(3deg) scale(.48); }
 }
 
-@media (max-width: 700px) {
-  .shwedagon-home .shwedagon-hero {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto;
-    place-items: center;
-  }
-
-  .shwedagon-home .shwedagon-hero .center-content {
-    grid-row: 1;
-    width: 100%;
-  }
-
-  .shwedagon-hero .center-content h1 {
-    font-size: clamp(42px, 12.4vw, 85px);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .sky-star { animation: none; opacity: .5; }
-  .sky-lantern { display: none; }
+  .sky-lantern { animation: none; opacity: .7; transform: translateY(-20vh); }
 }
 
-html[data-a11y-motion] .sky-star { animation: none; opacity: .5; }
-html[data-a11y-motion] .sky-lantern { display: none; }
-
-/* Daylight gives the gold silhouette more definition against the blue sky. */
-:root:not([data-theme="dark"]) .shwedagon-illustration {
-  opacity: .74;
-  mask-image: radial-gradient(ellipse 31% 33% at 50% 47%, rgb(0 0 0 / .24) 35%, #000 100%);
-  --pagoda-saturation: 1.3;
-  filter: saturate(var(--pagoda-saturation));
+html[data-a11y-motion] .sky-lantern {
+  animation: none;
+  opacity: .7;
+  transform: translateY(-20vh);
 }
 
-:root:not([data-theme="dark"]) .shwedagon-scene::after {
-  display: none;
-}
-
-:root:not([data-theme="dark"]) .shwedagon-hero .center-content h1 {
-  text-shadow: none;
-}
-
-:root:not([data-theme="dark"]) .shwedagon-scene::before {
-  content: "";
+.hero-lotus {
   position: absolute;
-  inset: 0 0 auto;
-  height: clamp(180px, 36svh, 400px);
-  background: url("../images/day-clouds.svg?v=2") center top / cover no-repeat;
+  left: 50%;
+  bottom: 8%;
+  width: min(58vw, 680px, 91dvh);
+  height: auto;
+  transform: translateX(-50%);
 }
 
-.shwedagon-day-birds {
-  position: absolute;
-  inset: 0;
-  display: none;
-  z-index: 1;
-}
-
-:root:not([data-theme="dark"]) .shwedagon-day-birds {
-  display: block;
-}
-
-.sky-bird {
-  position: absolute;
-  top: var(--height);
-  left: 0;
-  width: var(--size);
-  color: #304d60;
-  animation: bird-flight 27s var(--delay) linear infinite;
-}
-
-.sky-bird svg {
+.hero-lotus-layers, .hero-lotus-still {
   display: block;
   width: 100%;
-  overflow: visible;
-  animation: bird-wingbeat 1.35s ease-in-out infinite;
+  height: auto;
 }
 
-@keyframes bird-flight {
-  from { transform: translate(-30px, 12px); }
-  50% { transform: translate(50vw, -18px); }
-  to { transform: translate(105vw, -36px); }
+.hero-lotus-layers { overflow: visible; }
+.hero-lotus .hero-lotus-still { display: none; }
+
+.lotus-petal {
+  transform-origin: var(--pivot);
+  animation: lotus-petal-sway 6s var(--phase) ease-in-out infinite;
+  rotate: var(--cursor-tilt, 0deg);
+  transition: rotate 1s cubic-bezier(.22, 1, .36, 1);
 }
 
-@keyframes bird-wingbeat {
-  0%, 100% { transform: scaleY(1); }
-  22% { transform: scaleY(-.48); }
-  45% { transform: scaleY(.76); }
+.lotus-petal.is-reacting {
+  transition-duration: .32s;
+}
+
+.lotus-petal-hit { fill: transparent; pointer-events: none; }
+
+@media (hover: hover) and (pointer: fine) {
+  .lotus-petal-hit { pointer-events: fill; }
+}
+
+.hero-lotus::after { pointer-events: none; }
+
+@keyframes lotus-petal-sway {
+  0%, 100% { transform: rotate(0); }
+  25% { transform: rotate(var(--tilt)); }
+  75% { transform: rotate(calc(-1 * var(--tilt))); }
+}
+
+.hero-lotus::after {
+  content: "";
+  position: absolute;
+  inset: 40% 32% 20%;
+  background: radial-gradient(ellipse, rgb(255 220 143 / .32), transparent 68%);
+  animation: lotus-pulse 6s ease-in-out infinite alternate;
+}
+
+@keyframes lotus-pulse {
+  from { opacity: .2; transform: scale(.9); }
+  to { opacity: 1; transform: scale(1.1); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :root:not([data-theme="dark"]) .shwedagon-day-birds { display: none; }
+  .hero-lotus-layers { display: none; }
+  .hero-lotus .hero-lotus-still { display: block; }
+  .hero-lotus::after { animation: none; }
 }
 
-html[data-a11y-motion]:not([data-theme="dark"]) .shwedagon-day-birds {
-  display: none;
-}
+html[data-a11y-motion] .hero-lotus-layers { display: none; }
+html[data-a11y-motion] .hero-lotus .hero-lotus-still { display: block; }
+html[data-a11y-motion] .hero-lotus::after { animation: none; }
+
 @media (max-width: 700px) {
-  .shwedagon-scene {
-    mask-image: none;
-    -webkit-mask-image: none;
+  .hero-lotus {
+    width: min(94vw, 91dvh);
+    bottom: 15%;
+  }
+}
+
+.shwedagon-home .shwedagon-hero .hero-lotus {
+  left: 72%;
+  bottom: 15%;
+  width: min(54vw, 960px, 125dvh);
+}
+
+.home-hero-copy {
+  position: absolute;
+  top: 49%;
+  left: 8vw;
+  width: min(44%, 760px);
+  max-width: none;
+  transform: translateY(-50%);
+}
+
+.shwedagon-hero .home-hero-copy h1 {
+  font-size: clamp(44px, 5.6vw, 88px);
+}
+
+.home-hero-copy .eyebrow { color: var(--ink); }
+.home-hero-copy .cta::before { content: none; }
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-a11y-motion]) .shwedagon-hero :is(.home-hero-copy, .hero-lotus) {
+    animation: home-hero-rise 1.1s cubic-bezier(.22, 1, .36, 1) both;
+  }
+}
+
+@keyframes home-hero-rise {
+  from {
+    opacity: 0;
+    translate: 0 24px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+.lotus-sparks {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.lotus-sparks span {
+  position: absolute;
+  width: var(--size, 12px);
+  aspect-ratio: 1;
+  color: #ffe3a4;
+  filter: drop-shadow(0 0 5px #e9ad51);
+  animation: lotus-spark-drift var(--duration, 6s) ease-in-out infinite;
+  animation-delay: var(--delay);
+}
+
+.lotus-sparks span::before {
+  content: '';
+  display: block;
+  height: 100%;
+  background: currentColor;
+  clip-path: polygon(50% 0, 66% 34%, 100% 50%, 66% 66%, 50% 100%, 34% 66%, 0 50%, 34% 34%);
+}
+
+.lotus-sparks span:nth-child(1) { left: 12%; top: 40%; --delay: -2s; }
+.lotus-sparks span:nth-child(2) { left: 31%; top: 23%; --delay: -5s; --size: 8px; }
+.lotus-sparks span:nth-child(3) { left: 67%; top: 16%; --delay: -1s; --duration: 8s; }
+.lotus-sparks span:nth-child(4) { left: 86%; top: 38%; --delay: -4s; --size: 15px; }
+.lotus-sparks span:nth-child(5) { left: 92%; top: 63%; --delay: -3s; --duration: 7s; --size: 8px; }
+
+@keyframes lotus-spark-drift {
+  0% { opacity: 0; transform: translate(0, 10px) scale(.45); }
+  23%, 72% { opacity: .95; }
+  100% { opacity: 0; transform: translate(9px, -24px) scale(1.05); }
+}
+
+html[data-a11y-motion] .lotus-sparks { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .lotus-sparks { display: none; }
+}
+
+@media (max-width: 700px) {
+  .shwedagon-home .shwedagon-hero { min-height: max(620px, 100dvh); }
+
+  .home-hero-copy {
+    inset: clamp(104px, 20dvh, 175px) 6vw auto;
+    width: auto;
+    max-width: none;
+    text-align: center;
+    transform: none;
   }
 
-  .shwedagon-hero::after {
-    display: none;
-  }
+  .home-hero-copy > p:not(.eyebrow) { margin-inline: auto; }
+  .home-hero-copy .hero-actions { justify-content: center; margin-top: 22px; }
+  .shwedagon-hero .home-hero-copy h1 { font-size: clamp(40px, 10vw, 64px); }
 
-  .shwedagon-illustration {
-    /* The artwork has a transparent terrace margin below the base. */
-    top: 9%;
-  }
-
-  :root:not([data-theme="dark"]) .shwedagon-scene {
-    background: linear-gradient(180deg, #65afe2, #8ec8ee 38%, #b8def4 72%, #d9edf7);
+  .shwedagon-home .shwedagon-hero .hero-lotus {
+    left: 50%;
+    bottom: 7%;
+    width: min(96vw, 48dvh);
   }
 }

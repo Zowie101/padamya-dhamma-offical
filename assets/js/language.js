@@ -262,7 +262,7 @@
     }
   })
   const dictionaryReady = fetch(
-    new URL('../locales/my.json?v=20261103-loading-1', document.currentScript.src)
+    new URL('../locales/my.json?v=20261104-hero', document.currentScript.src)
   )
     .then(r => {
       if (!r.ok) throw Error('Translation file unavailable')
