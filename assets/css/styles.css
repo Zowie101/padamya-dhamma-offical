@@ -622,6 +622,18 @@ img {
     font-size: 19px
 }
 
+.brand-mark:has(> img) {
+    border: 0;
+    flex-shrink: 0;
+}
+
+.brand-mark > img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
 .brand-name {
     font-size: 11px;
     letter-spacing: .16em;
