@@ -51,7 +51,7 @@ function addressIcon(label){
 }
 async function initAccountDelivery(root,store){
   const section=document.createElement('section');section.className='account-delivery'
-  section.innerHTML='<div class="address-heading"><div><h2>Delivery details</h2><p>Choose a default address for your future orders.</p></div><button class="button button-outline" type="button" data-add-address disabled>+ Add address</button></div><div class="address-list"></div><p class="address-status" role="status" aria-live="polite">Loading delivery details…</p>'
+  section.innerHTML='<div class="address-heading"><div><h2>Delivery details</h2><p>Choose a default address for your future orders.</p></div><button class="button button-outline" type="button" data-add-address disabled><span class="site-icon icon-add" aria-hidden="true"></span>Add address</button></div><div class="address-list"></div><p class="address-status" role="status" aria-live="polite">Loading delivery details…</p>'
   root.insertBefore(section,root.querySelector('.account-actions'))
   const list=section.querySelector('.address-list'),status=section.querySelector('[role=status]'),add=section.querySelector('[data-add-address]')
   let book={addresses:[],defaultId:null},busy=false
@@ -60,15 +60,14 @@ async function initAccountDelivery(root,store){
     if(!book.addresses.length){const empty=document.createElement('p');empty.className='address-empty';empty.textContent='No saved addresses yet. Add your first delivery address.';list.append(empty)}
     for(const entry of book.addresses){
       const card=document.createElement('article');card.className='address-card'+(entry.id===book.defaultId?' is-default':'')
-      card.innerHTML='<button type="button" class="address-edit"><span class="address-place-icon" aria-hidden="true"></span><span class="address-title" data-no-translate></span><span class="address-recipient" data-no-translate></span><span class="address-lines" data-no-translate></span></button><div class="address-tools"><button type="button" class="address-icon-button address-edit-action" aria-label="Edit address" title="Edit address"><span class="address-action-icon address-pencil" aria-hidden="true"></span></button><button type="button" class="address-icon-button address-delete" aria-label="Delete address" title="Delete address"><span class="address-action-icon address-trash" aria-hidden="true"></span></button></div><button type="button" class="address-default"></button>'
+      card.innerHTML='<div class="address-info"><span class="address-place-icon" aria-hidden="true"></span><span class="address-title" data-no-translate></span><span class="address-recipient" data-no-translate></span><span class="address-lines" data-no-translate></span></div><div class="address-tools"><button type="button" class="address-icon-button address-edit-action" aria-label="Edit address" title="Edit address"><span class="address-action-icon address-pencil" aria-hidden="true"></span></button><button type="button" class="address-icon-button address-delete" aria-label="Delete address" title="Delete address"><span class="address-action-icon address-trash" aria-hidden="true"></span></button></div><button type="button" class="address-default"></button>'
       const details=entry.details
       card.querySelector('.address-title').textContent=entry.label
       card.querySelector('.address-recipient').textContent=details.name
       card.querySelector('.address-lines').textContent=[details.address,details.city,details.country].filter(Boolean).join(', ')
       card.querySelector('.address-place-icon').classList.add('address-place-'+addressIcon(entry.label))
       card.querySelector('.address-edit-action').onclick=()=>openEditor(entry)
-      const edit=card.querySelector('.address-edit');edit.setAttribute('aria-label','Edit address: '+entry.label);edit.onclick=()=>openEditor(entry)
-      const select=card.querySelector('.address-default');select.textContent=entry.id===book.defaultId?'Default address':'Use as default';select.setAttribute('aria-pressed',String(entry.id===book.defaultId));select.disabled=entry.id===book.defaultId
+      const select=card.querySelector('.address-default');select.textContent=entry.id===book.defaultId?'Default address':'Set as default';select.setAttribute('aria-pressed',String(entry.id===book.defaultId));select.disabled=entry.id===book.defaultId
       select.onclick=()=>mutate('account/addresses/'+encodeURIComponent(entry.id)+'/default','PATCH',{})
       card.querySelector('.address-delete').onclick=async()=>{if(await accountConfirm('Delete this address?',entry.label,'Delete address'))await mutate('account/addresses/'+encodeURIComponent(entry.id),'DELETE')}
       list.append(card)

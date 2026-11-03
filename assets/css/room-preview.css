@@ -113,3 +113,9 @@
 .room-page .room-ios-link:hover{box-shadow:0 0 0 3px #b78b4d30}
 .room-ios-model{position:absolute;width:1px;height:1px;overflow:hidden;opacity:.01;pointer-events:none;inset:auto 0 0 auto}
 .room-ios-model model-viewer{width:1px;height:1px}
+
+/* Do not let the scrollable flex panel squeeze this action below its content. */
+.room-page .room-add-another{display:flex;align-items:center;justify-content:center;gap:9px;flex:0 0 auto;min-height:48px;height:auto;line-height:1.5;padding:12px 16px;font-size:13px;width:100%;white-space:normal}
+.room-add-another .icon-add{width:19px;height:19px;flex-shrink:0}
+.room-add-another:is(:hover,:focus-visible) .icon-add{rotate:90deg}
+@media(prefers-reduced-motion:reduce){.room-add-another:is(:hover,:focus-visible) .icon-add{rotate:none}}

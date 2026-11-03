@@ -30,8 +30,8 @@
 .address-list{display:grid;gap:14px}
 .address-card{border:1px solid var(--line);border-radius:12px;overflow:hidden;transition:border-color .2s,background .2s}
 .address-card.is-default{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 7%,transparent)}
-.address-edit{display:grid;gap:7px;text-align:left;width:100%;padding:20px;border:0;background:transparent;color:var(--ink);font:inherit;cursor:pointer}
-.address-edit:hover{background:color-mix(in srgb,var(--accent) 7%,transparent)}
+.address-info{display:grid;gap:7px;text-align:left;width:100%;padding:20px;border:0;background:transparent;color:var(--ink);font:inherit;cursor:pointer}
+
 .address-title{font-size:19px;line-height:1.5;font-weight:600;overflow-wrap:anywhere}
 .address-recipient{font-size:14px;font-weight:500;line-height:1.6}
 .address-lines,.address-contact{font-size:14px;line-height:1.7;color:var(--muted);overflow-wrap:anywhere}
@@ -60,16 +60,16 @@
 .address-editor [role=alert]{margin:0}
 .address-editor [role=alert]:empty{display:none}
 @keyframes account-dialog-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-@media(max-width:480px){.account-with-delivery .account-actions{grid-template-columns:repeat(2,minmax(0,1fr))}.account-actions #accountContinue{grid-column:1/-1}.account-dialog{padding:22px 18px}.address-editor form{grid-template-columns:1fr;gap:14px}.address-edit{padding:18px}.address-card-actions{padding-inline:18px}.address-heading{align-items:flex-start}#accountIdentity{font-size:23px}}
+@media(max-width:480px){.account-with-delivery .account-actions{grid-template-columns:repeat(2,minmax(0,1fr))}.account-actions #accountContinue{grid-column:1/-1}.account-dialog{padding:22px 18px}.address-editor form{grid-template-columns:1fr;gap:14px}.address-info{padding:18px}.address-card-actions{padding-inline:18px}.address-heading{align-items:flex-start}#accountIdentity{font-size:23px}}
 @media(prefers-reduced-motion:reduce){.account-dialog[open]{animation:none}.address-card,#accountLogout{transition:none}}
 
 /* Compact address cards with dedicated actions on the right. */
 .account-with-delivery .account-actions{grid-template-columns:repeat(2,minmax(0,1fr))}
 .account-actions #accountContinue{grid-column:auto}
 .address-card{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start}
-.address-edit{grid-column:1;display:grid;grid-template-columns:24px minmax(0,1fr);gap:4px 10px;padding:16px 8px 3px 16px}
-.address-edit .address-title{grid-column:2;font-size:18px;line-height:1.5}
-.address-edit :is(.address-recipient,.address-lines){grid-column:2;font-size:13px;line-height:1.6}
+.address-info{grid-column:1;display:grid;grid-template-columns:24px minmax(0,1fr);gap:4px 10px;padding:16px 8px 3px 16px}
+.address-info .address-title{grid-column:2;font-size:18px;line-height:1.5}
+.address-info :is(.address-recipient,.address-lines){grid-column:2;font-size:13px;line-height:1.6}
 .address-place-icon{grid-column:1;grid-row:1;width:23px;height:23px;align-self:center;background:currentColor;mask:center/contain no-repeat;-webkit-mask:center/contain no-repeat}
 .address-place-home{mask-image:url('../icons/home%28address%29_icon.svg');-webkit-mask-image:url('../icons/home%28address%29_icon.svg')}
 .address-place-work{mask-image:url('../icons/work%28address%29_icon.svg');-webkit-mask-image:url('../icons/work%28address%29_icon.svg')}
@@ -96,7 +96,7 @@
 .address-editor .address-default-check{font-size:12px;line-height:1.5}
 .address-editor .address-default-check input{padding:0;min-height:18px;height:18px}
 @media(max-width:480px){
- .address-edit{padding-left:12px;grid-template-columns:21px minmax(0,1fr);gap:3px 8px}
+ .address-info{padding-left:12px;grid-template-columns:21px minmax(0,1fr);gap:3px 8px}
  .address-place-icon{width:21px;height:21px}
  .address-tools{padding-right:5px;gap:0}
  .address-icon-button{width:34px;height:42px;padding:8px}
@@ -114,3 +114,16 @@
  .address-editor :is(input,select,textarea){padding:7px 10px;min-height:38px}
  .address-editor textarea{height:48px;min-height:48px}
 }
+
+.address-info{cursor:default}
+.address-heading [data-add-address]{display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.address-heading [data-add-address] .icon-add{width:17px;height:17px}
+.address-default{padding:7px 12px;margin-top:7px;margin-bottom:12px;border:1px solid var(--accent);border-radius:999px;line-height:1.4;min-height:36px;transition:background .18s,color .18s,box-shadow .18s}
+.address-default:not(:disabled):is(:hover,:focus-visible){background:var(--ink);color:var(--paper);border-color:var(--ink);box-shadow:0 3px 10px #0001}
+.account-card .address-default:disabled{border-color:transparent;background:color-mix(in srgb,var(--accent) 12%,transparent);cursor:default}
+.address-icon-button .address-action-icon{transition:transform .22s cubic-bezier(.22,1,.36,1);transform-origin:center}
+.address-edit-action:is(:hover,:focus-visible) .address-pencil{transform:translate(1px,-2px) rotate(-12deg)}
+.address-delete:is(:hover,:focus-visible) .address-trash{animation:address-trash-feedback .36s ease}
+.address-icon-button:active .address-action-icon{transform:scale(.88)}
+@keyframes address-trash-feedback{0%,100%{transform:rotate(0)}30%{transform:rotate(-12deg)}65%{transform:rotate(10deg)}}
+@media(prefers-reduced-motion:reduce){.address-icon-button .address-action-icon,.address-default{transition:none}.address-delete:is(:hover,:focus-visible) .address-trash{animation:none}.address-edit-action:is(:hover,:focus-visible) .address-pencil{transform:none}}

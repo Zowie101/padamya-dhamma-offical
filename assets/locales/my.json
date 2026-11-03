@@ -643,5 +643,6 @@
   "Your saved addresses and orders will be here when you sign in again.": "ပြန်ဝင်သည့်အခါ သိမ်းထားသောလိပ်စာများနှင့် အမှာစာများကို ပြန်ကြည့်နိုင်ပါသည်။",
   "Unable to load your addresses. Please refresh to try again.": "လိပ်စာများကို ရယူ၍မရပါ။ စာမျက်နှာကို ပြန်ဖွင့်ပြီး ကြိုးစားပါ။",
   "Unable to update your addresses. Please try again.": "လိပ်စာများကို ပြင်ဆင်၍မရပါ။ ပြန်လည်ကြိုးစားပါ။",
-  "Unable to save this address. Please try again.": "ဤလိပ်စာကို သိမ်း၍မရပါ။ ပြန်လည်ကြိုးစားပါ။"
+  "Unable to save this address. Please try again.": "ဤလိပ်စာကို သိမ်း၍မရပါ။ ပြန်လည်ကြိုးစားပါ။",
+  "Set as default": "ပုံမှန်လိပ်စာအဖြစ် ရွေးမည်"
 }

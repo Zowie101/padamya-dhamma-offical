@@ -168,10 +168,12 @@ Test with two accounts: complete a checkout with saving enabled, return to check
 
 ### Named address book
 
-Account → Delivery details supports up to 10 named addresses (Home, Work, or a custom label). Click a card to edit, use “Use as default” to choose the address prefilled at checkout, or delete an address after confirmation. Deleting the default selects the first remaining address; deleting the last leaves checkout without a saved default. Past orders retain their original delivery snapshots.
+Account → Delivery details supports up to 10 named addresses (Home, Work, or a custom label). Use the pencil icon to edit, use “Set as default” to choose the address prefilled at checkout, or delete an address after confirmation. Deleting the default selects the first remaining address; deleting the last leaves checkout without a saved default. Past orders retain their original delivery snapshots.
 
 An existing saved delivery address is read as a Home entry without changing its details; the version-2 address-book structure is saved on the next edit. Checkout's save option updates the selected default's delivery fields while preserving its label and the other addresses. Account name and signed-in email are displayed separately from address recipient details. Signing out requires confirmation.
 
 Authenticated GET/POST `/api/account/addresses`, PUT/DELETE `/api/account/addresses/:id` and PATCH `/api/account/addresses/:id/default` always derive ownership from the session; all mutations require CSRF. SQLite and PostgreSQL address-book edits are transactional. Legacy `/api/account/delivery` still returns only the current default for existing checkout clients.
 
 Address cards use the supplied Home/Work/Other icons, with separate edit/delete actions on the right. Phone and email remain in the editor and saved data but are omitted from card previews. Success messages use the storefront toast, positioned bottom-left across pages to avoid Sage. The editor is compact at standard phone/desktop sizes, with scrolling retained as an accessibility fallback for short viewports or enlarged text.
+
+Address text is read-only; only the edit icon opens the address editor. Edit/delete icons provide hover/focus animation with reduced-motion support. Add Address and Room Studio’s Add another statue use the supplied add icon. The Room Studio action has a 48px minimum height and does not shrink inside its scrollable controls panel.
