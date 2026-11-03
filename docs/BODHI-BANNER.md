@@ -2,17 +2,17 @@
 
 The index page's opening hero has a decorative Bodhi tree behind the existing text and product photos. It is excluded from the accessibility tree and cannot intercept pointer input.
 
-- The roots/trunk reveal first, followed by a canopy opening. Two clipped/masked views of the same illustration form the visual layers; this is a stylized reveal rather than a botanical growth simulation.
-- Falling illustrated heart-shaped leaves begin after the canopy animation finishes.
-- Warm fireflies appear only under the existing dark theme and switch automatically with the theme.
-- Scroll updates are coalesced into one animation frame and add a small parallax offset and fade. There is no continuous JavaScript render loop.
+- A 7.6-second timeline grows a connected SVG seedling into a trunk, roots, branches and young leaves, then blends into the finished tree illustration. The canopy and roots spread across the hero width.
+- Scrolling down scrubs that same growth timeline backwards; scrolling back up restores it. A bottom fade and matching collection gradient soften the section boundary.
+- Soft ambient light breathes behind the tree. Falling heart-shaped leaves begin at maturity; warm fireflies appear in dark mode.
+- JavaScript advances frames during initial growth only. Afterward, scroll updates are coalesced into one frame; there is no idle render loop.
 - IntersectionObserver and document visibility pause CSS animations when the hero is offscreen or the tab is hidden. Event listeners and pending frames are cleaned up on exit; browser back/forward restores remain usable.
 - Mobile uses 5 leaves and 7 fireflies, desktop 9 and 13. OS and site reduced-motion settings display a static tree without particles or parallax.
 - Native links, image hover interactions, shopping features and the collection carousel remain unchanged.
 
 ## Artwork
 
-`assets/images/bodhi-tree-illustration-v1.png` is the original 1536×1024 RGBA generated illustration. It was created with the built-in image-generation tool. `assets/images/bodhi-tree-illustration-v1.webp` preserves transparency and is the production banner asset (about 433 KB versus the 2.77 MB source). Both visual layers reuse this one URL so the browser downloads it once. `bodhi-falling-leaf.svg` is a lightweight decorative leaf for the particles.
+`assets/images/bodhi-tree-illustration-v1.png` is the original 1536×1024 RGBA generated illustration. It was created with the built-in image-generation tool. `assets/images/bodhi-tree-illustration-v1.webp` preserves transparency and is the production banner asset (about 433 KB versus the 2.77 MB source). All three mature visual layers reuse this one URL so the browser downloads it once. `bodhi-falling-leaf.svg` is a lightweight decorative leaf for the particles.
 
 Generation prompt:
 
