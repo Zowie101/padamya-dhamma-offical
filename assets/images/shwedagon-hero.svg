@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1000" fill="none">
+<defs>
+ <linearGradient id="gold" x1="645" y1="400" x2="1270" y2="850" gradientUnits="userSpaceOnUse"><stop stop-color="#d6bc7e"/><stop offset=".42" stop-color="#b79458"/><stop offset=".72" stop-color="#8a6940"/><stop offset="1" stop-color="#bd9a61"/></linearGradient>
+ <linearGradient id="spire" x1="875" y1="100" x2="1048" y2="465" gradientUnits="userSpaceOnUse"><stop stop-color="#dfc990"/><stop offset=".5" stop-color="#c1a064"/><stop offset="1" stop-color="#87633d"/></linearGradient>
+ <linearGradient id="stone" x2="0" y2="1"><stop stop-color="#b99b6b"/><stop offset="1" stop-color="#65523c"/></linearGradient>
+ <linearGradient id="floor" x2="0" y2="1"><stop stop-color="#b49a6b" stop-opacity=".42"/><stop offset="1" stop-color="#b49a6b" stop-opacity="0"/></linearGradient>
+ <radialGradient id="light"><stop stop-color="#e2c88b" stop-opacity=".25"/><stop offset="1" stop-color="#e2c88b" stop-opacity="0"/></radialGradient>
+ <g id="shrine"><path d="M-62 0V-100L-46-112V-130L-30-146V-160L-15-182L0-220L15-182V-160L30-146V-130L46-112L62-100V0Z" fill="url(#stone)"/>
+ <path d="M-67-96L0-120L67-96M-49-127L0-150L49-127M-32-155L0-176L32-155M0-220V-242" stroke="#d9bd7c" stroke-width="2"/>
+ <path d="M-16 0V-51Q0-78 16-51V0" fill="#4f4334"/><path d="M-56 0V-81M56 0V-81" stroke="#d7b77b" stroke-width="3"/>
+ <path d="M-75 0H75V12H-75Z" fill="#b29462"/></g>
+</defs>
+<ellipse cx="960" cy="595" rx="620" ry="450" fill="url(#light)"/>
+<!-- The broad terrace is drawn wide; the architecture keeps its natural proportions. -->
+<path d="M0 903H1920V1000H0Z" fill="url(#floor)"/>
+<path d="M0 903H1920M160 936H1760M315 974H1605" stroke="#bea16e" stroke-opacity=".35"/>
+<g opacity=".58">
+ <use href="#shrine" transform="translate(160 899) scale(.9)"/><use href="#shrine" transform="translate(365 895) scale(1.28)"/>
+ <use href="#shrine" transform="translate(545 892) scale(.68)"/><use href="#shrine" transform="translate(1375 892) scale(.68)"/>
+ <use href="#shrine" transform="translate(1555 895) scale(1.28)"/><use href="#shrine" transform="translate(1760 899) scale(.9)"/>
+</g>
+<g stroke="#dec38a" stroke-width="1.5" stroke-linejoin="round">
+ <path d="M510 894H1410V910H510Z" fill="#74583a"/>
+ <path d="M546 876H1374V894H546Z" fill="#b18a53"/>
+ <path d="M585 857H1335V876H585Z" fill="#8b693f"/>
+ <path d="M621 837H1299V857H621Z" fill="#b8975e"/>
+ <path d="M650 814C650 726 675 669 734 616C792 561 830 506 842 466H1078C1090 506 1128 561 1186 616C1245 669 1270 726 1270 814Z" fill="url(#gold)"/>
+ <path d="M635 814H1285V837H635Z" fill="#a6814c"/>
+ <path d="M842 466C857 425 877 393 896 354C915 314 921 263 940 213L960 122L980 213C999 263 1005 314 1024 354C1043 393 1063 425 1078 466Z" fill="url(#spire)"/>
+</g>
+<!-- Restrained gold bands echo the real stupa's tapering rings. -->
+<path d="M938 217Q960 226 982 217" stroke="#ebd39a" stroke-opacity=".65" stroke-width="3"/>
+<path d="M931 239Q960 248 989 239" stroke="#ebd39a" stroke-opacity=".65" stroke-width="3"/>
+<path d="M924 262Q960 271 996 262" stroke="#ebd39a" stroke-opacity=".65" stroke-width="3"/>
+<path d="M918 286Q960 295 1002 286" stroke="#ebd39a" stroke-opacity=".65" stroke-width="3"/>
+<path d="M912 310Q960 319 1008 310" stroke="#ebd39a" stroke-opacity=".65" stroke-width="3"/>
+<path d="M902 335Q960 344 1018 335" stroke="#ebd39a" stroke-opacity=".65" stroke-width="3"/>
+<path d="M891 360Q960 369 1029 360" stroke="#ebd39a" stroke-opacity=".65" stroke-width="3"/>
+<path d="M880 383Q960 392 1040 383" stroke="#ebd39a" stroke-opacity=".65" stroke-width="3"/>
+<path d="M869 405Q960 414 1051 405" stroke="#ebd39a" stroke-opacity=".65" stroke-width="3"/>
+<path d="M859 426Q960 435 1061 426" stroke="#ebd39a" stroke-opacity=".65" stroke-width="3"/>
+<path d="M848 447Q960 456 1072 447" stroke="#ebd39a" stroke-opacity=".65" stroke-width="3"/>
+<path d="M840 466Q960 475 1080 466" stroke="#ebd39a" stroke-opacity=".65" stroke-width="3"/>
+<g stroke="#e2c88f" stroke-opacity=".55">
+ <path d="M828 501Q960 522 1092 501M810 536Q960 558 1110 536M786 572Q960 595 1134 572M752 610Q960 636 1168 610" stroke-width="3"/>
+ <path d="M699 665Q960 695 1221 665M671 716Q960 745 1249 716M657 769Q960 791 1263 769" stroke-width="2"/>
+ <path d="M960 475V808M877 551Q829 690 829 810M1043 551Q1091 690 1091 810" stroke-opacity=".25"/>
+</g>
+<!-- Hti, the slim ceremonial umbrella and finial. -->
+<path d="M960 52V123" stroke="#c8a467" stroke-width="3"/>
+<path d="M960 65L946 96H974Z" fill="#d8bc80"/>
+<g stroke="#d6b87c" stroke-width="3"><path d="M946 98H974M944 110H976M942 122H978M947 137H973M950 148H970"/></g>
+<circle cx="960" cy="49" r="4" fill="#e5ce94"/>
+<g stroke="#ceb075" stroke-width="2" opacity=".65">
+ <path d="M445 887V716L454 697L463 716V887M1457 887V716L1466 697L1475 716V887"/>
+ <path d="M88 899V789L96 768L104 789V899M1816 899V789L1824 768L1832 789V899"/>
+</g>
+</svg>

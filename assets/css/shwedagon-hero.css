@@ -1,0 +1,18 @@
+/* A single, quiet architectural reveal. The illustration is never stretched. */
+.shwedagon-hero{isolation:isolate}
+.shwedagon-scene{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;animation:shwedagon-scene-reveal 1.8s ease-out both;background:linear-gradient(180deg,#79abc5 0%,#acd1dd 57%,#e0e9e5 88%,var(--paper) 100%);mask-image:linear-gradient(#000 0 86%,transparent 100%);-webkit-mask-image:linear-gradient(#000 0 86%,transparent 100%)}
+.shwedagon-illustration{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover;object-position:50% 100%;opacity:.36;animation:shwedagon-reveal 1.8s cubic-bezier(.2,.65,.3,1) both}
+.shwedagon-scene::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 54% 48%,var(--paper) 0,transparent 67%);opacity:.18}
+.shwedagon-hero .steps{display:none}
+.shwedagon-hero .center-content :is(.eyebrow,.description){color:var(--ink);opacity:.8}
+[data-theme=dark] .shwedagon-scene{background:linear-gradient(180deg,#041a29 0%,#102b3b 55%,#2c3440 87%,var(--paper) 100%)}
+[data-theme=dark] .shwedagon-illustration{opacity:.45}
+.shwedagon-hero::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:90px;pointer-events:none;z-index:1;background:linear-gradient(transparent,var(--paper))}
+.shwedagon-hero+.collection-discovery{--collection-paper:#fffefa;background:linear-gradient(var(--paper),var(--collection-paper) 150px);border-top-left-radius:0;border-top-right-radius:0}
+[data-theme=dark] .shwedagon-hero+.collection-discovery{--collection-paper:var(--paper)}
+@keyframes shwedagon-scene-reveal{from{opacity:0}to{opacity:1}}
+@keyframes shwedagon-reveal{from{filter:blur(5px);transform:translateY(16px)}to{filter:blur(0);transform:translateY(0)}}
+@media(max-width:700px){.shwedagon-illustration{object-position:50% 100%;opacity:.3}[data-theme=dark] .shwedagon-illustration{opacity:.4}.shwedagon-hero::after{height:65px}}
+@media(prefers-reduced-motion:reduce){.shwedagon-illustration,.shwedagon-scene{animation:none}}
+html[data-a11y-motion] .shwedagon-illustration,html[data-a11y-motion] .shwedagon-scene{animation:none}
+@media print{.shwedagon-scene{display:none}}
