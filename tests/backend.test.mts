@@ -156,3 +156,30 @@ test('account delivery can be added and edited before ordering with session owne
   assert.deepEqual((await a.request('/api/account/delivery')).body.details,edited)
   assert.equal(app.store.deliveryDetails(b.profile.id),null)
 })
+
+test('named address book supports defaults, edits and deletion without exposing another account',async t=>{
+  const app=await fixture(t),a=await app.client(),b=await app.client()
+  assert.equal((await a.request('/api/account/addresses')).status,401)
+  await a.request('/api/auth/register','POST',{name:customer.name,email:customer.email,password:'Fixture private password 2026!'})
+  await b.request('/api/auth/register','POST',{name:'Other',email:'book-other@example.invalid',password:'Other private password 2026!'})
+  const add=await a.request('/api/account/addresses','POST',{...customer,label:'Home'})
+  assert.equal(add.status,201);const home=add.body.addresses[0].id
+  const second=await a.request('/api/account/addresses','POST',{...customer,address:'Office address',label:'Work'})
+  const work=second.body.addresses[1].id
+  assert.equal(second.body.defaultId,home)
+  assert.equal((await b.request('/api/account/addresses/'+work,'DELETE')).status,404)
+  assert.equal((await b.request('/api/account/addresses/'+work+'/default','PATCH',{})).status,404)
+  assert.equal((await a.request('/api/account/addresses/'+work+'/default','PATCH',{}, {'x-csrf-token':'wrong'})).status,403)
+  assert.equal((await a.request('/api/account/addresses/'+work+'/default','PATCH',{})).body.defaultId,work)
+  assert.equal((await a.request('/api/account/delivery')).body.details.address,'Office address')
+  assert.equal((await a.request('/api/account/addresses/'+work,'PUT',{...customer,address:'Updated office',label:'Studio'})).status,200)
+  assert.equal((await a.request('/api/account/delivery')).body.details.address,'Updated office')
+  await a.request('/api/orders','POST',{...checkout('book-checkout-save-0001'),saveDelivery:true})
+  const book=(await a.request('/api/account/addresses')).body
+  assert.equal(book.addresses.length,2);assert.equal(book.addresses[1].label,'Studio')
+  assert.equal((await a.request('/api/account/addresses/'+work,'DELETE')).body.defaultId,home)
+  assert.equal((await a.request('/api/account/addresses/'+home,'DELETE')).body.defaultId,null)
+  assert.equal((await a.request('/api/account/delivery')).body.details,null)
+  assert.equal((await a.request('/api/orders')).body.orders.length,1)
+  assert.equal((await a.request('/api/account/addresses','POST',{...customer,label:''})).status,400)
+})

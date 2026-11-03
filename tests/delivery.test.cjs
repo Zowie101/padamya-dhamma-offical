@@ -30,4 +30,4 @@ test('saved delivery loading failure keeps checkout usable',async()=>{
   assert.equal(fields.name.value,'Account');assert.match(message.textContent,/could not be loaded/)
 })
 
-test('checkout has no forget action; account includes an editable delivery form',()=>{assert.doesNotMatch(source,/data-forget-delivery/);const account=fs.readFileSync('assets/js/account.js','utf8');assert.match(account,/accountDeliveryForm/);assert.match(account,/store.request\('account\/delivery','PUT'/)})
+test('checkout has no forget action; account includes an editable delivery form',()=>{assert.doesNotMatch(source,/data-forget-delivery/);const account=fs.readFileSync('assets/js/account.js','utf8');assert.match(account,/accountDeliveryForm/);assert.match(account,/store.request\('account\/addresses'/)})

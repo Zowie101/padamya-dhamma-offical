@@ -106,3 +106,20 @@ test('PostgreSQL account delivery edits persist independently from order snapsho
   assert.equal(await fresh.deliveryDetails(other.id),null)
   assert.equal((await fresh.order(order.ref,user)).customer.address,customer.address)
 })
+
+test('PostgreSQL migrates legacy delivery into Home and preserves named addresses through checkout',async t=>{
+  const {store,pool}=await fixture(t),user=await store.createGuest()
+  await store.query('INSERT INTO padamya.saved_delivery VALUES($1,$2::jsonb)',[user.id,JSON.stringify(customer)])
+  let book=await store.addressBook(user.id)
+  assert.equal(book.addresses[0].label,'Home');assert.deepEqual(await store.deliveryDetails(user.id),customer)
+  book=await store.updateAddressBook(user.id,'add',{...customer,label:'Work',address:'Office',makeDefault:true})
+  const work=book.defaultId
+  await store.createOrder(user,{...checkout('book-cloud-checkout-0001'),saveDelivery:true})
+  const fresh=new PostgresStore(pool)
+  book=await fresh.addressBook(user.id)
+  assert.equal(book.addresses.length,2);assert.equal(book.defaultId,work);assert.equal(book.addresses[1].label,'Work')
+  assert.deepEqual(await fresh.deliveryDetails(user.id),customer)
+  await fresh.updateAddressBook(user.id,'delete',{id:work})
+  assert.equal((await fresh.addressBook(user.id)).defaultId,'primary')
+  assert.equal((await fresh.orders(user)).length,1)
+})

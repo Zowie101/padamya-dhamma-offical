@@ -115,10 +115,22 @@ export function createApp(options:any={}) {
         const data=validate(z.object({cart:cartSchema,wishlist:wishlistSchema}),await body(req))
         return send(await store.importBag(profile,data))
       }
+      const addressMatch=/^\/api\/account\/addresses(?:\/([\w-]{1,80})(\/default)?)?$/.exec(route)
+      if(addressMatch){
+        if(profile.role==='guest')throw new ApiError(401,'Sign in to manage your addresses.')
+        const id=addressMatch[1]
+        if(!id&&req.method==='GET')return send(await store.addressBook(profile.id))
+        if((!id&&req.method==='POST')||(id&&!addressMatch[2]&&req.method==='PUT')){
+          const data=validate(customerSchema.omit({note:true}).extend({label:z.string().trim().min(1).max(60),makeDefault:z.boolean().optional()}),await body(req))
+          return send(await store.updateAddressBook(profile.id,id?'edit':'add',{...data,id}),id?200:201)
+        }
+        if(id&&addressMatch[2]&&req.method==='PATCH')return send(await store.updateAddressBook(profile.id,'default',{id}))
+        if(id&&!addressMatch[2]&&req.method==='DELETE')return send(await store.updateAddressBook(profile.id,'delete',{id}))
+      }
       if(route==='/api/account/delivery'){
         if(profile.role==='guest')throw new ApiError(401,'Sign in to manage your saved delivery details.')
         if(req.method==='GET')return send({details:await store.deliveryDetails(profile.id)})
-        if(req.method==='PUT'){const details=validate(customerSchema.omit({note:true}),await body(req));await store.saveDelivery(profile.id,details);return send({details})}
+        if(req.method==='PUT'){const details=validate(customerSchema.omit({note:true}),await body(req));await store.updateAddressBook(profile.id,'delivery',details);return send({details})}
         if(req.method==='DELETE'){await store.forgetDelivery(profile.id);return send({details:null})}
       }
       if(route==='/api/orders'){

@@ -1,3 +1,4 @@
+import {addressBook,defaultDelivery,changeAddress} from './delivery-book.mts'
 import { randomUUID, randomInt } from 'node:crypto'
 import { transaction, STAGES } from './database.mts'
 import { ApiError, hash, token, now, passwordHash, passwordMatches } from './security.mts'
@@ -88,8 +89,10 @@ export class Store {
     if(!row || (profile.role!=='admin'&&row.user_id!==profile.id))throw new ApiError(404,'Order not found for this account or browser session.')
     return JSON.parse(row.data)
   }
-  deliveryDetails(userId:string) {const row=this.db.prepare('SELECT data FROM saved_delivery WHERE user_id=?').get(userId);return row?JSON.parse(row.data):null}
-  saveDelivery(userId:string,details:any) {this.db.prepare('INSERT OR REPLACE INTO saved_delivery VALUES(?,?)').run(userId,JSON.stringify(details))}
+  addressBook(userId:string) {const row=this.db.prepare('SELECT data FROM saved_delivery WHERE user_id=?').get(userId);return addressBook(row?JSON.parse(row.data):null)}
+  deliveryDetails(userId:string) {return defaultDelivery(this.addressBook(userId))}
+  updateAddressBook(userId:string,action:string,data:any={}) {return transaction(this.db,()=>{const book=changeAddress(this.addressBook(userId),action,data);this.db.prepare('INSERT OR REPLACE INTO saved_delivery VALUES(?,?)').run(userId,JSON.stringify(book));return book})}
+  saveDelivery(userId:string,details:any) {this.db.prepare('INSERT OR REPLACE INTO saved_delivery VALUES(?,?)').run(userId,JSON.stringify(changeAddress(this.addressBook(userId),'delivery',details)))}
   forgetDelivery(userId:string) {this.db.prepare('DELETE FROM saved_delivery WHERE user_id=?').run(userId)}
   createOrder(profile:any,data:any) {
     return transaction(this.db,()=>{
@@ -104,7 +107,7 @@ export class Store {
       const order={ref,customer:data.customer,items,subtotal,deliveryFee:null,total:subtotal,currency:'MMK',createdAt,status:'placed',history:[{status:'placed',at:createdAt}],adminEvents:[],delivery:{},paymentStatus:'unpaid',localServer:true,isDemo:false}
       for(const item of cart){const p=this.product(item.id);if(p.stock!==null){p.stock-=item.qty;this.db.prepare('UPDATE products SET data=? WHERE id=?').run(JSON.stringify(p),p.id)}}
       this.db.prepare('INSERT INTO orders VALUES(?,?,?,?,?)').run(ref,profile.id,JSON.stringify(order),data.idempotencyKey,requestHash)
-      if(data.saveDelivery===true){const {name,phone,email,address,city,country}=data.customer;this.db.prepare('INSERT OR REPLACE INTO saved_delivery VALUES(?,?)').run(profile.id,JSON.stringify({name,phone,email,address,city,country}))}
+      if(data.saveDelivery===true)this.saveDelivery(profile.id,data.customer)
       this.db.prepare('INSERT OR REPLACE INTO carts VALUES(?,?)').run(profile.id,'[]')
       return order
     })

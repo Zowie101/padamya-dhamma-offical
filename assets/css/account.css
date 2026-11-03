@@ -16,3 +16,49 @@
 .account-delivery-actions{display:flex;align-items:center;flex-wrap:wrap;gap:12px 20px}
 .account-delivery-actions p{font-size:13px;line-height:1.7;margin:0;flex:1;min-width:180px}
 @media(max-width:480px){.account-card .account-delivery form{grid-template-columns:1fr;gap:18px}.account-delivery-actions .button{width:100%}}
+.account-identity{margin:0 0 28px}
+#accountIdentity{font-size:24px;font-weight:600;line-height:1.5;margin:0 0 4px}
+#accountEmail{font-size:15px;color:var(--muted);line-height:1.6;overflow-wrap:anywhere;margin:0}
+.account-with-delivery .account-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:28px;padding-top:24px;border-top:1px solid var(--line)}
+.account-actions .button{width:100%;min-height:48px;justify-content:center;box-sizing:border-box;padding:12px;font-size:12px}
+#accountLogout{transition:background .2s,color .2s,border-color .2s}
+#accountLogout:hover,#accountLogout:focus-visible,.account-danger:hover,.account-danger:focus-visible{background:#a52e32!important;color:#fff!important;border-color:#a52e32!important}
+.address-heading{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:20px}
+.address-heading h2{font-size:25px;margin:0 0 6px}
+.address-heading p{font-size:14px;line-height:1.7;color:var(--muted);margin:0;max-width:380px}
+.address-heading .button{min-height:44px;padding:10px 16px;font-size:12px}
+.address-list{display:grid;gap:14px}
+.address-card{border:1px solid var(--line);border-radius:12px;overflow:hidden;transition:border-color .2s,background .2s}
+.address-card.is-default{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 7%,transparent)}
+.address-edit{display:grid;gap:7px;text-align:left;width:100%;padding:20px;border:0;background:transparent;color:var(--ink);font:inherit;cursor:pointer}
+.address-edit:hover{background:color-mix(in srgb,var(--accent) 7%,transparent)}
+.address-title{font-size:19px;line-height:1.5;font-weight:600;overflow-wrap:anywhere}
+.address-recipient{font-size:14px;font-weight:500;line-height:1.6}
+.address-lines,.address-contact{font-size:14px;line-height:1.7;color:var(--muted);overflow-wrap:anywhere}
+.address-card-actions{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 20px 16px}
+.address-card-actions button{background:transparent;border:0;border-radius:4px;padding:8px 0;color:var(--ink);font:inherit;font-size:13px;cursor:pointer;min-height:40px}
+.account-card .address-default:disabled{color:var(--accent);opacity:1;cursor:default;font-weight:600}
+.address-card-actions .address-delete{color:#c65b5f}
+.address-delete:hover{text-decoration:underline}
+.address-status,.address-empty{font-size:14px;line-height:1.8;color:var(--muted)}
+.address-status:empty{display:none}
+.account-dialog{width:min(620px,calc(100vw - 32px));max-height:calc(100dvh - 40px);box-sizing:border-box;border:1px solid var(--line);border-radius:16px;padding:28px;background:var(--paper);color:var(--ink);overflow-y:auto;box-shadow:0 24px 80px #0004}
+.account-dialog::backdrop{background:#0006;backdrop-filter:blur(5px)}
+.account-dialog[open]{animation:account-dialog-in .2s ease-out}
+.account-dialog h2{font-size:26px;line-height:1.4;margin:0 0 20px;letter-spacing:-.02em}
+.account-dialog p{font-size:14px;line-height:1.8;overflow-wrap:anywhere}
+.account-confirm{max-width:440px}
+.account-dialog-actions{display:flex;gap:12px;margin-top:12px}
+.account-dialog-actions .button{flex:1;min-width:0;min-height:46px;padding:12px;font-size:12px;justify-content:center}
+.address-editor form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.address-editor label{display:grid;gap:8px;font-size:14px;line-height:1.6;min-width:0}
+.address-editor :is(input,select,textarea){width:100%;box-sizing:border-box;min-width:0;border:1px solid var(--line);border-radius:6px;padding:12px;background:var(--paper);color:var(--ink);font:inherit;font-size:15px}
+.address-editor textarea{resize:vertical}
+.address-editor .delivery-full{grid-column:1/-1}
+.address-editor .address-default-check{display:flex;align-items:center;gap:10px}
+.address-default-check input{width:18px;height:18px;flex:0 0 18px;accent-color:var(--accent)}
+.address-editor [role=alert]{margin:0}
+.address-editor [role=alert]:empty{display:none}
+@keyframes account-dialog-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:480px){.account-with-delivery .account-actions{grid-template-columns:repeat(2,minmax(0,1fr))}.account-actions #accountContinue{grid-column:1/-1}.account-dialog{padding:22px 18px}.address-editor form{grid-template-columns:1fr;gap:14px}.address-edit{padding:18px}.address-card-actions{padding-inline:18px}.address-heading{align-items:flex-start}#accountIdentity{font-size:23px}}
+@media(prefers-reduced-motion:reduce){.account-dialog[open]{animation:none}.address-card,#accountLogout{transition:none}}

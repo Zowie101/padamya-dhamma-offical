@@ -6,10 +6,11 @@
   const allowed=new Set(['admin.html','admin-catalogue.html','checkout.html','track-order.html','wishlist.html'])
   if(store.profile.role!=='guest'){
     root.classList.add('account-with-delivery')
-    root.innerHTML='<p class="eyebrow">YOUR PADAMYA DHAMMA ACCOUNT</p><h1>Welcome <em>back.</em></h1><p id="accountIdentity"></p><div class="account-actions"><a class="button button-dark" id="accountContinue">Continue</a><a class="text-link" href="track-order.html">My orders</a><button class="button button-outline" id="accountLogout" type="button">Sign out</button></div><p id="accountError" role="alert"></p>'
-    document.getElementById('accountIdentity').textContent=store.profile.name||store.profile.email
+    root.innerHTML='<p class="eyebrow">YOUR PADAMYA DHAMMA ACCOUNT</p><h1>Welcome <em>back.</em></h1><div class="account-identity"><p id="accountIdentity" data-no-translate></p><p id="accountEmail" data-no-translate></p></div><div class="account-actions"><a class="button button-dark" id="accountContinue">Continue</a><a class="button button-outline" href="track-order.html">My orders</a><button class="button button-outline" id="accountLogout" type="button">Sign out</button></div><p id="accountError" role="alert"></p>'
+    document.getElementById('accountIdentity').textContent=store.profile.name||'Your account'
+    document.getElementById('accountEmail').textContent=store.profile.email
     document.getElementById('accountContinue').href=allowed.has(destination)?destination:store.profile.role==='admin'?'admin.html':'shop.html'
-    document.getElementById('accountLogout').onclick=async()=>{try{await store.logout()}catch(error){document.getElementById('accountError').textContent=error.message}}
+    document.getElementById('accountLogout').onclick=async()=>{if(!await accountConfirm('Sign out of your account?','Your saved addresses and orders will be here when you sign in again.','Sign out'))return;try{await store.logout()}catch(error){document.getElementById('accountError').textContent=error.message}}
     initAccountDelivery(root,store)
     return
   }
@@ -29,24 +30,72 @@
   }
 })()
 
+function accountConfirm(title,description,action){
+  return new Promise(resolve=>{
+    const dialog=document.createElement('dialog');dialog.className='account-dialog account-confirm'
+    dialog.innerHTML='<h2 id="accountConfirmTitle"></h2><p></p><div class="account-dialog-actions"><button type="button" class="button button-outline" data-cancel>Cancel</button><button type="button" class="button button-dark account-danger" data-confirm></button></div>'
+    dialog.querySelector('h2').textContent=title;dialog.querySelector('p').textContent=description;dialog.querySelector('[data-confirm]').textContent=action
+    dialog.setAttribute('aria-labelledby','accountConfirmTitle')
+    const finish=value=>{dialog.close();dialog.remove();resolve(value)}
+    dialog.querySelector('[data-cancel]').onclick=()=>finish(false);dialog.querySelector('[data-confirm]').onclick=()=>finish(true)
+    dialog.addEventListener('cancel',event=>{event.preventDefault();finish(false)})
+    dialog.addEventListener('click',event=>{if(event.target===dialog){const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)finish(false)}})
+    document.body.append(dialog);dialog.showModal();dialog.querySelector('[data-cancel]').focus()
+  })
+}
 async function initAccountDelivery(root,store){
-  const section=document.createElement('section')
-  section.className='account-delivery'
-  section.innerHTML=`<h2>Delivery details</h2><p>Save your details here to fill your next checkout automatically.</p><form id="accountDeliveryForm"><label>Full name<input name="name" autocomplete="name" maxlength="120" required></label><label>Phone number<input name="phone" autocomplete="tel" maxlength="60" required></label><label class="delivery-full">Email address<input name="email" type="email" autocomplete="email" maxlength="254" required></label><label class="delivery-full">Delivery address<textarea name="address" autocomplete="street-address" maxlength="1000" rows="3" required></textarea></label><label>City / Township<input name="city" autocomplete="address-level2" maxlength="120" required></label><label>Country<select name="country" autocomplete="country-name"><option>Myanmar</option><option>Thailand</option><option>Singapore</option><option>Other</option></select></label><div class="delivery-full account-delivery-actions"><button class="button button-dark" type="submit" disabled>Save delivery details</button><p data-account-delivery-status role="status" aria-live="polite">Loading delivery details…</p></div></form>`
-  root.append(section)
-  const form=section.querySelector('form'),button=form.querySelector('[type=submit]'),status=form.querySelector('[role=status]'),dirty=new Set()
-  form.addEventListener('input',event=>dirty.add(event.target.name))
-  form.addEventListener('change',event=>dirty.add(event.target.name))
-  const fill=details=>{for(const name of ['name','phone','email','address','city','country']){const field=form.elements.namedItem(name);if(field&&!dirty.has(name)&&details?.[name])field.value=details[name]}}
-  fill({name:store.profile.name,email:store.profile.email})
-  form.onsubmit=async event=>{
-    event.preventDefault();if(button.disabled)return
-    button.disabled=true;status.textContent='Saving delivery details…'
-    try{await store.request('account/delivery','PUT',Object.fromEntries(new FormData(form)));status.textContent='Delivery details saved. Your next checkout will use these details.'}
-    catch(error){status.textContent=error.message||'Unable to save delivery details. Please try again.'}
-    finally{button.disabled=false}
+  const section=document.createElement('section');section.className='account-delivery'
+  section.innerHTML='<div class="address-heading"><div><h2>Delivery details</h2><p>Choose a default address for your future orders.</p></div><button class="button button-outline" type="button" data-add-address disabled>+ Add address</button></div><div class="address-list"></div><p class="address-status" role="status" aria-live="polite">Loading delivery details…</p>'
+  root.insertBefore(section,root.querySelector('.account-actions'))
+  const list=section.querySelector('.address-list'),status=section.querySelector('[role=status]'),add=section.querySelector('[data-add-address]')
+  let book={addresses:[],defaultId:null},busy=false
+  function render(){
+    list.replaceChildren()
+    if(!book.addresses.length){const empty=document.createElement('p');empty.className='address-empty';empty.textContent='No saved addresses yet. Add your first delivery address.';list.append(empty)}
+    for(const entry of book.addresses){
+      const card=document.createElement('article');card.className='address-card'+(entry.id===book.defaultId?' is-default':'')
+      card.innerHTML='<button type="button" class="address-edit"><span class="address-title" data-no-translate></span><span class="address-recipient" data-no-translate></span><span class="address-lines" data-no-translate></span><span class="address-contact" data-no-translate></span></button><div class="address-card-actions"><button type="button" class="address-default"></button><button type="button" class="address-delete">Delete</button></div>'
+      const details=entry.details
+      card.querySelector('.address-title').textContent=entry.label
+      card.querySelector('.address-recipient').textContent=details.name
+      card.querySelector('.address-lines').textContent=[details.address,details.city,details.country].filter(Boolean).join(', ')
+      card.querySelector('.address-contact').textContent=[details.phone,details.email].filter(Boolean).join(' · ')
+      const edit=card.querySelector('.address-edit');edit.setAttribute('aria-label','Edit address: '+entry.label);edit.onclick=()=>openEditor(entry)
+      const select=card.querySelector('.address-default');select.textContent=entry.id===book.defaultId?'Default address':'Use as default';select.setAttribute('aria-pressed',String(entry.id===book.defaultId));select.disabled=entry.id===book.defaultId
+      select.onclick=()=>mutate('account/addresses/'+encodeURIComponent(entry.id)+'/default','PATCH',{})
+      card.querySelector('.address-delete').onclick=async()=>{if(await accountConfirm('Delete this address?',entry.label,'Delete address'))await mutate('account/addresses/'+encodeURIComponent(entry.id),'DELETE')}
+      list.append(card)
+    }
+    add.disabled=book.addresses.length>=10
   }
-  try{const {details}=await store.request('account/delivery');fill(details);status.textContent=details?'You can edit these details at any time.':'Add your delivery details to get started.'}
-  catch{status.textContent='Unable to load saved details. You can enter and save your details again.'}
-  finally{button.disabled=false}
+  async function mutate(route,method,data){
+    if(busy)return;busy=true;section.setAttribute('aria-busy','true');section.querySelectorAll('button').forEach(button=>button.disabled=true)
+    try{book=await store.request(route,method,data);status.textContent='Address book updated.'}
+    catch(error){status.textContent=error.message||'Unable to update your addresses. Please try again.'}
+    finally{busy=false;section.removeAttribute('aria-busy');render()}
+  }
+  function openEditor(entry){
+    if(busy)return
+    const dialog=document.createElement('dialog');dialog.className='account-dialog address-editor'
+    dialog.setAttribute('aria-labelledby','addressEditorTitle')
+    dialog.innerHTML=`<h2 id="addressEditorTitle">${entry?'Edit address':'Add address'}</h2><form id="accountDeliveryForm"><label class="delivery-full">Address name<input name="label" placeholder="Home, Work…" maxlength="60" required></label><label>Full name<input name="name" autocomplete="name" maxlength="120" required></label><label>Phone number<input name="phone" autocomplete="tel" maxlength="60" required></label><label class="delivery-full">Email address<input name="email" type="email" autocomplete="email" maxlength="254" required></label><label class="delivery-full">Delivery address<textarea name="address" autocomplete="street-address" maxlength="1000" rows="3" required></textarea></label><label>City / Township<input name="city" autocomplete="address-level2" maxlength="120" required></label><label>Country<select name="country" autocomplete="country-name"><option>Myanmar</option><option>Thailand</option><option>Singapore</option><option>Other</option></select></label><label class="address-default-check delivery-full"><input type="checkbox" name="makeDefault"><span>Use as default for future orders</span></label><p class="delivery-full" role="alert"></p><div class="account-dialog-actions delivery-full"><button type="button" class="button button-outline" data-cancel>Cancel</button><button class="button button-dark" type="submit">Save address</button></div></form>`
+    const form=dialog.querySelector('form'),submit=form.querySelector('[type=submit]'),error=form.querySelector('[role=alert]')
+    const values=entry?{...entry.details,label:entry.label}:{name:store.profile.name,email:store.profile.email,country:'Myanmar'}
+    for(const [key,value]of Object.entries(values)){const field=form.elements.namedItem(key);if(field)field.value=value}
+    form.elements.namedItem('makeDefault').checked=!book.defaultId||entry?.id===book.defaultId
+    form.elements.namedItem('makeDefault').disabled=!!entry&&entry.id===book.defaultId
+    const close=()=>{dialog.close();dialog.remove();add.focus()}
+    form.querySelector('[data-cancel]').onclick=()=>{if(!submit.disabled)close()}
+    dialog.addEventListener('cancel',event=>{event.preventDefault();if(!submit.disabled)close()})
+    form.onsubmit=async event=>{
+      event.preventDefault();if(submit.disabled)return;submit.disabled=true;error.textContent=''
+      const data=Object.fromEntries(new FormData(form));data.makeDefault=form.elements.namedItem('makeDefault').checked
+      try{book=await store.request('account/addresses'+(entry?'/'+encodeURIComponent(entry.id):''),entry?'PUT':'POST',data);render();status.textContent='Address saved.';close()}
+      catch(issue){error.textContent=issue.message||'Unable to save this address. Please try again.';submit.disabled=false}
+    }
+    document.body.append(dialog);dialog.showModal();form.elements.namedItem('label').focus()
+  }
+  add.onclick=()=>openEditor(null)
+  try{book=await store.request('account/addresses');render();status.textContent=''}
+  catch{status.textContent='Unable to load your addresses. Please refresh to try again.'}
 }
