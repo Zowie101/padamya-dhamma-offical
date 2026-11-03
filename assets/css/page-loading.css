@@ -1,0 +1,26 @@
+/* Quiet placeholders inherit the current light/dark palette. */
+.skeleton-line,.skeleton-photo,.skeleton-field{display:block;background:color-mix(in srgb,var(--ink) 8%,var(--paper));border-radius:5px;position:relative;overflow:hidden}
+.skeleton-line::after,.skeleton-photo::after,.skeleton-field::after{content:'';position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--paper) 62%,transparent),transparent);animation:skeleton-shimmer 1.5s ease-in-out infinite}
+.skeleton-line{height:14px;margin:13px 0}
+.skeleton-card{min-width:0}
+.skeleton-photo{aspect-ratio:1.18;width:100%;margin-bottom:20px}
+.is-skeleton-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:30px}
+.skeleton-rows{width:100%}
+.skeleton-row{padding:18px 20px;border:1px solid var(--line);border-radius:10px;margin-bottom:14px}
+.skeleton-form{width:100%;padding:10px 0;min-height:320px}
+.skeleton-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 18px;margin:28px 0}
+.skeleton-field{height:48px}
+.skeleton-covered{position:relative;min-height:440px}
+.skeleton-covered>:not(.product-info-skeleton){visibility:hidden}
+.product-info-skeleton{position:absolute;inset:0;pointer-events:none}
+.product-info-skeleton .skeleton-line:first-child{height:45px;margin:18px 0 35px}
+.is-image-loading{background:color-mix(in srgb,var(--ink) 7%,var(--paper));animation:skeleton-image-pulse 1.3s ease-in-out infinite}
+.is-image-loading>img{opacity:0}
+@keyframes skeleton-shimmer{to{transform:translateX(100%)}}
+@keyframes skeleton-image-pulse{50%{background:color-mix(in srgb,var(--ink) 12%,var(--paper))}}
+@media(max-width:650px){.is-skeleton-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.is-skeleton-grid>.skeleton-card:last-of-type{display:none}.skeleton-row{padding:14px}.skeleton-fields{gap:18px 12px}}
+@media(prefers-reduced-motion:reduce){.skeleton-line::after,.skeleton-photo::after,.skeleton-field::after,.is-image-loading{animation:none}}
+html[data-a11y-motion] :is(.skeleton-line,.skeleton-photo,.skeleton-field)::after{animation:none}
+@media print{.is-skeleton,.product-info-skeleton{display:none!important}}
+
+html[data-a11y-motion] .is-image-loading{animation:none}

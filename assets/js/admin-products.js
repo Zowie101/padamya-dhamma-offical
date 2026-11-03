@@ -7,6 +7,7 @@
   const section=document.createElement('section');section.className='admin-catalogue';section.innerHTML='<h2 class="sr-only">Products</h2><p>Prices are in MMK. Leave stock blank when it is not yet tracked.</p><div class="admin-product-grid"></div><h3>Product media</h3><p>Public product files only. Room photos stay on the customer’s device.</p><form id="adminUpload"><label>PNG, JPEG, WebP or GLB · up to 8 MB<input type="file" accept=".png,.jpg,.jpeg,.webp,.glb" required></label><button class="admin-button" type="submit">Upload media</button><output id="adminUploadResult" aria-live="polite"></output></form>'
   root.append(section)
   const grid=section.querySelector('.admin-product-grid')
+  window.PadamyaLoading?.show(grid,'cards')
   async function render(){
     const products=(await store.request('admin/products')).products;grid.replaceChildren()
     for(const p of products){

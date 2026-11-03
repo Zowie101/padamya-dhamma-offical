@@ -2,14 +2,13 @@
   const store=window.SacredStore,root=document.getElementById('accountRoot')
   await store?.ready
   if(!store?.enabled){root.innerHTML='<h1>Your <em>account.</em></h1><p>Start the Node backend to use accounts: <code>node --run start</code>.</p><a class="button button-dark" href="shop.html">Explore the collection</a>';return}
-  const destination=new URLSearchParams(location.search).get('return')
-  const allowed=new Set(['admin.html','admin-catalogue.html','checkout.html','track-order.html','wishlist.html'])
+  const destination=window.PadamyaNavigation?.accountReturn()||'shop.html'
   if(store.profile.role!=='guest'){
     root.classList.add('account-with-delivery')
     root.innerHTML='<p class="eyebrow">YOUR PADAMYA DHAMMA ACCOUNT</p><h1>Welcome <em>back.</em></h1><div class="account-identity"><p id="accountIdentity" data-no-translate></p><p id="accountEmail" data-no-translate></p></div><div class="account-actions"><a class="button button-dark" id="accountContinue">Continue</a><button class="button button-outline" id="accountLogout" type="button">Sign out</button></div><p id="accountError" role="alert"></p>'
     document.getElementById('accountIdentity').textContent=store.profile.name||'Your account'
     document.getElementById('accountEmail').textContent=store.profile.email
-    document.getElementById('accountContinue').href=allowed.has(destination)?destination:store.profile.role==='admin'?'admin.html':'shop.html'
+    document.getElementById('accountContinue').href=destination
     document.getElementById('accountLogout').onclick=async()=>{if(!await accountConfirm('Sign out of your account?','Your saved addresses and orders will be here when you sign in again.','Sign out'))return;try{await store.logout()}catch(error){document.getElementById('accountError').textContent=error.message}}
     initAccountDelivery(root,store)
     return
@@ -56,10 +55,12 @@ async function initAccountDelivery(root,store){
   const list=section.querySelector('.address-list'),status=section.querySelector('[role=status]'),add=section.querySelector('[data-add-address]')
   let book={addresses:[],defaultId:null},busy=false
   function render(){
+    const previous=new Map([...list.querySelectorAll('.address-card')].map(card=>[card.dataset.addressId,card.getBoundingClientRect().top]))
     list.replaceChildren()
     if(!book.addresses.length){const empty=document.createElement('p');empty.className='address-empty';empty.textContent='No saved addresses yet. Add your first delivery address.';list.append(empty)}
-    for(const entry of book.addresses){
-      const card=document.createElement('article');card.className='address-card'+(entry.id===book.defaultId?' is-default':'')
+    const ordered=[...book.addresses].sort((a,b)=>Number(b.id===book.defaultId)-Number(a.id===book.defaultId))
+    for(const entry of ordered){
+      const card=document.createElement('article');card.className='address-card'+(entry.id===book.defaultId?' is-default':'');card.dataset.addressId=entry.id
       card.innerHTML='<div class="address-info"><span class="address-place-icon" aria-hidden="true"></span><span class="address-title" data-no-translate></span><span class="address-recipient" data-no-translate></span><span class="address-lines" data-no-translate></span></div><div class="address-tools"><button type="button" class="address-icon-button address-edit-action" aria-label="Edit address" title="Edit address"><span class="address-action-icon address-pencil" aria-hidden="true"></span></button><button type="button" class="address-icon-button address-delete" aria-label="Delete address" title="Delete address"><span class="address-action-icon address-trash" aria-hidden="true"></span></button></div><button type="button" class="address-default"></button>'
       const details=entry.details
       card.querySelector('.address-title').textContent=entry.label
@@ -73,6 +74,8 @@ async function initAccountDelivery(root,store){
       list.append(card)
     }
     add.disabled=book.addresses.length>=10
+    const reduced=window.SacredAccessibility?.reduceMotion()??matchMedia('(prefers-reduced-motion: reduce)').matches
+    if(!reduced)for(const card of list.querySelectorAll('.address-card')){const before=previous.get(card.dataset.addressId),offset=before===undefined?0:before-card.getBoundingClientRect().top;if(Math.abs(offset)>1)card.animate([{transform:`translateY(${offset}px)`},{transform:'translateY(0)'}],{duration:320,easing:'cubic-bezier(.22,1,.36,1)'})}
   }
   async function mutate(route,method,data){
     if(busy)return;busy=true;section.setAttribute('aria-busy','true');section.querySelectorAll('button').forEach(button=>button.disabled=true)
@@ -102,6 +105,7 @@ async function initAccountDelivery(root,store){
     document.body.append(dialog);dialog.showModal();form.elements.namedItem('label').focus()
   }
   add.onclick=()=>openEditor(null)
+  window.PadamyaLoading?.show(list,'addresses')
   try{book=await store.request('account/addresses');render();status.textContent=''}
-  catch{status.textContent='Unable to load your addresses. Please refresh to try again.'}
+  catch{list.replaceChildren();status.textContent='Unable to load your addresses. Please refresh to try again.'}
 }

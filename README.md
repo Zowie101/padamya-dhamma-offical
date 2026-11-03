@@ -177,3 +177,11 @@ Authenticated GET/POST `/api/account/addresses`, PUT/DELETE `/api/account/addres
 Address cards use the supplied Home/Work/Other icons, with separate edit/delete actions on the right. Phone and email remain in the editor and saved data but are omitted from card previews. Success messages use the storefront toast, positioned bottom-left across pages to avoid Sage. The editor is compact at standard phone/desktop sizes, with scrolling retained as an accessibility fallback for short viewports or enlarged text.
 
 Address text is read-only; only the edit icon opens the address editor. Edit/delete icons provide hover/focus animation with reduced-motion support. Add Address and Room Studio’s Add another statue use the supplied add icon. The Room Studio action has a 48px minimum height and does not shrink inside its scrollable controls panel.
+
+### Loading and return navigation
+
+Continue on Account uses an explicit valid return link, the previous internal page, or the last storefront page recorded in this tab. Product queries and section anchors are preserved. Direct Account visits fall back to Shop; being an administrator no longer forces the Order Desk. External URLs, account loops and unknown paths are rejected. Only the per-tab page URL is remembered, with no address details stored in sessionStorage.
+
+Shared `page-loading.js` and `page-loading.css` show theme-aware skeletons while catalogue, account, address book, cart, checkout and order content is being rendered. Product details and pending product images have matching placeholders. Content replaces placeholders immediately when ready; there is no minimum/artificial wait. Long-running loading gets a refresh message, and reduced-motion preferences disable shimmer. Existing 3D loading/progress behavior is preserved.
+
+The default delivery address is displayed first. Other addresses retain their saved order. Changing the default animates the cards into place unless reduced motion is enabled; it never rewrites old order details.

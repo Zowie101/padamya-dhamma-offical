@@ -644,5 +644,7 @@
   "Unable to load your addresses. Please refresh to try again.": "လိပ်စာများကို ရယူ၍မရပါ။ စာမျက်နှာကို ပြန်ဖွင့်ပြီး ကြိုးစားပါ။",
   "Unable to update your addresses. Please try again.": "လိပ်စာများကို ပြင်ဆင်၍မရပါ။ ပြန်လည်ကြိုးစားပါ။",
   "Unable to save this address. Please try again.": "ဤလိပ်စာကို သိမ်း၍မရပါ။ ပြန်လည်ကြိုးစားပါ။",
-  "Set as default": "ပုံမှန်လိပ်စာအဖြစ် ရွေးမည်"
+  "Set as default": "ပုံမှန်လိပ်စာအဖြစ် ရွေးမည်",
+  "Loading content…": "အချက်အလက်များကို ရယူနေသည်…",
+  "Loading is taking longer than expected. Refresh to try again.": "ရယူရန် အချိန်ကြာနေပါသည်။ စာမျက်နှာကို ပြန်ဖွင့်ပြီး ကြိုးစားပါ။"
 }
