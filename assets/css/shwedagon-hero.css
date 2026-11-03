@@ -132,7 +132,8 @@ html[data-a11y-motion] .sky-lantern { display: none; }
 
 /* Daylight gives the gold silhouette more definition against the blue sky. */
 :root:not([data-theme="dark"]) .shwedagon-illustration {
-  opacity: .88;
+  opacity: .74;
+  mask-image: radial-gradient(ellipse 31% 33% at 50% 47%, rgb(0 0 0 / .24) 35%, #000 100%);
   --pagoda-saturation: 1.3;
   filter: saturate(var(--pagoda-saturation));
 }
