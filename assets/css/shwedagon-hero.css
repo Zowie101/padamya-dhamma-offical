@@ -9,7 +9,7 @@
 .shwedagon-hero .center-content .cta{margin-top:30px}
 @media(min-width:701px){
  .shwedagon-home .shwedagon-hero{height:100dvh}
- .shwedagon-home .shwedagon-hero .center-content{top:calc(50% + var(--home-header-height) / 2)}
+ .shwedagon-home .shwedagon-hero .center-content{top:50%;left:50%}
 }
 .shwedagon-scene{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;animation:shwedagon-scene-reveal 1.8s ease-out both;background:linear-gradient(180deg,#cedee6 0%,#e6eceb 57%,#f2eee5 88%,var(--paper) 100%);mask-image:linear-gradient(#000 0 86%,transparent 100%);-webkit-mask-image:linear-gradient(#000 0 86%,transparent 100%)}
 .shwedagon-illustration{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover;object-position:50% 100%;opacity:.3;animation:shwedagon-reveal 1.8s cubic-bezier(.2,.65,.3,1) both}
@@ -25,7 +25,7 @@
 @media(max-width:700px){.shwedagon-illustration{object-position:50% 100%;opacity:.3}[data-theme=dark] .shwedagon-illustration{opacity:.4}.shwedagon-hero::after{height:65px}}
 @media(max-width:700px){
  .shwedagon-home{--home-header-height:68px}
- .shwedagon-home .shwedagon-hero{min-height:100svh;padding-top:calc(22px + var(--home-header-height))}
+ .shwedagon-home .shwedagon-hero{min-height:100svh;padding-block:calc(22px + var(--home-header-height))}
  .shwedagon-hero .center-content .cta{margin-top:24px}
 }
 @media(prefers-reduced-motion:reduce){.shwedagon-illustration,.shwedagon-scene{animation:none}}
