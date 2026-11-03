@@ -148,9 +148,9 @@ html[data-a11y-motion] .sky-lantern { display: none; }
 :root:not([data-theme="dark"]) .shwedagon-scene::before {
   content: "";
   position: absolute;
-  inset: 8% 0 auto;
-  height: 30%;
-  background: url("../images/day-clouds.svg") center top / cover no-repeat;
+  inset: 0 0 auto;
+  height: clamp(180px, 36svh, 400px);
+  background: url("../images/day-clouds.svg?v=2") center top / cover no-repeat;
 }
 
 .shwedagon-day-birds {

@@ -1,17 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 280">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 360">
   <defs>
-    <linearGradient id="white" x2="0" y2="1">
-      <stop stop-color="#fff"/>
-      <stop offset="1" stop-color="#f0f7fc"/>
+    <linearGradient id="cloud-fill" x2="0" y2="1">
+      <stop stop-color="#fffefa"/>
+      <stop offset=".52" stop-color="#f1faff"/>
+      <stop offset="1" stop-color="#a4cde5"/>
     </linearGradient>
-    <path id="cloud" d="M0 58C3 43 23 38 44 40C49 24 66 17 85 20C96 1 124-2 144 12C160 8 181 18 187 35C213 34 238 44 241 57C244 70 212 74 178 74H45C20 74-3 69 0 58Z"/>
+    <g id="bank">
+      <path fill="url(#cloud-fill)" d="M-55 25Q-24 2 20 18Q44-11 90 5Q122-23 165 1Q205-12 233 20Q278 5 306 43Q348 26 373 63Q416 56 439 88Q482 82 493 108Q543 112 566 132Q533 151 485 150Q451 174 407 155Q361 183 316 163Q280 185 232 163Q187 190 141 167Q95 185 60 155Q5 170-55 138Z"/>
+      <path fill="#91bfdc" d="M-55 110Q-4 128 38 107Q70 136 113 116Q146 150 193 126Q221 149 260 132Q298 159 336 139Q380 157 415 136Q460 149 493 131Q527 141 566 132Q533 151 485 150Q451 174 407 155Q361 183 316 163Q280 185 232 163Q187 190 141 167Q95 185 60 155Q5 170-55 138Z"/>
+      <path fill="#d2e9f5" d="M-45 75Q-12 49 20 70Q34 43 68 51Q95 26 130 51Q163 42 183 67Q215 52 244 78Q279 66 299 89Q337 82 354 105Q386 97 413 116Q380 130 343 115Q317 139 280 119Q252 139 214 114Q174 135 143 107Q108 125 79 100Q34 119 1 94Q-25 109-45 99Z"/>
+    </g>
   </defs>
-  <g fill="url(#white)">
-    <use href="#cloud" transform="translate(-60 42) scale(2 1.12)"/>
-    <use href="#cloud" opacity=".82" transform="translate(382 13) scale(.68 .55)"/>
-    <use href="#cloud" opacity=".76" transform="translate(565 88) scale(.8 .65)"/>
-    <use href="#cloud" transform="translate(1085 46) scale(1.7 1.03)"/>
-    <use href="#cloud" opacity=".86" transform="translate(1390 122) scale(1.18 .8)"/>
-    <use href="#cloud" opacity=".79" transform="translate(82 153) scale(.85 .64)"/>
-  </g>
+  <use href="#bank" opacity=".78" transform="translate(260 -77) scale(1.85 1.17)"/>
+  <use href="#bank" transform="translate(-35 -8) scale(1.36 1.38)"/>
+  <use href="#bank" transform="translate(1640 -24) scale(-1.27 1.58)"/>
+  <use href="#bank" opacity=".9" transform="translate(-45 152) scale(.65 .79)"/>
+  <use href="#bank" opacity=".88" transform="translate(1620 172) scale(-.63 .74)"/>
 </svg>
