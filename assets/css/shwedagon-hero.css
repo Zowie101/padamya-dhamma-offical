@@ -11,7 +11,7 @@
  .shwedagon-home .shwedagon-hero{height:100dvh}
  .shwedagon-home .shwedagon-hero .center-content{top:50%;left:50%}
 }
-.shwedagon-scene{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;animation:shwedagon-scene-reveal 1.8s ease-out both;background:linear-gradient(180deg,#cedee6 0%,#e6eceb 57%,#f2eee5 88%,var(--paper) 100%);mask-image:linear-gradient(#000 0 86%,transparent 100%);-webkit-mask-image:linear-gradient(#000 0 86%,transparent 100%)}
+.shwedagon-scene{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;animation:shwedagon-scene-reveal 1.8s ease-out both;background:linear-gradient(180deg,#91c2e4 0%,#bbdaed 33%,#e4eef2 65%,#f2eee5 88%,var(--paper) 100%);mask-image:linear-gradient(#000 0 86%,transparent 100%);-webkit-mask-image:linear-gradient(#000 0 86%,transparent 100%)}
 .shwedagon-illustration{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover;object-position:50% 100%;opacity:.3;animation:shwedagon-reveal 1.8s cubic-bezier(.2,.65,.3,1) both}
 .shwedagon-scene::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 54% 48%,var(--paper) 0,transparent 67%);opacity:.12}
 .shwedagon-hero .center-content :is(.eyebrow,.description){color:var(--ink);opacity:.8}
@@ -21,7 +21,7 @@
 .shwedagon-hero+.collection-discovery{--collection-paper:#fffefa;background:linear-gradient(var(--paper),var(--collection-paper) 150px);border-top-left-radius:0;border-top-right-radius:0}
 [data-theme=dark] .shwedagon-hero+.collection-discovery{--collection-paper:var(--paper)}
 @keyframes shwedagon-scene-reveal{from{opacity:0}to{opacity:1}}
-@keyframes shwedagon-reveal{from{filter:blur(5px);transform:translateY(16px)}to{filter:blur(0);transform:translateY(0)}}
+@keyframes shwedagon-reveal{from{filter:blur(5px) saturate(var(--pagoda-saturation, 1));transform:translateY(16px)}to{filter:blur(0) saturate(var(--pagoda-saturation, 1));transform:translateY(0)}}
 @media(max-width:700px){.shwedagon-illustration{object-position:50% 100%;opacity:.3}[data-theme=dark] .shwedagon-illustration{opacity:.4}.shwedagon-hero::after{height:65px}}
 @media(max-width:700px){
  .shwedagon-home{--home-header-height:68px}
@@ -129,3 +129,23 @@ html[data-a11y-motion] .shwedagon-home>.site-header{transition:none}
 
 html[data-a11y-motion] .sky-star { animation: none; opacity: .5; }
 html[data-a11y-motion] .sky-lantern { display: none; }
+
+/* Daylight gives the gold silhouette more definition against the blue sky. */
+:root:not([data-theme="dark"]) .shwedagon-illustration {
+  opacity: .58;
+  --pagoda-saturation: 1.22;
+  filter: saturate(var(--pagoda-saturation));
+}
+
+:root:not([data-theme="dark"]) .shwedagon-scene::before {
+  content: "";
+  position: absolute;
+  inset: 8% 0 auto;
+  height: 28%;
+  background:
+    radial-gradient(ellipse 13% 22% at 12% 40%, #fffdf5e8 0%, #fffdf580 55%, transparent 100%),
+    radial-gradient(ellipse 8% 25% at 21% 30%, #fffdf5d9 0%, #fffdf570 58%, transparent 100%),
+    radial-gradient(ellipse 14% 21% at 31% 43%, #fffdf5b8 0%, #fffdf560 56%, transparent 100%),
+    radial-gradient(ellipse 12% 24% at 78% 32%, #fffdf5db 0%, #fffdf577 55%, transparent 100%),
+    radial-gradient(ellipse 14% 20% at 89% 43%, #fffdf5d0 0%, #fffdf566 56%, transparent 100%);
+}
