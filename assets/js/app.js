@@ -901,18 +901,12 @@ document.addEventListener('click',event=>{
 },true)
 async function initDeliveryDetails(form) {
   if(!form?.querySelector || !window.SacredStore?.enabled)return
-  const store=window.SacredStore,dirty=new Set(),message=form.querySelector('[data-delivery-status]'),forget=form.querySelector('[data-forget-delivery]')
+  const store=window.SacredStore,dirty=new Set(),message=form.querySelector('[data-delivery-status]')
   form.addEventListener('input',e=>dirty.add(e.target.name))
   form.addEventListener('change',e=>dirty.add(e.target.name))
   const fill=details=>{for(const name of ['name','phone','email','address','city','country']){const field=form.elements.namedItem(name);if(field&&!dirty.has(name)&&details?.[name])field.value=details[name]}}
   fill({name:store.profile?.name,email:store.profile?.email})
-  forget.addEventListener('click',async()=>{
-    forget.disabled=true
-    try{await store.request('account/delivery','DELETE');forget.hidden=true;form.elements.namedItem('saveDelivery').checked=false;message.textContent='Saved details removed. Your past orders are unchanged.'}
-    catch(error){message.textContent=error.message||'Unable to remove saved details. Please try again.'}
-    finally{forget.disabled=false}
-  })
-  try{const {details}=await store.request('account/delivery');if(details){fill(details);forget.hidden=false;message.textContent='Your saved delivery details are ready. You can edit them below.'}}
+  try{const {details}=await store.request('account/delivery');if(details){fill(details);message.textContent='Your saved delivery details are ready. You can edit them below.'}}
   catch{message.textContent='Saved details could not be loaded. Please enter your delivery details.'}
 }
 function initCheckout() {
@@ -926,7 +920,7 @@ function initCheckout() {
     return
   }
   const subtotal = cart.reduce((n, i) => n + getProduct(i.id).price * i.qty, 0)
-  root.innerHTML = `<div class="checkout-layout"><form class="checkout-form" id="checkoutForm"><label class="field">Full name<input name="name" autocomplete="name" required></label><label class="field">Phone number<input name="phone" autocomplete="tel" required></label><label class="field full">Email address<input name="email" type="email" autocomplete="email" required></label><label class="field full">Delivery address<textarea name="address" rows="2" autocomplete="street-address" required></textarea></label><label class="field">City / Township<input name="city" autocomplete="address-level2" required></label><label class="field">Country<select name="country"><option>Myanmar</option><option>Thailand</option><option>Singapore</option><option>Other</option></select></label><label class="field full">Order note (optional)<textarea name="note" rows="2"></textarea></label><div class="delivery-preferences"><label class="delivery-save"><input type="checkbox" name="saveDelivery" checked><span>Save delivery details for my next order</span></label><div class="delivery-saved"><p data-delivery-status role="status" aria-live="polite"></p><button data-forget-delivery type="button" hidden>Forget saved details</button></div></div><button class="button button-dark" type="submit">Place order request <span><span class="site-icon icon-arrow" aria-hidden="true"></span></span></button></form><aside class="summary-card"><p class="eyebrow">Your selection</p><h2>Order summary.</h2>${cart
+  root.innerHTML = `<div class="checkout-layout"><form class="checkout-form" id="checkoutForm"><label class="field">Full name<input name="name" autocomplete="name" required></label><label class="field">Phone number<input name="phone" autocomplete="tel" required></label><label class="field full">Email address<input name="email" type="email" autocomplete="email" required></label><label class="field full">Delivery address<textarea name="address" rows="2" autocomplete="street-address" required></textarea></label><label class="field">City / Township<input name="city" autocomplete="address-level2" required></label><label class="field">Country<select name="country"><option>Myanmar</option><option>Thailand</option><option>Singapore</option><option>Other</option></select></label><label class="field full">Order note (optional)<textarea name="note" rows="2"></textarea></label><div class="delivery-preferences"><label class="delivery-save"><input type="checkbox" name="saveDelivery" checked><span>Save delivery details for my next order</span></label><div class="delivery-saved"><p data-delivery-status role="status" aria-live="polite"></p></div></div><button class="button button-dark" type="submit">Place order request <span><span class="site-icon icon-arrow" aria-hidden="true"></span></span></button></form><aside class="summary-card"><p class="eyebrow">Your selection</p><h2>Order summary.</h2>${cart
     .map(
       i =>
         `<div class="summary-row"><span>${getProduct(i.id).name} × ${i.qty

@@ -141,3 +141,18 @@ test('saved delivery belongs to the signed-in account and changes only after suc
   assert.equal((await a.request('/api/account/delivery')).body.details,null)
   assert.equal((await a.request('/api/orders')).body.orders.length,2)
 })
+
+test('account delivery can be added and edited before ordering with session ownership and validation',async t=>{
+  const app=await fixture(t),a=await app.client(),b=await app.client()
+  assert.equal((await a.request('/api/account/delivery','PUT',customer)).status,401)
+  await a.request('/api/auth/register','POST',{name:customer.name,email:customer.email,password:'Fixture private password 2026!'})
+  const first=await a.request('/api/account/delivery','PUT',{...customer,userId:b.profile.id,note:'Never a saved default'})
+  assert.equal(first.status,200);assert.deepEqual(first.body.details,customer)
+  assert.equal((await a.request('/api/orders')).body.orders.length,0)
+  assert.equal((await a.request('/api/account/delivery','PUT',{...customer,address:''})).status,400)
+  assert.equal((await a.request('/api/account/delivery','PUT',customer,{'x-csrf-token':'wrong'})).status,403)
+  const edited={...customer,address:'New saved delivery address'}
+  assert.equal((await a.request('/api/account/delivery','PUT',edited)).status,200)
+  assert.deepEqual((await a.request('/api/account/delivery')).body.details,edited)
+  assert.equal(app.store.deliveryDetails(b.profile.id),null)
+})

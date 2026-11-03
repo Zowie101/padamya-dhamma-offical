@@ -95,6 +95,7 @@ export class PostgresStore {
   async order(ref:string,profile:any){const row=(await this.query('SELECT * FROM padamya.orders WHERE ref=$1',[ref]))[0];if(!row||(profile.role!=='admin'&&row.user_id!==profile.id))throw new ApiError(404,'Order not found for this account or browser session.');return row.data}
   admin(profile:any){if(profile.role!=='admin')throw new ApiError(403,'Administrator access is required.')}
   async deliveryDetails(userId:string){return (await this.query('SELECT data FROM padamya.saved_delivery WHERE user_id=$1',[userId]))[0]?.data||null}
+  async saveDelivery(userId:string,details:any){await this.query('INSERT INTO padamya.saved_delivery VALUES($1,$2::jsonb) ON CONFLICT(user_id) DO UPDATE SET data=excluded.data',[userId,JSON.stringify(details)])}
   async forgetDelivery(userId:string){await this.query('DELETE FROM padamya.saved_delivery WHERE user_id=$1',[userId])}
   async createOrder(profile:any,data:any){return this.transaction(async store=>{
     const requestHash=hash(JSON.stringify(data)),previous=(await store.query('SELECT * FROM padamya.orders WHERE user_id=$1 AND idempotency_key=$2',[profile.id,data.idempotencyKey]))[0]

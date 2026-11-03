@@ -8,7 +8,7 @@ import { openDatabase, ROOT, STAGES } from './database.mts'
 import { Store } from './store.mts'
 import { ApiError } from './security.mts'
 import { comparisonSchema,createComparison } from './comparison.mts'
-import { validate, cartSchema, wishlistSchema, credentialsSchema, orderSchema, productPatchSchema, chatSchema } from './validation.mts'
+import { validate, customerSchema, cartSchema, wishlistSchema, credentialsSchema, orderSchema, productPatchSchema, chatSchema } from './validation.mts'
 
 async function body(req:any,limit=65000) {
   if(!String(req.headers['content-type']||'').startsWith('application/json'))throw new ApiError(415,'Send JSON data.')
@@ -118,6 +118,7 @@ export function createApp(options:any={}) {
       if(route==='/api/account/delivery'){
         if(profile.role==='guest')throw new ApiError(401,'Sign in to manage your saved delivery details.')
         if(req.method==='GET')return send({details:await store.deliveryDetails(profile.id)})
+        if(req.method==='PUT'){const details=validate(customerSchema.omit({note:true}),await body(req));await store.saveDelivery(profile.id,details);return send({details})}
         if(req.method==='DELETE'){await store.forgetDelivery(profile.id);return send({details:null})}
       }
       if(route==='/api/orders'){

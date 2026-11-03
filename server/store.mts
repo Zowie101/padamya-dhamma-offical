@@ -89,6 +89,7 @@ export class Store {
     return JSON.parse(row.data)
   }
   deliveryDetails(userId:string) {const row=this.db.prepare('SELECT data FROM saved_delivery WHERE user_id=?').get(userId);return row?JSON.parse(row.data):null}
+  saveDelivery(userId:string,details:any) {this.db.prepare('INSERT OR REPLACE INTO saved_delivery VALUES(?,?)').run(userId,JSON.stringify(details))}
   forgetDelivery(userId:string) {this.db.prepare('DELETE FROM saved_delivery WHERE user_id=?').run(userId)}
   createOrder(profile:any,data:any) {
     return transaction(this.db,()=>{

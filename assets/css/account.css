@@ -1,3 +1,18 @@
 .account-page main{padding:50px 6vw 70px}.account-card{max-width:520px;margin:0 auto;padding:30px;border:1px solid var(--line);border-radius:14px}.account-card h1{font-size:clamp(32px,4vw,48px);line-height:1.3;margin:10px 0 24px;letter-spacing:-.035em}.account-tabs{display:flex;gap:8px;border-bottom:1px solid var(--line);margin-bottom:24px;padding-bottom:12px}.account-tabs button{border:0;padding:10px 16px;background:transparent;color:var(--muted);font:inherit;font-size:13px;cursor:pointer;border-radius:6px}.account-tabs [aria-pressed=true]{background:var(--ink);color:var(--paper)}.account-card form{display:grid;gap:20px}.account-card label{display:grid;gap:9px;font-size:13px}.account-card label[hidden]{display:none}.account-card input{width:100%;min-width:0;padding:13px;border:1px solid var(--line);border-radius:6px;font:inherit;background:var(--paper);color:var(--ink)}.account-card input:focus{outline:2px solid var(--accent);outline-offset:2px}.account-helper{font-size:11px;color:var(--muted);line-height:1.8;margin:0}.account-actions{display:grid;gap:20px}#accountError{font-size:13px;color:var(--ink);line-height:1.6;margin:0}.account-card button:disabled{opacity:.5;cursor:wait}@media(max-width:600px){.account-page main{padding:30px 5vw}.account-card{padding:24px 20px}}
 
 .password-field{position:relative;display:block}.account-card .password-field input{padding-right:52px}.password-visibility{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:44px;height:44px;border:0;border-radius:6px;background:transparent;color:var(--ink);cursor:pointer}.password-visibility:focus-visible{outline:2px solid var(--accent)}.password-eye{position:absolute;inset:11px;background:currentColor;mask:center/contain no-repeat;-webkit-mask:center/contain no-repeat;transition:opacity .18s ease,transform .18s ease}.eye-show{mask-image:url('../icons/visibility_on_icon.svg');-webkit-mask-image:url('../icons/visibility_on_icon.svg')}.eye-hide{mask-image:url('../icons/visibility_off_icon.svg');-webkit-mask-image:url('../icons/visibility_off_icon.svg');opacity:0;transform:scale(.8)}.password-visibility[aria-pressed=true] .eye-show{opacity:0;transform:scale(.8)}.password-visibility[aria-pressed=true] .eye-hide{opacity:1;transform:scale(1)}@media(prefers-reduced-motion:reduce){.password-eye{transition:none}}
+
+.account-with-delivery{max-width:760px}
+.account-with-delivery .account-actions{display:flex;align-items:center;flex-wrap:wrap;gap:16px 24px}
+.account-delivery{margin-top:32px;padding-top:28px;border-top:1px solid var(--line)}
+.account-delivery h2{font-size:26px;line-height:1.4;margin:0 0 10px}
+.account-delivery>p{color:var(--muted);font-size:14px;line-height:1.7;margin:0 0 24px}
+.account-card .account-delivery form{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.account-delivery label{font-size:14px;min-width:0}
+.account-delivery :is(input,select,textarea){box-sizing:border-box;width:100%;min-width:0;padding:13px;border:1px solid var(--line);border-radius:6px;font:inherit;background:var(--paper);color:var(--ink)}
+.account-delivery textarea{resize:vertical;min-height:90px}
+.account-delivery :is(select,textarea):focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.account-delivery .delivery-full{grid-column:1/-1}
+.account-delivery-actions{display:flex;align-items:center;flex-wrap:wrap;gap:12px 20px}
+.account-delivery-actions p{font-size:13px;line-height:1.7;margin:0;flex:1;min-width:180px}
+@media(max-width:480px){.account-card .account-delivery form{grid-template-columns:1fr;gap:18px}.account-delivery-actions .button{width:100%}}

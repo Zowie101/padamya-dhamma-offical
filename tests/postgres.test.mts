@@ -94,3 +94,15 @@ test('PostgreSQL saved delivery persists per account, omits notes and forget pre
   assert.equal(await store.deliveryDetails(user.id),null)
   assert.equal((await store.orders(user)).length,2)
 })
+
+test('PostgreSQL account delivery edits persist independently from order snapshots',async t=>{
+  const {store,pool}=await fixture(t),user=await store.createGuest(),other=await store.createGuest()
+  await store.saveDelivery(user.id,customer)
+  const order=await store.createOrder(user,checkout('saved-address-edit-0001'))
+  const edited={...customer,address:'Updated default address'}
+  await store.saveDelivery(user.id,edited)
+  const fresh=new PostgresStore(pool)
+  assert.deepEqual(await fresh.deliveryDetails(user.id),edited)
+  assert.equal(await fresh.deliveryDetails(other.id),null)
+  assert.equal((await fresh.order(order.ref,user)).customer.address,customer.address)
+})

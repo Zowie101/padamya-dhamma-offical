@@ -5,10 +5,12 @@
   const destination=new URLSearchParams(location.search).get('return')
   const allowed=new Set(['admin.html','admin-catalogue.html','checkout.html','track-order.html','wishlist.html'])
   if(store.profile.role!=='guest'){
+    root.classList.add('account-with-delivery')
     root.innerHTML='<p class="eyebrow">YOUR PADAMYA DHAMMA ACCOUNT</p><h1>Welcome <em>back.</em></h1><p id="accountIdentity"></p><div class="account-actions"><a class="button button-dark" id="accountContinue">Continue</a><a class="text-link" href="track-order.html">My orders</a><button class="button button-outline" id="accountLogout" type="button">Sign out</button></div><p id="accountError" role="alert"></p>'
     document.getElementById('accountIdentity').textContent=store.profile.name||store.profile.email
     document.getElementById('accountContinue').href=allowed.has(destination)?destination:store.profile.role==='admin'?'admin.html':'shop.html'
     document.getElementById('accountLogout').onclick=async()=>{try{await store.logout()}catch(error){document.getElementById('accountError').textContent=error.message}}
+    initAccountDelivery(root,store)
     return
   }
   let mode='login'
@@ -26,3 +28,25 @@
     try{await store.authenticate(mode,Object.fromEntries(new FormData(form)))}catch(error){document.getElementById('accountError').textContent=error.message;submit.disabled=false}
   }
 })()
+
+async function initAccountDelivery(root,store){
+  const section=document.createElement('section')
+  section.className='account-delivery'
+  section.innerHTML=`<h2>Delivery details</h2><p>Save your details here to fill your next checkout automatically.</p><form id="accountDeliveryForm"><label>Full name<input name="name" autocomplete="name" maxlength="120" required></label><label>Phone number<input name="phone" autocomplete="tel" maxlength="60" required></label><label class="delivery-full">Email address<input name="email" type="email" autocomplete="email" maxlength="254" required></label><label class="delivery-full">Delivery address<textarea name="address" autocomplete="street-address" maxlength="1000" rows="3" required></textarea></label><label>City / Township<input name="city" autocomplete="address-level2" maxlength="120" required></label><label>Country<select name="country" autocomplete="country-name"><option>Myanmar</option><option>Thailand</option><option>Singapore</option><option>Other</option></select></label><div class="delivery-full account-delivery-actions"><button class="button button-dark" type="submit" disabled>Save delivery details</button><p data-account-delivery-status role="status" aria-live="polite">Loading delivery details…</p></div></form>`
+  root.append(section)
+  const form=section.querySelector('form'),button=form.querySelector('[type=submit]'),status=form.querySelector('[role=status]'),dirty=new Set()
+  form.addEventListener('input',event=>dirty.add(event.target.name))
+  form.addEventListener('change',event=>dirty.add(event.target.name))
+  const fill=details=>{for(const name of ['name','phone','email','address','city','country']){const field=form.elements.namedItem(name);if(field&&!dirty.has(name)&&details?.[name])field.value=details[name]}}
+  fill({name:store.profile.name,email:store.profile.email})
+  form.onsubmit=async event=>{
+    event.preventDefault();if(button.disabled)return
+    button.disabled=true;status.textContent='Saving delivery details…'
+    try{await store.request('account/delivery','PUT',Object.fromEntries(new FormData(form)));status.textContent='Delivery details saved. Your next checkout will use these details.'}
+    catch(error){status.textContent=error.message||'Unable to save delivery details. Please try again.'}
+    finally{button.disabled=false}
+  }
+  try{const {details}=await store.request('account/delivery');fill(details);status.textContent=details?'You can edit these details at any time.':'Add your delivery details to get started.'}
+  catch{status.textContent='Unable to load saved details. You can enter and save your details again.'}
+  finally{button.disabled=false}
+}
