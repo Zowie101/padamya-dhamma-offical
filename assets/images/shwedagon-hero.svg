@@ -19,32 +19,49 @@
  <use href="#shrine" transform="translate(545 892) scale(.68)"/><use href="#shrine" transform="translate(1375 892) scale(.68)"/>
  <use href="#shrine" transform="translate(1555 895) scale(1.28)"/><use href="#shrine" transform="translate(1760 899) scale(.9)"/>
 </g>
-<g stroke="#dec38a" stroke-width="1.5" stroke-linejoin="round">
- <path d="M510 894H1410V910H510Z" fill="#74583a"/>
- <path d="M546 876H1374V894H546Z" fill="#b18a53"/>
- <path d="M585 857H1335V876H585Z" fill="#8b693f"/>
- <path d="M621 837H1299V857H621Z" fill="#b8975e"/>
- <path d="M650 814C650 726 675 669 734 616C792 561 830 506 842 466H1078C1090 506 1128 561 1186 616C1245 669 1270 726 1270 814Z" fill="url(#gold)"/>
- <path d="M635 814H1285V837H635Z" fill="#a6814c"/>
- <path d="M842 466C857 425 877 393 896 354C915 314 921 263 940 213L960 122L980 213C999 263 1005 314 1024 354C1043 393 1063 425 1078 466Z" fill="url(#spire)"/>
+<!-- Slender bell, narrow neck and tapered rings, informed by frontal Shwedagon photographs. -->
+<g stroke="#dec38a" stroke-width="1.3" stroke-linejoin="round">
+ <path d="M600 894H1320V910H600Z" fill="#74583a"/>
+ <path d="M631 876H1289V894H631Z" fill="#b18a53"/>
+ <path d="M663 857H1257V876H663Z" fill="#8b693f"/>
+ <path d="M696 837H1224V857H696Z" fill="#b8975e"/>
+ <path d="M742 814C744 770 760 730 789 697C808 675 812 646 820 614C832 570 862 542 879 511C887 496 891 482 893 466H1027C1029 482 1033 496 1041 511C1058 542 1088 570 1100 614C1108 646 1112 675 1131 697C1160 730 1176 770 1178 814Z" fill="url(#gold)"/>
+ <path d="M726 814H1194V837H726Z" fill="#a6814c"/>
+ <path d="M893 466C898 424 914 391 923 354C933 314 939 264 950 213L960 122L970 213C981 264 987 314 997 354C1006 391 1022 424 1027 466Z" fill="url(#spire)"/>
+ <path d="M884 466Q960 476 1036 466V480Q960 491 884 480Z" fill="#bb985d"/>
 </g>
-<!-- Restrained gold bands echo the real stupa's tapering rings. -->
-<path d="M938 217Q960 226 982 217" stroke="#ebd39a" stroke-opacity=".65" stroke-width="3"/>
-<path d="M931 239Q960 248 989 239" stroke="#ebd39a" stroke-opacity=".65" stroke-width="3"/>
-<path d="M924 262Q960 271 996 262" stroke="#ebd39a" stroke-opacity=".65" stroke-width="3"/>
-<path d="M918 286Q960 295 1002 286" stroke="#ebd39a" stroke-opacity=".65" stroke-width="3"/>
-<path d="M912 310Q960 319 1008 310" stroke="#ebd39a" stroke-opacity=".65" stroke-width="3"/>
-<path d="M902 335Q960 344 1018 335" stroke="#ebd39a" stroke-opacity=".65" stroke-width="3"/>
-<path d="M891 360Q960 369 1029 360" stroke="#ebd39a" stroke-opacity=".65" stroke-width="3"/>
-<path d="M880 383Q960 392 1040 383" stroke="#ebd39a" stroke-opacity=".65" stroke-width="3"/>
-<path d="M869 405Q960 414 1051 405" stroke="#ebd39a" stroke-opacity=".65" stroke-width="3"/>
-<path d="M859 426Q960 435 1061 426" stroke="#ebd39a" stroke-opacity=".65" stroke-width="3"/>
-<path d="M848 447Q960 456 1072 447" stroke="#ebd39a" stroke-opacity=".65" stroke-width="3"/>
-<path d="M840 466Q960 475 1080 466" stroke="#ebd39a" stroke-opacity=".65" stroke-width="3"/>
-<g stroke="#e2c88f" stroke-opacity=".55">
- <path d="M828 501Q960 522 1092 501M810 536Q960 558 1110 536M786 572Q960 595 1134 572M752 610Q960 636 1168 610" stroke-width="3"/>
- <path d="M699 665Q960 695 1221 665M671 716Q960 745 1249 716M657 769Q960 791 1263 769" stroke-width="2"/>
- <path d="M960 475V808M877 551Q829 690 829 810M1043 551Q1091 690 1091 810" stroke-opacity=".25"/>
+<path d="M949 217Q960 222 971 217" stroke="#ebd39a" stroke-opacity=".65" stroke-width="2"/>
+<path d="M944 239Q960 244 976 239" stroke="#ebd39a" stroke-opacity=".65" stroke-width="2"/>
+<path d="M939 262Q960 267 981 262" stroke="#ebd39a" stroke-opacity=".65" stroke-width="2"/>
+<path d="M935 286Q960 291 985 286" stroke="#ebd39a" stroke-opacity=".65" stroke-width="2"/>
+<path d="M931 310Q960 315 989 310" stroke="#ebd39a" stroke-opacity=".65" stroke-width="2"/>
+<path d="M926 335Q960 340 994 335" stroke="#ebd39a" stroke-opacity=".65" stroke-width="2"/>
+<path d="M920 360Q960 365 1000 360" stroke="#ebd39a" stroke-opacity=".65" stroke-width="2"/>
+<path d="M914 383Q960 388 1006 383" stroke="#ebd39a" stroke-opacity=".65" stroke-width="2"/>
+<path d="M907 405Q960 410 1013 405" stroke="#ebd39a" stroke-opacity=".65" stroke-width="2"/>
+<path d="M900 426Q960 431 1020 426" stroke="#ebd39a" stroke-opacity=".65" stroke-width="2"/>
+<path d="M895 447Q960 452 1025 447" stroke="#ebd39a" stroke-opacity=".65" stroke-width="2"/>
+<g stroke="#e2c88f" stroke-opacity=".5">
+ <path d="M883 500Q960 510 1037 500M865 536Q960 550 1055 536M843 572Q960 590 1077 572M823 610Q960 632 1097 610" stroke-width="2"/>
+ <path d="M811 665Q960 688 1109 665M776 716Q960 741 1144 716M749 769Q960 794 1171 769" stroke-width="1.4"/>
+ <path d="M960 490V810M909 549Q874 685 871 810M1011 549Q1046 685 1049 810" stroke-opacity=".16"/>
+</g>
+<g stroke="#e0c48a" stroke-opacity=".55" stroke-width="1.3">
+ <path d="M756 831V821Q763 810 770 821V831Z"/>
+ <path d="M784 831V821Q791 810 798 821V831Z"/>
+ <path d="M812 831V821Q819 810 826 821V831Z"/>
+ <path d="M840 831V821Q847 810 854 821V831Z"/>
+ <path d="M868 831V821Q875 810 882 821V831Z"/>
+ <path d="M896 831V821Q903 810 910 821V831Z"/>
+ <path d="M924 831V821Q931 810 938 821V831Z"/>
+ <path d="M952 831V821Q959 810 966 821V831Z"/>
+ <path d="M980 831V821Q987 810 994 821V831Z"/>
+ <path d="M1008 831V821Q1015 810 1022 821V831Z"/>
+ <path d="M1036 831V821Q1043 810 1050 821V831Z"/>
+ <path d="M1064 831V821Q1071 810 1078 821V831Z"/>
+ <path d="M1092 831V821Q1099 810 1106 821V831Z"/>
+ <path d="M1120 831V821Q1127 810 1134 821V831Z"/>
+ <path d="M1148 831V821Q1155 810 1162 821V831Z"/>
 </g>
 <!-- Hti, the slim ceremonial umbrella and finial. -->
 <path d="M960 52V123" stroke="#c8a467" stroke-width="3"/>
