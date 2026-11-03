@@ -157,3 +157,11 @@ Every storefront page includes `assets/css/page-motion.css` and `assets/js/page-
 Use `data-no-page-transition` on a special link to opt out of the fallback. Test the navigation safeguards with `node --test tests/page-motion.test.cjs`.
 
 AI shrine-photo comparison setup, privacy and testing: [AI-COMPARISON.md](docs/AI-COMPARISON.md).
+
+## Saved delivery details
+
+Signed-in customers can leave “Save delivery details for my next order” checked at checkout. Only a successful order saves or updates their name, phone, email, address, city and country. Order notes are never reused. Future checkouts prefill those details, including on another device signed into the same account. Editing a field while defaults load takes priority over the saved value.
+
+“Forget saved details” removes the account's future default without changing historical orders. Unchecking the save option does not overwrite an existing default. Private defaults are stored in `saved_delivery` (SQLite) or `padamya.saved_delivery` (PostgreSQL), created automatically at server startup. GET/DELETE `/api/account/delivery` require a signed-in session; DELETE also requires CSRF validation. No delivery details are stored in browser localStorage or included in public bootstrap data.
+
+Test with two accounts: complete a checkout with saving enabled, return to checkout and verify prefill, switch accounts and verify separation, then forget the default and verify past orders remain. Automated coverage exercises SQLite, PostgreSQL persistence, idempotent retries, failed checkout, consent, authentication and CSRF protections.

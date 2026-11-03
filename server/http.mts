@@ -115,6 +115,11 @@ export function createApp(options:any={}) {
         const data=validate(z.object({cart:cartSchema,wishlist:wishlistSchema}),await body(req))
         return send(await store.importBag(profile,data))
       }
+      if(route==='/api/account/delivery'){
+        if(profile.role==='guest')throw new ApiError(401,'Sign in to manage your saved delivery details.')
+        if(req.method==='GET')return send({details:await store.deliveryDetails(profile.id)})
+        if(req.method==='DELETE'){await store.forgetDelivery(profile.id);return send({details:null})}
+      }
       if(route==='/api/orders'){
         if(req.method==='GET')return send({orders:await store.orders(profile)})
         if(req.method==='POST'){if(profile.role==='guest')throw new ApiError(401,'Sign in before placing your order.');await store.limit('checkout:'+profile.id,10,60000);return send({order:await store.createOrder(profile,validate(orderSchema,await body(req)))},201)}

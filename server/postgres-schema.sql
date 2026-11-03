@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS padamya.sessions (
 );
 CREATE INDEX IF NOT EXISTS sessions_expiry ON padamya.sessions(expires);
 CREATE TABLE IF NOT EXISTS padamya.products(id TEXT PRIMARY KEY,data JSONB NOT NULL);
+CREATE TABLE IF NOT EXISTS padamya.saved_delivery(user_id TEXT PRIMARY KEY REFERENCES padamya.profiles(id),data JSONB NOT NULL);
 CREATE TABLE IF NOT EXISTS padamya.carts(user_id TEXT PRIMARY KEY REFERENCES padamya.profiles(id),data JSONB NOT NULL DEFAULT '[]');
 CREATE TABLE IF NOT EXISTS padamya.wishlists(user_id TEXT PRIMARY KEY REFERENCES padamya.profiles(id),data JSONB NOT NULL DEFAULT '[]');
 CREATE TABLE IF NOT EXISTS padamya.orders (
@@ -28,6 +29,7 @@ INSERT INTO padamya.schema_migrations(version) VALUES(1) ON CONFLICT DO NOTHING;
 ALTER TABLE padamya.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE padamya.sessions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE padamya.products ENABLE ROW LEVEL SECURITY;
+ALTER TABLE padamya.saved_delivery ENABLE ROW LEVEL SECURITY;
 ALTER TABLE padamya.carts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE padamya.wishlists ENABLE ROW LEVEL SECURITY;
 ALTER TABLE padamya.orders ENABLE ROW LEVEL SECURITY;

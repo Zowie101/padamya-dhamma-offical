@@ -77,3 +77,20 @@ test('cloud rate limits are atomic and uploads never fall back to ephemeral file
   assert.equal(calls[0].options.headers.authorization,'Bearer test-secret')
   assert.ok(!assets.url('test.png').includes('test-secret'))
 })
+
+test('PostgreSQL saved delivery persists per account, omits notes and forget preserves orders',async t=>{
+  const {store,pool}=await fixture(t),guest=await store.createGuest(),other=await store.createGuest()
+  const user=await store.register(guest,{name:'Cloud test',email:customer.email,password:'cloud-fixture-password'})
+  await store.createOrder(user,checkout('delivery-cloud-optout-0001'))
+  assert.equal(await store.deliveryDetails(user.id),null)
+  const data={...checkout('delivery-cloud-save-0001'),saveDelivery:true,customer:{...customer,note:'One order only'}}
+  await store.createOrder(user,data);await store.createOrder(user,data)
+  const recreated=new PostgresStore(pool);await recreated.initialize()
+  assert.deepEqual(await recreated.deliveryDetails(user.id),customer)
+  assert.equal(await recreated.deliveryDetails(other.id),null)
+  await assert.rejects(()=>store.createOrder(user,{...data,idempotencyKey:'delivery-cloud-fail-0001',cart:[{id:'missing',qty:1}]}))
+  assert.deepEqual(await recreated.deliveryDetails(user.id),customer)
+  await recreated.forgetDelivery(user.id)
+  assert.equal(await store.deliveryDetails(user.id),null)
+  assert.equal((await store.orders(user)).length,2)
+})

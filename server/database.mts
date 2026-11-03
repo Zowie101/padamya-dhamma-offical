@@ -11,6 +11,7 @@ export function openDatabase(filename = path.join(ROOT,'.data/sacred-form.sqlite
     CREATE TABLE IF NOT EXISTS profiles(id TEXT PRIMARY KEY,email TEXT UNIQUE COLLATE NOCASE,password TEXT,name TEXT NOT NULL DEFAULT '',role TEXT NOT NULL CHECK(role IN('guest','customer','admin')),created_at TEXT NOT NULL);
     CREATE TABLE IF NOT EXISTS sessions(token_hash TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES profiles(id),csrf TEXT NOT NULL,expires INTEGER NOT NULL);
     CREATE TABLE IF NOT EXISTS products(id TEXT PRIMARY KEY,data TEXT NOT NULL);
+    CREATE TABLE IF NOT EXISTS saved_delivery(user_id TEXT PRIMARY KEY REFERENCES profiles(id),data TEXT NOT NULL);
     CREATE TABLE IF NOT EXISTS carts(user_id TEXT PRIMARY KEY REFERENCES profiles(id),data TEXT NOT NULL DEFAULT '[]');
     CREATE TABLE IF NOT EXISTS wishlists(user_id TEXT PRIMARY KEY REFERENCES profiles(id),data TEXT NOT NULL DEFAULT '[]');
     CREATE TABLE IF NOT EXISTS orders(ref TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES profiles(id),data TEXT NOT NULL,idempotency_key TEXT NOT NULL,request_hash TEXT NOT NULL,UNIQUE(user_id,idempotency_key));

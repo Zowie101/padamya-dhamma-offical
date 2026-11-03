@@ -607,5 +607,11 @@
   "AI analysis complete.": "AI ဆန်းစစ်မှု ပြီးပါပြီ။",
   "On-device comparison complete.": "စက်တွင်း နှိုင်းယှဉ်မှု ပြီးပါပြီ။",
   "Gemini photo analysis": "Gemini ဓာတ်ပုံဆန်းစစ်မှု",
-  "Style & composition": "ဟန်ပန်နှင့် အပြင်အဆင်"
+  "Style & composition": "ဟန်ပန်နှင့် အပြင်အဆင်",
+  "Save delivery details for my next order": "နောက်တစ်ကြိမ်မှာယူရန် ပို့ဆောင်ရေးအချက်အလက်များကို သိမ်းထားမည်",
+  "Forget saved details": "သိမ်းထားသောအချက်အလက်များကို ဖျက်မည်",
+  "Your saved delivery details are ready. You can edit them below.": "သိမ်းထားသော ပို့ဆောင်ရေးအချက်အလက်များကို ဖြည့်ထားပြီးပါပြီ။ လိုအပ်ပါက ပြင်ဆင်နိုင်ပါသည်။",
+  "Saved details removed. Your past orders are unchanged.": "သိမ်းထားသောအချက်အလက်များကို ဖျက်ပြီးပါပြီ။ ယခင်အမှာစာများ မပြောင်းလဲပါ။",
+  "Unable to remove saved details. Please try again.": "သိမ်းထားသောအချက်အလက်များကို ဖျက်၍မရပါ။ ပြန်လည်ကြိုးစားပါ။",
+  "Saved details could not be loaded. Please enter your delivery details.": "သိမ်းထားသောအချက်အလက်များကို ရယူ၍မရပါ။ ပို့ဆောင်ရေးအချက်အလက်များကို ဖြည့်ပါ။"
 }

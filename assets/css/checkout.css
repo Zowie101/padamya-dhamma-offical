@@ -45,3 +45,13 @@ html[lang=my] body.checkout-page .summary-card .eyebrow{margin-bottom:10px!impor
  .checkout-page .checkout-form .button{min-height:48px}
  html[lang=my] body.checkout-page .page-hero h1{font-size:28px}
 }
+
+.delivery-preferences{grid-column:1/-1;min-width:0}
+.delivery-save{display:flex;align-items:center;gap:10px;font-size:14px;line-height:1.6;cursor:pointer}
+.delivery-save input{width:18px;height:18px;flex:0 0 18px;accent-color:var(--gold,#aa8049)}
+.delivery-saved{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 14px;font-size:12px;line-height:1.6}
+.delivery-saved p{margin:6px 0 0}
+.delivery-saved p:empty{display:none}
+.delivery-saved button{padding:6px 0;border:0;border-bottom:1px solid currentColor;background:none;color:inherit;font:inherit;cursor:pointer}
+.delivery-saved button:hover{color:var(--gold,#aa8049)}
+.delivery-saved button[hidden]{display:none}

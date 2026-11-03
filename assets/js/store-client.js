@@ -37,12 +37,12 @@
       lookup:(ref,email)=>state.orders.find(order=>order.ref===ref&&order.customer.email.toLowerCase()===String(email).toLowerCase())||null,
       history:(email,filter='all')=>state.orders.filter(order=>order.customer.email===email&&matches(order,filter)),
       latest:()=>state.orders[0]||null,
-      async create(customer,cart){
+      async create(customer,cart,products,preferences={}){
         await state.queue
-        const signature=JSON.stringify({customer,cart});let pending
+        const saveDelivery=preferences.saveDelivery===true;const signature=JSON.stringify({customer,cart,saveDelivery});let pending
         try{pending=JSON.parse(sessionStorage.getItem('sfPendingCheckout')||'null')}catch{}
         if(!pending||pending.signature!==signature){pending={signature,key:crypto.randomUUID()};sessionStorage.setItem('sfPendingCheckout',JSON.stringify(pending))}
-        const {order}=await request('orders','POST',{customer,cart,idempotencyKey:pending.key})
+        const {order}=await request('orders','POST',{customer,cart,...(saveDelivery?{saveDelivery:true}:{}),idempotencyKey:pending.key})
         put(order);return order
       },
       async setDemoStage(ref,status,enabled,expectedStatus){const {order}=await request(`admin/orders/${encodeURIComponent(ref)}/stage`,'PATCH',{status,expectedStatus});return put(order)},

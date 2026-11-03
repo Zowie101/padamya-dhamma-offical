@@ -94,6 +94,8 @@ export class PostgresStore {
   async orders(profile:any){const rows=profile.role==='admin'?await this.query('SELECT data FROM padamya.orders'):await this.query('SELECT data FROM padamya.orders WHERE user_id=$1',[profile.id]);return rows.map((r:any)=>r.data).sort((a:any,b:any)=>Date.parse(b.createdAt)-Date.parse(a.createdAt))}
   async order(ref:string,profile:any){const row=(await this.query('SELECT * FROM padamya.orders WHERE ref=$1',[ref]))[0];if(!row||(profile.role!=='admin'&&row.user_id!==profile.id))throw new ApiError(404,'Order not found for this account or browser session.');return row.data}
   admin(profile:any){if(profile.role!=='admin')throw new ApiError(403,'Administrator access is required.')}
+  async deliveryDetails(userId:string){return (await this.query('SELECT data FROM padamya.saved_delivery WHERE user_id=$1',[userId]))[0]?.data||null}
+  async forgetDelivery(userId:string){await this.query('DELETE FROM padamya.saved_delivery WHERE user_id=$1',[userId])}
   async createOrder(profile:any,data:any){return this.transaction(async store=>{
     const requestHash=hash(JSON.stringify(data)),previous=(await store.query('SELECT * FROM padamya.orders WHERE user_id=$1 AND idempotency_key=$2',[profile.id,data.idempotencyKey]))[0]
     if(previous){if(previous.request_hash!==requestHash)throw new ApiError(409,'This checkout reference was already used. Please start a new checkout.');return previous.data}
@@ -105,6 +107,7 @@ export class PostgresStore {
     const order={ref,customer:data.customer,items,subtotal,deliveryFee:null,total:subtotal,currency:'MMK',createdAt,status:'placed',history:[{status:'placed',at:createdAt}],adminEvents:[],delivery:{},paymentStatus:'unpaid',localServer:true,isDemo:false}
     for(const item of cart){const p=await store.product(item.id);if(p.stock!==null){p.stock-=item.qty;await store.query('UPDATE padamya.products SET data=$1::jsonb WHERE id=$2',[JSON.stringify(p),p.id])}}
     await store.query('INSERT INTO padamya.orders VALUES($1,$2,$3::jsonb,$4,$5)',[ref,profile.id,JSON.stringify(order),data.idempotencyKey,requestHash])
+    if(data.saveDelivery===true){const {name,phone,email,address,city,country}=data.customer;await store.query('INSERT INTO padamya.saved_delivery VALUES($1,$2::jsonb) ON CONFLICT(user_id) DO UPDATE SET data=excluded.data',[profile.id,JSON.stringify({name,phone,email,address,city,country})])}
     await store.writeCart(profile.id,[]);return order
   })}
   async updateStage(profile:any,ref:string,status:string,expectedStatus:string){this.admin(profile);return this.transaction(async store=>{
