@@ -25,6 +25,7 @@
   <script src="assets/js/account-panel.js?v=20261102-padamya-1" defer></script>
     <link rel="stylesheet" href="assets/css/icon-motion.css?v=20261102-1" />
     <link rel="stylesheet" href="assets/css/accessibility.css?v=20261102-padamya-1" />
+  <link rel="stylesheet" href="assets/css/comparison-ai.css?v=20261103-ai-photo-1" />
 </head>
   <body>
     <header class="site-header">
@@ -159,7 +160,7 @@
                 </div>
               </div>
               <p id="uploadHint" class="adviser-small">
-                Your photo stays on your device.
+                Your photo stays on your device unless you choose AI analysis.
               </p>
               <p id="uploadStatus" role="status" class="adviser-small"></p>
             </div>
@@ -201,6 +202,12 @@
                     <option value="statement">A statement piece</option>
                   </select></label
                 >
+              </div>
+              <div class="comparison-ai-option">
+                <label class="comparison-ai-choice"><input type="checkbox" id="compareUseAI" aria-describedby="compareAIPrivacy"><span>Use Gemini photo analysis</span></label>
+                <p id="compareAIPrivacy">Choosing AI sends a resized photo and these two product references to Google. We do not save your photo. Google may use free-tier inputs to improve its products. Avoid photos containing people or private information.</p>
+                <a href="https://ai.google.dev/gemini-api/terms" target="_blank" rel="noopener noreferrer" class="comparison-ai-privacy-link">Google AI data terms ↗</a>
+                <p id="compareAIStatus" role="status" aria-live="polite"></p>
               </div>
               <button
                 type="submit"
@@ -250,7 +257,7 @@
     </footer>
     <div id="toastRoot" aria-live="polite"></div>
     <script src="assets/js/app.js?v=20261103-checkout-ui-1"></script>
-    <script src="assets/js/comparison.js?v=20261102-accessibility-1"></script>
+    <script src="assets/js/comparison.js?v=20261103-ai-photo-1"></script>
   <script src="assets/js/sage-core.js?v=20261102-1"></script>
 <script src="assets/js/sage.js?v=20261102-padamya-1"></script>
 </body>

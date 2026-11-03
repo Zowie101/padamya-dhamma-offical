@@ -1,4 +1,4 @@
-/* Local photo comparison. */
+/* Optional Gemini vision analysis with an explicit, on-device fallback. */
 ; (() => {
   const root = document.getElementById('wishlistAdviser')
   if (!root) return
@@ -13,9 +13,18 @@
     photoUrl = null,
     photoVersion = 0
 
+  let comparisonVersion=0,comparisonController=null,busy=false
+  const useAI=el('compareUseAI'),button=el('runComparison'),status=el('compareAIStatus')
+  const escapeText=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]))
+  function updateMode(){button.childNodes[0].textContent=useAI.checked?'Compare with AI ':'Compare for my space '}
+  useAI.addEventListener('change',()=>{invalidate();updateMode()})
   let requestedPiece = new URLSearchParams(location.search).get('piece')
   let chartObserver = null
   function invalidate() {
+    comparisonVersion++
+    comparisonController?.abort();comparisonController=null;busy=false
+    form.removeAttribute('aria-busy');el('compareAIStatus').textContent=''
+    el('compareAIStatus').parentElement.classList.remove('is-working')
     chartObserver?.disconnect()
     result.hidden = true
     result.classList.remove('reasons-open')
@@ -155,7 +164,12 @@
         saturation += max ? (max - min) / max : 0
       }
       const n = px.length / 4
+      const resized=document.createElement('canvas'),factor=Math.min(1,1024/long)
+      resized.width=Math.max(1,Math.round(img.naturalWidth*factor));resized.height=Math.max(1,Math.round(img.naturalHeight*factor))
+      const resizedCtx=resized.getContext('2d');resizedCtx.fillStyle='#fff';resizedCtx.fillRect(0,0,resized.width,resized.height);resizedCtx.drawImage(img,0,0,resized.width,resized.height)
+      const jpeg=resized.toDataURL('image/jpeg',.82).split(',')[1]
       photo = {
+        jpeg,
         brightness: brightness / n,
         warmth: warmth / n,
         saturation: saturation / n
@@ -288,9 +302,9 @@
     )
     return { p, fits, score, criteria }
   }
-  form.addEventListener('submit', event => {
+  form.addEventListener('submit', async event => {
     event.preventDefault()
-    if (!photo || first.value === second.value) return
+    if (busy || !photo || first.value === second.value) return
     const value = el('compareHeight').value,
       height = value === '' ? null : Number(value)
     if (
@@ -307,19 +321,41 @@
       return
     }
     chartObserver?.disconnect()
+    result.hidden=true
     result.classList.remove('reasons-open')
-    const pair = [first.value, second.value].map(id =>
+    let pair = [first.value, second.value].map(id =>
       assess(
         PRODUCTS.find(p => p.id === id),
         height,
         el('compareStyle').value
       )
     )
+    let ai=null,fallbackNotice=''
+    if(useAI.checked){
+      const version=++comparisonVersion,selected=[first.value,second.value],image=photo.jpeg
+      busy=true;button.disabled=true;form.setAttribute('aria-busy','true');status.textContent='Looking at your space and comparing both pieces…';status.parentElement.classList.add('is-working')
+      const controller=new AbortController();comparisonController=controller;const timer=setTimeout(()=>controller.abort(),45000)
+      try{
+        const store=window.SacredStore;await store?.ready
+        if(version!==comparisonVersion)return
+        if(!store?.enabled)throw Error('AI needs the store connection.')
+        const response=await fetch('/api/comparison',{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json','x-csrf-token':store.csrf},body:JSON.stringify({ids:selected,photo:image,consent:true,height,preference:el('compareStyle').value,language:document.documentElement.lang==='my'?'my':'en'}),signal:controller.signal})
+        const data=await response.json()
+        if(!response.ok)throw Error(data.error||'AI comparison is temporarily unavailable.')
+        if(version!==comparisonVersion)return
+        if(data.mode!=='ai'||data.pair?.length!==2)throw Error('AI returned an incomplete comparison.')
+        ai=data;pair=data.pair.map(item=>({...item,p:PRODUCTS.find(p=>p.id===item.id)}))
+      }catch(error){
+        if(version!==comparisonVersion)return
+        fallbackNotice=(error.name==='AbortError'?'AI analysis timed out.':error.message)+' On-device comparison shown instead.'
+      }finally{clearTimeout(timer);if(version===comparisonVersion){busy=false;comparisonController=null;button.disabled=false;form.removeAttribute('aria-busy');status.parentElement.classList.remove('is-working');status.textContent=ai?'AI analysis complete.':'On-device comparison complete.'}}
+      if(version!==comparisonVersion)return
+    }
     const eligible = pair.filter(x => x.fits).sort((a, b) => b.score - a.score),
       winner = eligible[0]
     const close =
       eligible.length === 2 && Math.abs(pair[0].score - pair[1].score) <= 5
-    const poorPhoto = photo.brightness < 0.15 || photo.brightness > 0.9
+    const poorPhoto = ai?ai.quality==='limited':photo.brightness < 0.15 || photo.brightness > 0.9
     const title = !winner
       ? 'Neither clears your shelf height.'
       : close
@@ -343,6 +379,7 @@
           ? 'The only piece that clears your entered shelf height.'
           : 'A stronger balance of finish, contrast and your selected details.'
     result.innerHTML =
+      (ai?'<p class="ai-comparison-label">Gemini photo analysis</p>':'')+(fallbackNotice?'<p class="ai-comparison-notice" role="status">'+escapeText(fallbackNotice)+'</p>':'')+
       '<div class="result-hero"><div class="result-heading"><div><p class="eyebrow">Your comparison</p><h2 id="comparisonResultTitle">' +
       title +
       '</h2><p>' +
@@ -408,7 +445,7 @@
                   '/' +
                   c.max +
                   '</span></div><p>' +
-                  c.reason +
+                  escapeText(c.reason) +
                   '</p></li>'
               )
               .join('') +
@@ -416,17 +453,14 @@
           )
         })
         .join('') +
-      '</div><p class="result-footnote">Local algorithm · Match points are a comparison score, not a probability. ' +
+      '</div><p class="result-footnote">'+(ai?'AI styling assessment':'On-device algorithm')+' · Match points are a comparison score, not a probability. ' +
       (height === null
         ? 'Physical fit has not been checked.'
         : 'Height checked; confirm shelf width, depth and weight capacity.') +
       '</p></div>' +
-      '<p class="photo-reading">Photo: ' +
-      brightness +
-      ' overall exposure · ' +
-      colour +
-      ' average colour.</p>' +
-      '<details class="comparison-method"><summary>How this recommendation is calculated</summary><p>Match points are a weighted rule score, not a probability or an AI confidence rating. Height clearance contributes up to 45 points when entered; palette pairing 20; visual contrast 15; and your chosen style preference 20 when selected. The total is scaled to 100 using only the criteria supplied. A piece that exceeds your entered height is never recommended, regardless of its score. Within 5 match points, the result is treated as a close call.</p><p>Colour and contrast rules use listed material descriptions and whole-image pixel averages. They cannot recognise your shrine or the statue, isolate a shelf, judge sacred suitability, predict true product colour or assess width, depth and stability. Check product measurements and actual photographs before ordering.</p></details>' +
+      (ai?'<p class="photo-reading" data-ai data-no-translate>'+escapeText(ai.observation)+(ai.caution?' '+escapeText(ai.caution):'')+'</p>':'<p class="photo-reading">Photo: '+brightness+' overall exposure · '+colour+' average colour.</p>') +
+      (ai?'<details class="comparison-method"><summary>How this recommendation is calculated</summary><p>Gemini assesses visible palette, contrast and composition using your room photo and the selected product references. Its styling scores are subjective, not a probability or a measurement. Entered height clearance is checked separately against catalogue dimensions. A piece that exceeds that height is never recommended. Width, depth, stability and true finish cannot be verified from this photo.</p></details>':
+      '<details class="comparison-method"><summary>How this recommendation is calculated</summary><p>Match points are a weighted rule score, not a probability or an AI confidence rating. Height clearance contributes up to 45 points when entered; palette pairing 20; visual contrast 15; and your chosen style preference 20 when selected. The total is scaled to 100 using only the criteria supplied. A piece that exceeds your entered height is never recommended, regardless of its score. Within 5 match points, the result is treated as a close call.</p><p>Colour and contrast rules use listed material descriptions and whole-image pixel averages. They cannot recognise your shrine or the statue, isolate a shelf, judge sacred suitability, predict true product colour or assess width, depth and stability. Check product measurements and actual photographs before ordering.</p></details>') +
       '<p class="adviser-small">' +
       (height === null
         ? 'No shelf height was entered, so physical fit has not been assessed. '
@@ -479,7 +513,9 @@
     })
   })
   document.addEventListener('DOMContentLoaded', window.syncWishlistComparison)
+  window.addEventListener('sacredform:languagechange',()=>{invalidate();updateMode()})
   window.addEventListener('pagehide', () => {
+    comparisonVersion++;comparisonController?.abort()
     if (photoUrl) URL.revokeObjectURL(photoUrl)
   })
 })()

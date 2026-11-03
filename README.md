@@ -155,3 +155,5 @@ The header includes an English / မြန်မာ toggle with a remembered pre
 Every storefront page includes `assets/css/page-motion.css` and `assets/js/page-motion.js`. Cross-document View Transitions provide a 140 ms fade out and a 340 ms fade in with 6 px of upward motion; the navigation bar stays visually steady. Browsers without cross-document support use the same entry motion and a short delayed navigation for ordinary internal links. `SacredPageMotion.navigate(url)` also handles checkout and Room Studio entry. Hash links, external links, downloads, new tabs, cancelled dialog links and modified clicks retain native behavior. Back/forward restores clear any outgoing state. Reduced-motion settings disable the effect and printing never captures a faded page.
 
 Use `data-no-page-transition` on a special link to opt out of the fallback. Test the navigation safeguards with `node --test tests/page-motion.test.cjs`.
+
+AI shrine-photo comparison setup, privacy and testing: [AI-COMPARISON.md](docs/AI-COMPARISON.md).

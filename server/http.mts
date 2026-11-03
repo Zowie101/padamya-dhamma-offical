@@ -7,6 +7,7 @@ import { z } from 'zod'
 import { openDatabase, ROOT, STAGES } from './database.mts'
 import { Store } from './store.mts'
 import { ApiError } from './security.mts'
+import { comparisonSchema,createComparison } from './comparison.mts'
 import { validate, cartSchema, wishlistSchema, credentialsSchema, orderSchema, productPatchSchema, chatSchema } from './validation.mts'
 
 async function body(req:any,limit=65000) {
@@ -44,6 +45,7 @@ export function createApp(options:any={}) {
     config.publicOrigin=origin.origin
   }else config.publicOrigin=''
   const cookie=(res:any,raw:string,secure:boolean)=>res.setHeader('Set-Cookie',`sf_session=${raw}; Path=/; HttpOnly; SameSite=Lax; Max-Age=2592000${secure?'; Secure':''}`)
+  let activeComparisons=0
   const server=http.createServer(async(req,res)=>{
     res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','strict-origin-when-cross-origin')
     res.setHeader('Permissions-Policy','camera=(self), microphone=(), xr-spatial-tracking=(self)')
@@ -141,6 +143,14 @@ export function createApp(options:any={}) {
         const id=randomUUID()+'.'+ext
         const url=await store.saveMedia(id,data.mime,data.filename,profile.id,bytes)
         return send({url,mime:data.mime},201)
+      }
+      if(route==='/api/comparison'&&req.method==='POST'){
+        await store.limit('comparison:'+profile.id,5,10*60000)
+        await store.limit('comparison-ip:'+ip,60,10*60000)
+        if(activeComparisons>=2)throw new ApiError(503,'AI comparison is busy. Try again shortly or use on-device comparison.')
+        activeComparisons++
+        try{const data=validate(comparisonSchema,await body(req,2900000));return send(await (options.comparisonHandler||createComparison())({store,data}))}
+        finally{activeComparisons--}
       }
       if(route==='/api/sage'&&req.method==='POST'){
         await store.limit('sage:'+profile.id,12,60000)

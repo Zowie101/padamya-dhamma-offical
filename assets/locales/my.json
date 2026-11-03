@@ -597,5 +597,15 @@
   "Preferences": "အပြင်အဆင်",
   "Sign out": "အကောင့်ထွက်ရန်",
   "Walnut alcove": "သစ်ကြားသား ဘုရားစင်",
-  "Lotus niche": "ကြာပန်း ဘုရားစင်"
+  "Lotus niche": "ကြာပန်း ဘုရားစင်",
+  "Use Gemini photo analysis": "Gemini ဖြင့် ဓာတ်ပုံကို ဆန်းစစ်မည်",
+  "Your photo stays on your device unless you choose AI analysis.": "AI ဆန်းစစ်မှုကို မရွေးချယ်ပါက ဓာတ်ပုံသည် သင့်စက်ထဲတွင်သာ ရှိနေမည်။",
+  "Choosing AI sends a resized photo and these two product references to Google. We do not save your photo. Google may use free-tier inputs to improve its products. Avoid photos containing people or private information.": "AI ကို ရွေးချယ်ပါက အရွယ်လျှော့ထားသော ဓာတ်ပုံနှင့် ရုပ်ပွားတော်နှစ်ခု၏ အချက်အလက်များကို Google သို့ ပေးပို့မည်။ ကျွန်ုပ်တို့က ဓာတ်ပုံကို သိမ်းဆည်းမထားပါ။ အခမဲ့ဝန်ဆောင်မှုတွင် Google က ပေးပို့သည့်အကြောင်းအရာကို ဝန်ဆောင်မှုတိုးတက်ရေးအတွက် အသုံးပြုနိုင်သည်။ လူပုံများနှင့် ကိုယ်ရေးအချက်အလက်ပါသော ဓာတ်ပုံများကို မသုံးပါနှင့်။",
+  "Google AI data terms ↗": "Google AI ဒေတာအသုံးပြုမှု စည်းကမ်းများ ↗",
+  "Compare with AI": "AI ဖြင့် နှိုင်းယှဉ်မည်",
+  "Looking at your space and comparing both pieces…": "သင့်နေရာကို ဆန်းစစ်ပြီး ရုပ်ပွားတော်နှစ်ခုကို နှိုင်းယှဉ်နေသည်…",
+  "AI analysis complete.": "AI ဆန်းစစ်မှု ပြီးပါပြီ။",
+  "On-device comparison complete.": "စက်တွင်း နှိုင်းယှဉ်မှု ပြီးပါပြီ။",
+  "Gemini photo analysis": "Gemini ဓာတ်ပုံဆန်းစစ်မှု",
+  "Style & composition": "ဟန်ပန်နှင့် အပြင်အဆင်"
 }
