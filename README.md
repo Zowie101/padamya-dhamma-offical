@@ -185,3 +185,5 @@ Continue on Account uses an explicit valid return link, the previous internal pa
 Shared `page-loading.js` and `page-loading.css` show theme-aware skeletons while catalogue, account, address book, cart, checkout and order content is being rendered. Product details and pending product images have matching placeholders. Content replaces placeholders immediately when ready; there is no minimum/artificial wait. Long-running loading gets a refresh message, and reduced-motion preferences disable shimmer. Existing 3D loading/progress behavior is preserved.
 
 The default delivery address is displayed first. Other addresses retain their saved order. Changing the default animates the cards into place unless reduced motion is enabled; it never rewrites old order details.
+
+Home hero Bodhi tree artwork, reveal, falling leaves and dark-mode fireflies: [BODHI-BANNER.md](docs/BODHI-BANNER.md).
