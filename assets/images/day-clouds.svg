@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 280">
+  <defs>
+    <linearGradient id="white" x2="0" y2="1">
+      <stop stop-color="#fff"/>
+      <stop offset="1" stop-color="#f0f7fc"/>
+    </linearGradient>
+    <path id="cloud" d="M0 58C3 43 23 38 44 40C49 24 66 17 85 20C96 1 124-2 144 12C160 8 181 18 187 35C213 34 238 44 241 57C244 70 212 74 178 74H45C20 74-3 69 0 58Z"/>
+  </defs>
+  <g fill="url(#white)">
+    <use href="#cloud" transform="translate(-60 42) scale(2 1.12)"/>
+    <use href="#cloud" opacity=".82" transform="translate(382 13) scale(.68 .55)"/>
+    <use href="#cloud" opacity=".76" transform="translate(565 88) scale(.8 .65)"/>
+    <use href="#cloud" transform="translate(1085 46) scale(1.7 1.03)"/>
+    <use href="#cloud" opacity=".86" transform="translate(1390 122) scale(1.18 .8)"/>
+    <use href="#cloud" opacity=".79" transform="translate(82 153) scale(.85 .64)"/>
+  </g>
+</svg>
