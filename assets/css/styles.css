@@ -1790,7 +1790,10 @@ h2 {
 .toast {
     position: fixed;
     bottom: 25px;
-    right: 25px;
+    left: max(20px,env(safe-area-inset-left));
+    right: auto;
+    max-width: min(380px,calc(100vw - 40px));
+    box-sizing: border-box;
     background: var(--ink);
     color: white;
     padding: 15px 20px;
