@@ -290,7 +290,7 @@ html[data-a11y-motion] .lotus-sparks { display: none; }
   .shwedagon-home .shwedagon-hero { min-height: max(620px, 100dvh); }
 
   .home-hero-copy {
-    inset: clamp(104px, 20dvh, 175px) 6vw auto;
+    inset: clamp(100px, 21dvh, 190px) 6vw auto;
     width: auto;
     max-width: none;
     text-align: center;
@@ -303,7 +303,13 @@ html[data-a11y-motion] .lotus-sparks { display: none; }
 
   .shwedagon-home .shwedagon-hero .hero-lotus {
     left: 50%;
-    bottom: 7%;
-    width: min(96vw, 48dvh);
+    bottom: -2%;
+    width: min(119vw, 72dvh);
+  }
+}
+
+@media (max-width: 700px) and (prefers-reduced-motion: no-preference) {
+  html:not([data-a11y-motion]) .shwedagon-hero :is(.home-hero-copy, .hero-lotus) {
+    animation-duration: .75s;
   }
 }
