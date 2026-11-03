@@ -1,8 +1,11 @@
 ;(async()=>{
+  const root=document.getElementById('adminCatalogueRoot');if(!root)return
   const store=window.SacredStore;await store?.ready
-  if(!store?.enabled||store.profile.role!=='admin')return
-  const section=document.createElement('section');section.className='admin-catalogue';section.innerHTML='<h2>Catalogue & inventory</h2><p>Prices are in MMK. Leave stock blank when it is not yet tracked.</p><div class="admin-product-grid"></div><h3>Product media</h3><p>Public product files only. Room photos stay on the customer’s device.</p><form id="adminUpload"><label>PNG, JPEG, WebP or GLB · up to 8 MB<input type="file" accept=".png,.jpg,.jpeg,.webp,.glb" required></label><button class="admin-button" type="submit">Upload media</button><output id="adminUploadResult" aria-live="polite"></output></form>'
-  document.getElementById('adminMain').append(section)
+  if(!store?.enabled){root.innerHTML='<div class="admin-empty"><p>The store server is unavailable. Please reconnect to manage the catalogue.</p></div>';return}
+  if(store.profile.role!=='admin'){root.innerHTML='<div class="admin-empty"><h2>Administrator access required.</h2><p>Sign in with your administrator account to manage products.</p><p><a class="admin-button" href="account.html?return=admin-catalogue.html">Sign in</a></p></div>';return}
+  root.replaceChildren()
+  const section=document.createElement('section');section.className='admin-catalogue';section.innerHTML='<h2 class="sr-only">Products</h2><p>Prices are in MMK. Leave stock blank when it is not yet tracked.</p><div class="admin-product-grid"></div><h3>Product media</h3><p>Public product files only. Room photos stay on the customer’s device.</p><form id="adminUpload"><label>PNG, JPEG, WebP or GLB · up to 8 MB<input type="file" accept=".png,.jpg,.jpeg,.webp,.glb" required></label><button class="admin-button" type="submit">Upload media</button><output id="adminUploadResult" aria-live="polite"></output></form>'
+  root.append(section)
   const grid=section.querySelector('.admin-product-grid')
   async function render(){
     const products=(await store.request('admin/products')).products;grid.replaceChildren()
@@ -20,7 +23,7 @@
       grid.append(form)
     }
   }
-  await render()
+  try{await render()}catch(error){const message=document.createElement('p');message.setAttribute('role','alert');message.textContent=error.message||'The catalogue could not be loaded. Refresh to try again.';root.replaceChildren(message);return}
   document.getElementById('adminUpload').onsubmit=async event=>{
     event.preventDefault();const form=event.target,file=form.querySelector('input').files[0],button=form.querySelector('button'),output=document.getElementById('adminUploadResult')
     if(!file||file.size>8*1024*1024){output.textContent='Choose a file up to 8 MB.';return}

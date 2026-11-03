@@ -3,7 +3,7 @@
   await store?.ready
   if(!store?.enabled){root.innerHTML='<h1>Your <em>account.</em></h1><p>Start the Node backend to use accounts: <code>node --run start</code>.</p><a class="button button-dark" href="shop.html">Explore the collection</a>';return}
   const destination=new URLSearchParams(location.search).get('return')
-  const allowed=new Set(['admin.html','checkout.html','track-order.html','wishlist.html'])
+  const allowed=new Set(['admin.html','admin-catalogue.html','checkout.html','track-order.html','wishlist.html'])
   if(store.profile.role!=='guest'){
     root.innerHTML='<p class="eyebrow">YOUR PADAMYA DHAMMA ACCOUNT</p><h1>Welcome <em>back.</em></h1><p id="accountIdentity"></p><div class="account-actions"><a class="button button-dark" id="accountContinue">Continue</a><a class="text-link" href="track-order.html">My orders</a><button class="button button-outline" id="accountLogout" type="button">Sign out</button></div><p id="accountError" role="alert"></p>'
     document.getElementById('accountIdentity').textContent=store.profile.name||store.profile.email

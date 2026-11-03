@@ -75,3 +75,7 @@ Tests cover checkout ownership, tampered prices, retries, inventory atomicity, a
 ## Checkout sign-in requirement
 
 Guests can browse and keep a bag or wishlist. Continuing to checkout opens a sign-in/create-account dialog; successful authentication returns to checkout and preserves the current bag. Direct checkout-page visits are gated too. The order creation API rejects guest sessions with HTTP 401 before saving an order or clearing the bag. Existing orders are preserved.
+
+## Administrator pages
+
+`admin.html` is the order desk. `admin-catalogue.html` manages catalogue prices, stock, availability and product media. Shared navigation connects both pages; Sage is disabled on both. Catalogue controls require an authenticated administrator; existing server authorization still protects all product and order API actions.
