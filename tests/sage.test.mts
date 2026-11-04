@@ -169,3 +169,26 @@ test('Groq rejects fabricated IDs and safely handles authentication and quota fa
     assert.doesNotMatch(JSON.stringify(result),/secret-fixture/)
   }
 })
+
+
+test('Groq repairs a rejected tool call once within the same request deadline',async()=>{
+  let requests=0
+  const handler=createSage({provider:'groq',key:'private-fixture',model:'openai/gpt-oss-120b',fetch:async(_url:any,init:any)=>{
+    requests++
+    if(requests===1)return {ok:false,status:400,json:async()=>({error:{code:'tool_use_failed',message:'private provider text',failed_generation:'untrusted output'}})}
+    const body=JSON.parse(init.body)
+    assert.match(body.messages.at(-1).content,/exactly one valid function call/)
+    assert.doesNotMatch(JSON.stringify(body),/private provider text|untrusted output/)
+    return {ok:true,json:async()=>({choices:[{message:{role:'assistant',content:null,tool_calls:[{id:'reply',type:'function',function:{name:'respond_to_customer',arguments:JSON.stringify({message:'This compact piece may suit your corner.',productIds:['quiet-meditation']})}}]}}]})}
+  }})
+  const result=await handler({store,profile,messages:ask('For a small corner'),language:'en'})
+  assert.equal(requests,2);assert.equal(result.mode,'ai');assert.equal(result.products[0].id,'quiet-meditation')
+})
+
+test('Groq repeated tool rejection stops after one repair and returns a safe code',async()=>{
+  let requests=0
+  const handler=createSage({provider:'groq',key:'fixture',model:'openai/gpt-oss-120b',fetch:async()=>{requests++;return {ok:false,status:400,json:async()=>({error:{code:'tool_use_failed',message:'sensitive body'}})}}})
+  const result=await handler({store,profile,messages:ask('Help choose'),language:'en'})
+  assert.equal(requests,2);assert.equal(result.mode,'guided-fallback');assert.equal(result.aiError,'TOOL_USE_FAILED')
+  assert.doesNotMatch(JSON.stringify(result),/sensitive body/)
+})

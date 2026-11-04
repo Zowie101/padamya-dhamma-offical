@@ -95,10 +95,23 @@ export function createSage(options:any={}){
         const endpoint=isGroq?'https://api.groq.com/openai/v1/chat/completions':'https://integrate.api.nvidia.com/v1/chat/completions'
         const facts=core.search(catalogue).map((p:any)=>({id:p.id,name:p.name,priceMMK:p.price,category:p.category,material:p.material,height:p.height,stock:p.stock,description:p.description}))
         const chatInstructions=isGroq?instructions+'\nVerified catalogue already retrieved; these IDs are allowed: '+JSON.stringify(facts)+'\nCall respond_to_customer immediately for ordinary recommendations and greetings. Use other tools only when needed. Keep replies to two or three short sentences.':instructions
+        let repairedToolCall=false
         const conversation:any[]=[{role:'system',content:chatInstructions},...turns.map((m:any)=>({role:m.role,content:m.content}))]
         for(let round=0;round<(isGroq?3:5);round++){
           const response=await fetcher(endpoint,{method:'POST',headers:{'content-type':'application/json',authorization:`Bearer ${key}`},signal:controller.signal,body:JSON.stringify({model,messages:conversation,tools:definitions.map(d=>({type:'function',function:d})),tool_choice:'required',...(isGroq?{max_completion_tokens:2048,parallel_tool_calls:false,...(/^openai\/gpt-oss-/.test(model)?{reasoning_effort:'low'}:{})}:{max_tokens:4096}),stream:false})})
-          if(!response.ok)throw Object.assign(new Error('Provider unavailable'),{httpStatus:response.status})
+          if(!response.ok){
+            // Read only a known error code, never log provider messages or failed generations.
+            let toolRejected=false
+            if(isGroq&&response.status===400){
+              try{toolRejected=(await response.json())?.error?.code==='tool_use_failed'}catch{}
+            }
+            if(toolRejected&&!repairedToolCall&&round<2){
+              repairedToolCall=true
+              conversation.push({role:'system',content:'The previous function call was rejected. Retry with exactly one valid function call using its declared name and JSON argument schema. Use respond_to_customer to finish, with message and productIds. Do not emit XML, markdown or a textual function call.'})
+              continue
+            }
+            throw Object.assign(new Error('Provider unavailable'),{httpStatus:response.status,providerCode:toolRejected?'TOOL_USE_FAILED':undefined})
+          }
           const payload=await response.json(),message=payload.choices?.[0]?.message,calls=message?.tool_calls
           if(!Array.isArray(calls)||!calls.length||calls.length>8)throw Error('No validated function response')
           // Preserve any provider reasoning metadata required for subsequent tool turns.
@@ -126,7 +139,7 @@ export function createSage(options:any={}){
     }catch(error:any){
       // Never log provider bodies, request headers, chat messages or API keys.
       const status=Number(error?.httpStatus)
-      const code=Number.isInteger(status)&&status>=400&&status<=599?'HTTP_'+status:(controller.signal.aborted||error?.name==='AbortError'||error?.name==='TimeoutError')?'TIMEOUT':'INVALID_RESPONSE'
+      const code=Number.isInteger(status)&&status>=400&&status<=599?(error?.providerCode==='TOOL_USE_FAILED'?'TOOL_USE_FAILED':'HTTP_'+status):(controller.signal.aborted||error?.name==='AbortError'||error?.name==='TimeoutError')?'TIMEOUT':'INVALID_RESPONSE'
       // A short circuit prevents every follow-up waiting on an overloaded provider.
       if(code==='TIMEOUT'||status===429||status===503){unavailableUntil=Date.now()+30000;unavailableCode=code}
       console.warn(`Sage ${provider}: ${code}`)
