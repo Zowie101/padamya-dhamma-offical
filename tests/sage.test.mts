@@ -220,3 +220,70 @@ test('Gemini overload retry delay respects the shared deadline',async()=>{
   const result=await handler({store,profile,messages:ask('Help'),language:'en'})
   assert.equal(requests,1);assert.equal(result.aiError,'TIMEOUT')
 })
+
+
+test('OpenRouter routes Gemini with validated product cards over three chat turns',async()=>{
+  const requests:any[]=[]
+  const handler=createSage({provider:'openrouter',key:'private-openrouter-fixture',model:'google/gemini-3.1-flash-lite',fetch:async(url:any,init:any)=>{
+    const body=JSON.parse(init.body);requests.push({url,body})
+    assert.equal(init.headers.authorization,'Bearer private-openrouter-fixture')
+    return {ok:true,json:async()=>({choices:[{message:{role:'assistant',content:null,tool_calls:[{id:'reply',type:'function',function:{name:'respond_to_customer',arguments:JSON.stringify({message:'This compact piece may suit your space.',productIds:['quiet-meditation']})}}]}}]})}
+  }})
+  const history:any[]=[]
+  for(const prompt of ['A small statue please','Under 50000 MMK','Tell me more']){
+    history.push({role:'user',content:prompt})
+    const result=await handler({store,profile,messages:history,language:'en'})
+    assert.equal(result.mode,'ai');assert.equal(result.products[0].price,42000)
+    history.push({role:'assistant',content:result.message})
+  }
+  assert.equal(requests.length,3)
+  assert.equal(requests[0].url,'https://openrouter.ai/api/v1/chat/completions')
+  assert.deepEqual(requests[0].body.provider,{allow_fallbacks:true,require_parameters:true,sort:'latency'})
+  assert.deepEqual(requests[0].body.reasoning,{effort:'minimal'})
+  assert.equal(requests[0].body.max_tokens,2048)
+  assert.equal(requests[2].body.messages.length,6)
+  assert.ok(!JSON.stringify(requests).includes(profile.email))
+})
+
+test('OpenRouter preserves reasoning metadata through validated navigation tool rounds',async()=>{
+  let round=0
+  const handler=createSage({provider:'openrouter',key:'fixture',model:'google/gemini-3.1-flash-lite',fetch:async(_url:any,init:any)=>{
+    const body=JSON.parse(init.body);round++
+    if(round===2){
+      assert.deepEqual(body.messages.find((m:any)=>m.tool_calls)?.reasoning_details,[{type:'reasoning.encrypted',data:'signature-fixture'}])
+      assert.ok(body.messages.some((m:any)=>m.role==='tool'&&m.tool_call_id==='step1'))
+    }
+    const call=round===1?{name:'navigate',arguments:JSON.stringify({page:'tracking'})}:{name:'respond_to_customer',arguments:JSON.stringify({message:'You can follow your order here.',productIds:[]})}
+    return {ok:true,json:async()=>({choices:[{message:{role:'assistant',content:null,reasoning_details:[{type:'reasoning.encrypted',data:'signature-fixture'}],tool_calls:[{id:'step'+round,type:'function',function:call}]}}]})}
+  }})
+  const result=await handler({store,profile,messages:ask('Track my order'),language:'my'})
+  assert.equal(round,2);assert.equal(result.actions[0].href,'track-order.html')
+  assert.doesNotMatch(JSON.stringify(result),/signature-fixture/)
+})
+
+test('OpenRouter handles HTTP and embedded errors without exposing secrets',async()=>{
+  for(const status of [401,402,429,503]){
+    for(const embedded of [false,true]){
+      const handler=createSage({provider:'openrouter',key:'secret-fixture',model:'fixture',fetch:async()=>embedded?{ok:true,json:async()=>({error:{code:status,message:'secret-fixture private body'}})}:{ok:false,status}})
+      const result=await handler({store,profile,messages:ask('Help me choose'),language:'en'})
+      assert.equal(result.mode,'guided-fallback');assert.equal(result.aiError,'HTTP_'+status)
+      assert.doesNotMatch(JSON.stringify(result),/secret-fixture|private body/)
+      if(status===402)assert.match(result.warning,/credits/)
+    }
+  }
+})
+
+test('OpenRouter rejects invented IDs and never sends an unconfigured key',async()=>{
+  let requests=0
+  const mock=async()=>{requests++;return {ok:true,json:async()=>({choices:[{message:{tool_calls:[{id:'bad',type:'function',function:{name:'respond_to_customer',arguments:JSON.stringify({message:'Invented recommendation',productIds:['invented']})}}]}}]})}}
+  const handler=createSage({provider:'openrouter',key:'fixture',model:'fixture',fetch:mock})
+  const result=await handler({store,profile,messages:ask('Help'),language:'en'})
+  assert.equal(requests,3);assert.equal(result.mode,'guided-fallback')
+  assert.ok(result.products.every((p:any)=>products.some((actual:any)=>actual.id===p.id)))
+  const previous=process.env.OPENROUTER_API_KEY
+  delete process.env.OPENROUTER_API_KEY
+  try{
+    const missing=await createSage({provider:'openrouter',fetch:async()=>{throw Error('Must not request')}})({store,profile,messages:ask('Hi'),language:'en'})
+    assert.equal(missing.mode,'guided')
+  }finally{if(previous!==undefined)process.env.OPENROUTER_API_KEY=previous}
+})

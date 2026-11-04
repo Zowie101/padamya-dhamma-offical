@@ -32,7 +32,7 @@ NVIDIA_MODEL=deepseek-ai/deepseek-v4.1-flash
 
 Create the key on NVIDIA Build, not on DeepSeek's direct API site. The endpoint is fixed server-side to `https://integrate.api.nvidia.com/v1/chat/completions`. No base URL setting or frontend key is needed. Restart the running server after saving `.env`. A configured NVIDIA response still passes the same product/tool validation; errors return labelled guided help. This adapter was tested with simulated API responses; live account access must be verified after the owner adds their key. NVIDIA's prototype usage and limits are determined by their account terms.
 
-Use a model your provider account supports for function calling. Keys and models are intentionally blank in `.env.example`. No live provider call was performed during implementation. Pricing, free allowances and availability depend on your provider account; no free quota is promised. OpenRouter, Workers AI and Mistral adapters are not included.
+Use a model your provider account supports for function calling. Keys and models are intentionally blank in `.env.example`. No live provider call was performed during implementation. Pricing, free allowances and availability depend on your provider account; no free quota is promised. Workers AI and Mistral adapters are not included.
 
 NVIDIA uses Chat Completions tool calls. Gemini uses generateContent function calls. OpenAI uses Responses function calls with `store:false`. Only the server receives keys. Provider errors/timeouts, missing credentials and invalid tool outputs return a clearly labelled guided fallback, not a fabricated AI answer.
 
@@ -89,3 +89,19 @@ Deploy the updated backend before switching providers. Save and redeploy/restart
 Groq uses the fixed Chat Completions endpoint, low reasoning for GPT-OSS, sequential validated tools and a preloaded verified catalogue to reduce round trips. Mock tests cover valid replies, tool history, invented IDs and provider failures. Live speed, account quota and Burmese quality must be checked with your own key; passing mock tests does not prove live provider availability.
 
 Gemini HTTP 503 overload receives one retry after 750 ms, within the same 20-second deadline. Persistent overload returns labelled help and a 30-second cooldown. No retry occurs for invalid credentials or quota errors.
+
+## OpenRouter + Gemini
+
+In Render > Environment (or your private local environment file), configure:
+
+```dotenv
+SAGE_PROVIDER=openrouter
+OPENROUTER_API_KEY=your_private_openrouter_key
+OPENROUTER_MODEL=google/gemini-3.1-flash-lite
+```
+
+Publish the backend first, then save and deploy the environment changes. Never paste keys into chat, frontend files, or Git. OpenRouter credits must cover the model's usage; a key spending limit is not an account balance. Keep direct Gemini settings for shrine-photo comparison, which this Sage-only change does not migrate.
+
+Requests use the fixed https://openrouter.ai/api/v1/chat/completions endpoint, Gemini minimal reasoning, a verified catalogue snapshot, and up to three validated tool rounds within the same 20-second deadline. Provider routing allows fallback providers, requires request-parameter support and sorts by latency. No alternate model is silently selected. HTTP 402 indicates insufficient credits, 401 authentication, 429 quota/rate limits, and 503 provider unavailability. Embedded provider errors are handled safely. Logs and fallback responses exclude raw error bodies, keys and reasoning metadata.
+
+Mock tests cover catalogue recommendations, multi-turn chat, tool metadata, navigation, invalid IDs, missing credentials and provider errors. They do not establish live OpenRouter availability, account access, latency or Burmese quality. After configuring your key, test at least three follow-ups, one Burmese question, budget recommendations, comparison, bag totals and order-page navigation on the deployed site. Routing failover is not a guarantee of uptime.
