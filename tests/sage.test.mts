@@ -192,3 +192,31 @@ test('Groq repeated tool rejection stops after one repair and returns a safe cod
   assert.equal(requests,2);assert.equal(result.mode,'guided-fallback');assert.equal(result.aiError,'TOOL_USE_FAILED')
   assert.doesNotMatch(JSON.stringify(result),/sensitive body/)
 })
+
+
+test('Gemini retries temporary overload once and returns the recovered AI reply',async()=>{
+  let requests=0
+  const handler=createSage({provider:'gemini',key:'fixture',model:'fixture',retryDelayMs:1,fetch:async()=>{
+    requests++
+    if(requests===1)return {ok:false,status:503}
+    return {ok:true,json:async()=>({candidates:[{content:{role:'model',parts:[{functionCall:{name:'respond_to_customer',args:{message:'This compact piece may suit your space.',productIds:['quiet-meditation']}}}]}}]})}
+  }})
+  const result=await handler({store,profile,messages:ask('Small corner'),language:'en'})
+  assert.equal(requests,2);assert.equal(result.mode,'ai');assert.equal(result.products[0].id,'quiet-meditation')
+})
+
+test('persistent Gemini overload makes only one retry then backs off',async()=>{
+  let requests=0
+  const handler=createSage({provider:'gemini',key:'fixture',model:'fixture',retryDelayMs:1,fetch:async()=>{requests++;return {ok:false,status:503}}})
+  const result=await handler({store,profile,messages:ask('Help me choose'),language:'en'})
+  assert.equal(requests,2);assert.equal(result.aiError,'HTTP_503');assert.match(result.warning,/temporarily busy/)
+  await handler({store,profile,messages:ask('Try again'),language:'en'})
+  assert.equal(requests,2)
+})
+
+test('Gemini overload retry delay respects the shared deadline',async()=>{
+  let requests=0
+  const handler=createSage({provider:'gemini',key:'fixture',model:'fixture',retryDelayMs:1000,timeoutMs:10,fetch:async()=>{requests++;return {ok:false,status:503}}})
+  const result=await handler({store,profile,messages:ask('Help'),language:'en'})
+  assert.equal(requests,1);assert.equal(result.aiError,'TIMEOUT')
+})

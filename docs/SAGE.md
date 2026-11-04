@@ -87,3 +87,5 @@ GROQ_MODEL=openai/gpt-oss-120b
 Deploy the updated backend before switching providers. Save and redeploy/restart after changing settings. Never commit keys. Keep GEMINI_API_KEY and GEMINI_MODEL/COMPARISON_MODEL for shrine-photo comparison: Sage's Groq text adapter does not replace it.
 
 Groq uses the fixed Chat Completions endpoint, low reasoning for GPT-OSS, sequential validated tools and a preloaded verified catalogue to reduce round trips. Mock tests cover valid replies, tool history, invented IDs and provider failures. Live speed, account quota and Burmese quality must be checked with your own key; passing mock tests does not prove live provider availability.
+
+Gemini HTTP 503 overload receives one retry after 750 ms, within the same 20-second deadline. Persistent overload returns labelled help and a 30-second cooldown. No retry occurs for invalid credentials or quota errors.

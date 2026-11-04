@@ -81,8 +81,22 @@ export function createSage(options:any={}){
         else if(/^gemini-2\.5-flash/.test(model))generationConfig.thinkingConfig={thinkingBudget:0}
 
         const contents:any[]=turns.map((m:any)=>({role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]}))
+        let retriedOverload=false
         for(let round=0;round<3;round++){
-          const response=await fetcher(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,{method:'POST',headers:{'content-type':'application/json','x-goog-api-key':key},signal:controller.signal,body:JSON.stringify({systemInstruction:{parts:[{text:fastInstructions}]},contents,tools:[{functionDeclarations:definitions.map(d=>({...d,parameters:geminiSchema(d.parameters)}))}],toolConfig:{functionCallingConfig:{mode:'ANY'}},generationConfig})})
+          const request=()=>fetcher(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,{method:'POST',headers:{'content-type':'application/json','x-goog-api-key':key},signal:controller.signal,body:JSON.stringify({systemInstruction:{parts:[{text:fastInstructions}]},contents,tools:[{functionDeclarations:definitions.map(d=>({...d,parameters:geminiSchema(d.parameters)}))}],toolConfig:{functionCallingConfig:{mode:'ANY'}},generationConfig})})
+          let response=await request()
+          if(response.status===503&&!retriedOverload){
+            retriedOverload=true
+            await response.body?.cancel()
+            await new Promise<void>((resolve,reject)=>{
+              const abort=()=>{clearTimeout(pause);reject(new DOMException('Timed out','AbortError'))}
+              const pause=setTimeout(()=>{controller.signal.removeEventListener('abort',abort);resolve()},options.retryDelayMs??750)
+              if(controller.signal.aborted)abort()
+              else controller.signal.addEventListener('abort',abort,{once:true})
+            })
+            controller.signal.throwIfAborted()
+            response=await request()
+          }
           if(!response.ok)throw Object.assign(new Error('Provider unavailable'),{httpStatus:response.status})
           const payload=await response.json(),content=payload.candidates?.[0]?.content,calls=content?.parts?.filter((part:any)=>part.functionCall)
           if(!calls?.length)throw Error('No validated function response')
@@ -143,7 +157,7 @@ export function createSage(options:any={}){
       // A short circuit prevents every follow-up waiting on an overloaded provider.
       if(code==='TIMEOUT'||status===429||status===503){unavailableUntil=Date.now()+30000;unavailableCode=code}
       console.warn(`Sage ${provider}: ${code}`)
-      return {...fallback(),mode:'guided-fallback',aiError:code,warning:code==='TIMEOUT'?'The AI service could not respond in time. Showing rule-based catalogue help instead.':status===429?'The AI service is busy or its quota is reached. Showing rule-based catalogue help instead.':'The AI service could not respond. Showing rule-based catalogue help instead.'}
+      return {...fallback(),mode:'guided-fallback',aiError:code,warning:code==='TIMEOUT'?'The AI service could not respond in time. Showing rule-based catalogue help instead.':status===429?'The AI service is busy or its quota is reached. Showing rule-based catalogue help instead.':status===503?'The AI provider is temporarily busy. Showing rule-based catalogue help instead.':'The AI service could not respond. Showing rule-based catalogue help instead.'}
     }
     finally{clearTimeout(timer)}
   }
