@@ -51,6 +51,8 @@ function geminiSchema(value:any):any {
 }
 export function createSage(options:any={}){
   const provider=options.provider||process.env.SAGE_PROVIDER||'demo',fetcher=options.fetch||fetch
+  const timeoutMs=options.timeoutMs??20000
+  let unavailableUntil=0,unavailableCode=''
   return async({store,profile,messages,language}:any)=>{
     if(messages.at(-1)?.role!=='user')throw new ApiError(400,'Send a customer message to Sage.')
     const catalogue=await store.products(true),cart=await store.cart(profile.id)
@@ -59,15 +61,28 @@ export function createSage(options:any={}){
     const key=options.key||({gemini:process.env.GEMINI_API_KEY,openai:process.env.OPENAI_API_KEY,nvidia:process.env.NVIDIA_API_KEY} as any)[provider]
     const model=options.model||({gemini:process.env.GEMINI_MODEL,openai:process.env.OPENAI_MODEL,nvidia:process.env.NVIDIA_MODEL} as any)[provider]
     if(!['gemini','openai','nvidia'].includes(provider)||!key||!model)return {...fallback(),mode:'guided',warning:'AI is not configured. These are rule-based catalogue suggestions.'}
+    if(Date.now()<unavailableUntil)return {...fallback(),mode:'guided-fallback',aiError:unavailableCode,warning:'AI is temporarily unavailable. Showing rule-based catalogue help instead.'}
     const snapshot={products:()=>catalogue,product:(id:string)=>catalogue.find((p:any)=>p.id===id),cart:()=>cart}
-    const tools=createTools(snapshot,profile),controller=new AbortController(),timer=setTimeout(()=>controller.abort(),35000)
+    const tools=createTools(snapshot,profile),controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeoutMs)
     const turns=messages.slice(-12);while(turns.length&&turns[0].role!=='user')turns.shift()
     const instructions=system+'\nCustomer language: '+language+'\nCatalogue IDs and descriptions: '+JSON.stringify(catalogue.map((p:any)=>({id:p.id,name:p.name,category:p.category,description:p.desc})))
+    // The small verified catalogue is already available: avoid asking Gemini to
+    // fetch it again before it can answer. Product IDs still pass tool validation.
+    if(provider==='gemini'){
+      tools.execute('search_products',{})
+      tools.state.products=[]
+    }
     try{
       if(provider==='gemini'){
+        const facts=core.search(catalogue).map((p:any)=>({id:p.id,name:p.name,priceMMK:p.price,category:p.category,material:p.material,height:p.height,stock:p.stock,description:p.description}))
+        const fastInstructions=instructions+'\nVerified available catalogue: '+JSON.stringify(facts)+'\nThe catalogue above has already been retrieved and its IDs are allowed. For recommendations, greetings and follow-up questions, call respond_to_customer immediately; avoid redundant search calls. Use other tools only when needed for comparison, the bag or navigation. Keep replies to two or three short sentences.'
+        const generationConfig:any={maxOutputTokens:2048,temperature:.2}
+        if(/^gemini-3/.test(model))generationConfig.thinkingConfig={thinkingLevel:/flash-lite|gemini-3-flash/.test(model)?'minimal':'low'}
+        else if(/^gemini-2\.5-flash/.test(model))generationConfig.thinkingConfig={thinkingBudget:0}
+
         const contents:any[]=turns.map((m:any)=>({role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]}))
-        for(let round=0;round<5;round++){
-          const response=await fetcher(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,{method:'POST',headers:{'content-type':'application/json','x-goog-api-key':key},signal:controller.signal,body:JSON.stringify({systemInstruction:{parts:[{text:instructions}]},contents,tools:[{functionDeclarations:definitions.map(d=>({...d,parameters:geminiSchema(d.parameters)}))}],toolConfig:{functionCallingConfig:{mode:'ANY'}},generationConfig:{maxOutputTokens:1200,temperature:.2}})})
+        for(let round=0;round<3;round++){
+          const response=await fetcher(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,{method:'POST',headers:{'content-type':'application/json','x-goog-api-key':key},signal:controller.signal,body:JSON.stringify({systemInstruction:{parts:[{text:fastInstructions}]},contents,tools:[{functionDeclarations:definitions.map(d=>({...d,parameters:geminiSchema(d.parameters)}))}],toolConfig:{functionCallingConfig:{mode:'ANY'}},generationConfig})})
           if(!response.ok)throw Object.assign(new Error('Provider unavailable'),{httpStatus:response.status})
           const payload=await response.json(),content=payload.candidates?.[0]?.content,calls=content?.parts?.filter((part:any)=>part.functionCall)
           if(!calls?.length)throw Error('No validated function response')
@@ -107,9 +122,11 @@ export function createSage(options:any={}){
     }catch(error:any){
       // Never log provider bodies, request headers, chat messages or API keys.
       const status=Number(error?.httpStatus)
-      const code=Number.isInteger(status)&&status>=400&&status<=599?'HTTP_'+status:error?.name==='AbortError'?'TIMEOUT':'INVALID_RESPONSE'
+      const code=Number.isInteger(status)&&status>=400&&status<=599?'HTTP_'+status:(controller.signal.aborted||error?.name==='AbortError'||error?.name==='TimeoutError')?'TIMEOUT':'INVALID_RESPONSE'
+      // A short circuit prevents every follow-up waiting on an overloaded provider.
+      if(code==='TIMEOUT'||status===429||status===503){unavailableUntil=Date.now()+30000;unavailableCode=code}
       console.warn(`Sage ${provider}: ${code}`)
-      return {...fallback(),mode:'guided-fallback',aiError:code,warning:'The AI service could not respond. Showing rule-based catalogue help instead.'}
+      return {...fallback(),mode:'guided-fallback',aiError:code,warning:code==='TIMEOUT'?'The AI service could not respond in time. Showing rule-based catalogue help instead.':status===429?'The AI service is busy or its quota is reached. Showing rule-based catalogue help instead.':'The AI service could not respond. Showing rule-based catalogue help instead.'}
     }
     finally{clearTimeout(timer)}
   }

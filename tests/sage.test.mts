@@ -90,3 +90,43 @@ test('Gemini failures expose a safe status code without provider body or API key
   assert.equal(result.mode,'guided-fallback');assert.equal(result.aiError,'HTTP_404')
   assert.doesNotMatch(JSON.stringify(result),/private-test-key|confidential body/)
 })
+
+test('Gemini recommendations finish in one request using verified preloaded facts',async()=>{
+  let requests=0
+  const handler=createSage({provider:'gemini',key:'fixture-key',model:'gemini-3.1-flash-lite',fetch:async(_url:any,init:any)=>{
+    requests++
+    const body=JSON.parse(init.body)
+    assert.equal(body.generationConfig.thinkingConfig.thinkingLevel,'minimal')
+    assert.match(body.systemInstruction.parts[0].text,/42000/)
+    return {ok:true,json:async()=>({candidates:[{content:{role:'model',parts:[{functionCall:{name:'respond_to_customer',args:{message:'This compact piece is worth considering.',productIds:['quiet-meditation']}}}]}}]})}
+  }})
+  const result=await handler({store,profile,messages:ask('Under 50000 MMK'),language:'en'})
+  assert.equal(requests,1);assert.equal(result.mode,'ai');assert.equal(result.products[0].price,42000)
+})
+
+test('Gemini cannot recommend invented IDs even with preloaded catalogue context',async()=>{
+  const handler=createSage({provider:'gemini',key:'fixture-key',model:'fixture',fetch:async()=>({ok:true,json:async()=>({candidates:[{content:{role:'model',parts:[{functionCall:{name:'respond_to_customer',args:{message:'An invented recommendation',productIds:['invented']}}}]}}]})})})
+  const result=await handler({store,profile,messages:ask('Under 50000 MMK'),language:'en'})
+  assert.equal(result.mode,'guided-fallback');assert.ok(result.products.every((p:any)=>products.some((actual:any)=>actual.id===p.id)))
+})
+
+test('slow AI requests stop at the deadline and follow-ups use immediate labelled help',async()=>{
+  let requests=0
+  const handler=createSage({provider:'gemini',key:'fixture-key',model:'fixture',timeoutMs:15,fetch:async(_url:any,init:any)=>{
+    requests++
+    return new Promise((_resolve,reject)=>init.signal.addEventListener('abort',()=>reject(new DOMException('Timed out','AbortError')),{once:true}))
+  }})
+  const result=await handler({store,profile,messages:ask('Under 50000 MMK'),language:'en'})
+  assert.equal(result.aiError,'TIMEOUT');assert.equal(result.mode,'guided-fallback')
+  const next=await handler({store,profile,messages:ask('Show gold statues'),language:'en'})
+  assert.equal(requests,1);assert.equal(next.mode,'guided-fallback');assert.match(next.warning,/temporarily unavailable/)
+})
+
+test('quota failures back off without resubmitting or exposing private provider data',async()=>{
+  let requests=0
+  const handler=createSage({provider:'gemini',key:'fixture-key',model:'fixture',fetch:async()=>{requests++;return {ok:false,status:429}}})
+  const first=await handler({store,profile,messages:ask('Under 50000 MMK'),language:'en'})
+  const second=await handler({store,profile,messages:ask('Show gold statues'),language:'en'})
+  assert.equal(first.aiError,'HTTP_429');assert.match(first.warning,/quota/)
+  assert.equal(second.aiError,'HTTP_429');assert.equal(requests,1)
+})

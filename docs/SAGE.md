@@ -65,3 +65,11 @@ The endpoint limits messages, lengths and roles, checks CSRF and applies a 12 re
 The launcher uses the supplied `chat_icon.svg`, and the header avatar uses `sage_icon.svg`. Fast replies keep the typing indicator visible for approximately 650 ms, then enter with a short fade/slide; product cards appear with a small stagger. Existing conversation history does not replay the animation. Reduced-motion settings skip the pause and animations.
 
 Replies reveal word by word after the response arrives, followed by each rich block and product card in order. This is client-side presentation, not network token streaming. Restored history stays instant. Pending submission stays locked until reveal completes; navigation cancels its timer. Reduced-motion preference displays the complete reply immediately. Shared icon feedback lives in `assets/css/icon-motion.css` across storefront and Room Studio pages.
+
+## Response speed and safe fallback
+
+Gemini receives a compact, verified catalogue snapshot so ordinary shopping questions can finish in one function-call response. Recommendations still pass product-ID validation. Gemini 3 Flash/Lite uses reduced thinking effort; other supported Gemini 3 models use low effort. Tool chains are capped at three calls and the AI deadline is 20 seconds. Timeouts, quota errors and provider overload trigger a 30-second cooldown with clearly labelled rule-based catalogue help. No provider error bodies, conversations or keys are logged.
+
+The chat displays the validated response immediately rather than waiting on a separate catalogue refresh. This prevents an unrelated catalogue failure from discarding a successful AI answer. Request durations can still include server/database work, network delays and a sleeping Render free instance. A guided fallback is not a Gemini answer.
+
+Check safe Render logs for `Sage gemini: TIMEOUT`, `HTTP_429` (quota/rate limit), `HTTP_503` (provider overload), `HTTP_404` (model/configuration), or `INVALID_RESPONSE`. Do not paste API keys or provider request bodies into logs. Run `node --test tests/sage.test.mts tests/sage-client.test.cjs` for response-path regressions.

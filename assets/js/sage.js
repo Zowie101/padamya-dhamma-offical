@@ -146,7 +146,7 @@
     try{
       const context=messages.slice(-12).map(({role,content})=>({role,content:content.slice(0,2000)}))
       let response
-      if(store?.enabled){await store.flush();response=await store.request('sage','POST',{messages:context,language:language()});await store.refreshCatalogue()}
+      if(store?.enabled){await store.flush();response=await store.request('sage','POST',{messages:context,language:language()})}
       else response=core.respond({products:api.products,messages:context,cart:api.getCart(),language:language()})
       await waitForReply(started)
       if(disposed)return
