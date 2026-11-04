@@ -22,7 +22,12 @@
     mode=button.dataset.accountMode;document.querySelectorAll('[data-account-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)))
     document.getElementById('accountNameLabel').hidden=mode!=='register';form.elements.password.autocomplete=mode==='register'?'new-password':'current-password';submit.textContent=mode==='register'?'Create account':'Sign in'
   })
-  if(new URLSearchParams(location.search).get('mode')==='register')document.querySelector('[data-account-mode=register]').click()
+  const accountParams=new URLSearchParams(location.search)
+  if(accountParams.get('mode')==='register'){
+    document.querySelector('[data-account-mode=register]').click()
+    const invitationEmail=(accountParams.get('email')||'').trim()
+    if(invitationEmail.length<=254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(invitationEmail))form.elements.email.value=invitationEmail
+  }
   form.onsubmit=async event=>{
     event.preventDefault();if(submit.disabled)return;submit.disabled=true;document.getElementById('accountError').textContent=''
     try{await store.authenticate(mode,Object.fromEntries(new FormData(form)))}catch(error){document.getElementById('accountError').textContent=error.message;submit.disabled=false}
