@@ -32,7 +32,7 @@ NVIDIA_MODEL=deepseek-ai/deepseek-v4.1-flash
 
 Create the key on NVIDIA Build, not on DeepSeek's direct API site. The endpoint is fixed server-side to `https://integrate.api.nvidia.com/v1/chat/completions`. No base URL setting or frontend key is needed. Restart the running server after saving `.env`. A configured NVIDIA response still passes the same product/tool validation; errors return labelled guided help. This adapter was tested with simulated API responses; live account access must be verified after the owner adds their key. NVIDIA's prototype usage and limits are determined by their account terms.
 
-Use a model your provider account supports for function calling. Keys and models are intentionally blank in `.env.example`. No live provider call was performed during implementation. Pricing, free allowances and availability depend on your provider account; no free quota is promised. Groq, OpenRouter, Workers AI and Mistral adapters are not included.
+Use a model your provider account supports for function calling. Keys and models are intentionally blank in `.env.example`. No live provider call was performed during implementation. Pricing, free allowances and availability depend on your provider account; no free quota is promised. OpenRouter, Workers AI and Mistral adapters are not included.
 
 NVIDIA uses Chat Completions tool calls. Gemini uses generateContent function calls. OpenAI uses Responses function calls with `store:false`. Only the server receives keys. Provider errors/timeouts, missing credentials and invalid tool outputs return a clearly labelled guided fallback, not a fabricated AI answer.
 
@@ -42,7 +42,7 @@ Server tools are `search_products`, `compare_products`, `cart_summary`, `navigat
 
 The model sees chat messages, public catalogue data and, when requested, that session's bag summary. Customer addresses, passwords and order records are not included in the prompt or available as tools. Text a customer types into chat will be sent to the chosen provider only when real AI is configured; do not enter passwords or payment details. Chat is not persisted on the server. No API key is needed for guided mode.
 
-The endpoint limits messages, lengths and roles, checks CSRF and applies a 12 requests/minute/profile limit. Each provider request has a 35-second timeout and at most five tool rounds. These process/database limits are suitable for local testing; production needs centralized abuse protection.
+The endpoint limits messages, lengths and roles, checks CSRF and applies a 12 requests/minute/profile limit. Each Sage response has a shared 20-second deadline; Gemini/Groq allow at most three tool rounds, other adapters five. These process/database limits are suitable for local testing; production needs centralized abuse protection.
 
 ## Files
 
@@ -73,3 +73,17 @@ Gemini receives a compact, verified catalogue snapshot so ordinary shopping ques
 The chat displays the validated response immediately rather than waiting on a separate catalogue refresh. This prevents an unrelated catalogue failure from discarding a successful AI answer. Request durations can still include server/database work, network delays and a sleeping Render free instance. A guided fallback is not a Gemini answer.
 
 Check safe Render logs for `Sage gemini: TIMEOUT`, `HTTP_429` (quota/rate limit), `HTTP_503` (provider overload), `HTTP_404` (model/configuration), or `INVALID_RESPONSE`. Do not paste API keys or provider request bodies into logs. Run `node --test tests/sage.test.mts tests/sage-client.test.cjs` for response-path regressions.
+
+## Groq setup
+
+Set these in Render > service > Environment (or privately in the environment file used to start your local server):
+
+```dotenv
+SAGE_PROVIDER=groq
+GROQ_API_KEY=your_private_groq_key
+GROQ_MODEL=openai/gpt-oss-120b
+```
+
+Deploy the updated backend before switching providers. Save and redeploy/restart after changing settings. Never commit keys. Keep GEMINI_API_KEY and GEMINI_MODEL/COMPARISON_MODEL for shrine-photo comparison: Sage's Groq text adapter does not replace it.
+
+Groq uses the fixed Chat Completions endpoint, low reasoning for GPT-OSS, sequential validated tools and a preloaded verified catalogue to reduce round trips. Mock tests cover valid replies, tool history, invented IDs and provider failures. Live speed, account quota and Burmese quality must be checked with your own key; passing mock tests does not prove live provider availability.

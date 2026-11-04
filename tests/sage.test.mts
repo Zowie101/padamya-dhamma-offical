@@ -130,3 +130,42 @@ test('quota failures back off without resubmitting or exposing private provider 
   assert.equal(first.aiError,'HTTP_429');assert.match(first.warning,/quota/)
   assert.equal(second.aiError,'HTTP_429');assert.equal(requests,1)
 })
+
+
+test('Groq uses low reasoning and verified catalogue for a one-request recommendation',async()=>{
+  const requests:any[]=[]
+  const handler=createSage({provider:'groq',key:'private-groq-fixture',model:'openai/gpt-oss-120b',fetch:async(url:any,init:any)=>{
+    const body=JSON.parse(init.body);requests.push({url,body})
+    assert.equal(init.headers.authorization,'Bearer private-groq-fixture')
+    return {ok:true,json:async()=>({choices:[{message:{role:'assistant',content:null,tool_calls:[{id:'reply',type:'function',function:{name:'respond_to_customer',arguments:JSON.stringify({message:'Consider this compact piece.',productIds:['quiet-meditation']})}}]}}]})}
+  }})
+  const result=await handler({store,profile,messages:ask('Under 50000 MMK'),language:'en'})
+  assert.equal(result.mode,'ai');assert.equal(result.products[0].price,42000)
+  assert.equal(requests.length,1);assert.equal(requests[0].url,'https://api.groq.com/openai/v1/chat/completions')
+  assert.equal(requests[0].body.reasoning_effort,'low');assert.equal(requests[0].body.parallel_tool_calls,false)
+  assert.equal(requests[0].body.max_completion_tokens,2048);assert.equal(requests[0].body.max_tokens,undefined)
+  assert.match(requests[0].body.messages[0].content,/42000/)
+  assert.ok(!JSON.stringify(requests).includes(profile.email))
+})
+
+test('Groq preserves tool history for bag navigation',async()=>{
+  let round=0
+  const handler=createSage({provider:'groq',key:'fixture',model:'openai/gpt-oss-120b',fetch:async(_url:any,init:any)=>{
+    const body=JSON.parse(init.body);round++
+    if(round===2){assert.ok(body.messages.some((m:any)=>m.role==='tool'&&m.tool_call_id==='step1'))}
+    const call=round===1?{name:'navigate',arguments:JSON.stringify({page:'cart'})}:{name:'respond_to_customer',arguments:JSON.stringify({message:'Open your bag here.',productIds:[]})}
+    return {ok:true,json:async()=>({choices:[{message:{role:'assistant',content:null,tool_calls:[{id:'step'+round,type:'function',function:call}]}}]})}
+  }})
+  const result=await handler({store,profile,messages:ask('Open my bag'),language:'en'})
+  assert.equal(round,2);assert.equal(result.mode,'ai');assert.equal(result.actions[0].href,'cart.html')
+})
+
+test('Groq rejects fabricated IDs and safely handles authentication and quota failures',async()=>{
+  for(const status of [0,401,429]){
+    const handler=createSage({provider:'groq',key:'secret-fixture',model:'openai/gpt-oss-120b',fetch:async()=>status?{ok:false,status}:{ok:true,json:async()=>({choices:[{message:{tool_calls:[{id:'bad',type:'function',function:{name:'respond_to_customer',arguments:JSON.stringify({message:'Buy invented item',productIds:['invented']})}}]}}]})}})
+    const result=await handler({store,profile,messages:ask('Under 50000 MMK'),language:'en'})
+    assert.equal(result.mode,'guided-fallback');assert.equal(result.aiError,status?'HTTP_'+status:'INVALID_RESPONSE')
+    assert.ok(result.products.every((p:any)=>products.some((actual:any)=>actual.id===p.id)))
+    assert.doesNotMatch(JSON.stringify(result),/secret-fixture/)
+  }
+})

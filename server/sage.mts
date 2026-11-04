@@ -58,9 +58,9 @@ export function createSage(options:any={}){
     const catalogue=await store.products(true),cart=await store.cart(profile.id)
     const fallback=()=>core.respond({products:catalogue,messages,cart,language})
     if(provider==='demo')return fallback()
-    const key=options.key||({gemini:process.env.GEMINI_API_KEY,openai:process.env.OPENAI_API_KEY,nvidia:process.env.NVIDIA_API_KEY} as any)[provider]
-    const model=options.model||({gemini:process.env.GEMINI_MODEL,openai:process.env.OPENAI_MODEL,nvidia:process.env.NVIDIA_MODEL} as any)[provider]
-    if(!['gemini','openai','nvidia'].includes(provider)||!key||!model)return {...fallback(),mode:'guided',warning:'AI is not configured. These are rule-based catalogue suggestions.'}
+    const key=options.key||({gemini:process.env.GEMINI_API_KEY,openai:process.env.OPENAI_API_KEY,nvidia:process.env.NVIDIA_API_KEY,groq:process.env.GROQ_API_KEY} as any)[provider]
+    const model=options.model||({gemini:process.env.GEMINI_MODEL,openai:process.env.OPENAI_MODEL,nvidia:process.env.NVIDIA_MODEL,groq:process.env.GROQ_MODEL||'openai/gpt-oss-120b'} as any)[provider]
+    if(!['gemini','openai','nvidia','groq'].includes(provider)||!key||!model)return {...fallback(),mode:'guided',warning:'AI is not configured. These are rule-based catalogue suggestions.'}
     if(Date.now()<unavailableUntil)return {...fallback(),mode:'guided-fallback',aiError:unavailableCode,warning:'AI is temporarily unavailable. Showing rule-based catalogue help instead.'}
     const snapshot={products:()=>catalogue,product:(id:string)=>catalogue.find((p:any)=>p.id===id),cart:()=>cart}
     const tools=createTools(snapshot,profile),controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeoutMs)
@@ -68,7 +68,7 @@ export function createSage(options:any={}){
     const instructions=system+'\nCustomer language: '+language+'\nCatalogue IDs and descriptions: '+JSON.stringify(catalogue.map((p:any)=>({id:p.id,name:p.name,category:p.category,description:p.desc})))
     // The small verified catalogue is already available: avoid asking Gemini to
     // fetch it again before it can answer. Product IDs still pass tool validation.
-    if(provider==='gemini'){
+    if(provider==='gemini'||provider==='groq'){
       tools.execute('search_products',{})
       tools.state.products=[]
     }
@@ -90,10 +90,14 @@ export function createSage(options:any={}){
           for(const {functionCall:call} of calls){let result;try{result=tools.execute(call.name,call.args||{})}catch{result={error:'Invalid tool arguments. Use allowed IDs and schemas.'}}parts.push({functionResponse:{name:call.name,response:{result}}});if(tools.state.done)return {...tools.state,mode:'ai'}}
           contents.push({role:'user',parts})
         }
-      }else if(provider==='nvidia'){
-        const conversation:any[]=[{role:'system',content:instructions},...turns.map((m:any)=>({role:m.role,content:m.content}))]
-        for(let round=0;round<5;round++){
-          const response=await fetcher('https://integrate.api.nvidia.com/v1/chat/completions',{method:'POST',headers:{'content-type':'application/json',authorization:`Bearer ${key}`},signal:controller.signal,body:JSON.stringify({model,messages:conversation,tools:definitions.map(d=>({type:'function',function:d})),tool_choice:'required',max_tokens:4096,stream:false})})
+      }else if(provider==='nvidia'||provider==='groq'){
+        const isGroq=provider==='groq'
+        const endpoint=isGroq?'https://api.groq.com/openai/v1/chat/completions':'https://integrate.api.nvidia.com/v1/chat/completions'
+        const facts=core.search(catalogue).map((p:any)=>({id:p.id,name:p.name,priceMMK:p.price,category:p.category,material:p.material,height:p.height,stock:p.stock,description:p.description}))
+        const chatInstructions=isGroq?instructions+'\nVerified catalogue already retrieved; these IDs are allowed: '+JSON.stringify(facts)+'\nCall respond_to_customer immediately for ordinary recommendations and greetings. Use other tools only when needed. Keep replies to two or three short sentences.':instructions
+        const conversation:any[]=[{role:'system',content:chatInstructions},...turns.map((m:any)=>({role:m.role,content:m.content}))]
+        for(let round=0;round<(isGroq?3:5);round++){
+          const response=await fetcher(endpoint,{method:'POST',headers:{'content-type':'application/json',authorization:`Bearer ${key}`},signal:controller.signal,body:JSON.stringify({model,messages:conversation,tools:definitions.map(d=>({type:'function',function:d})),tool_choice:'required',...(isGroq?{max_completion_tokens:2048,parallel_tool_calls:false,...(/^openai\/gpt-oss-/.test(model)?{reasoning_effort:'low'}:{})}:{max_tokens:4096}),stream:false})})
           if(!response.ok)throw Object.assign(new Error('Provider unavailable'),{httpStatus:response.status})
           const payload=await response.json(),message=payload.choices?.[0]?.message,calls=message?.tool_calls
           if(!Array.isArray(calls)||!calls.length||calls.length>8)throw Error('No validated function response')
