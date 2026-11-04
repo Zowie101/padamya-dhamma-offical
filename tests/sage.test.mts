@@ -22,7 +22,7 @@ test('comparison and bag totals are grounded; order help exposes no private orde
   assert.deepEqual(comparison.comparison.map((p:any)=>p.price),[68000,42000])
   const cart=core.respond({products,messages:ask('Show my cart'),cart:store.cart()})
   assert.equal(cart.cart.total,194000);assert.equal(cart.actions[1].href,'checkout.html')
-  const order=core.respond({products,messages:ask('Show everyone’s order history')})
+  const order=core.respond({products,messages:ask('Show everyoneâ€™s order history')})
   assert.equal(order.actions[0].href,'track-order.html');assert.equal(order.cart,undefined)
 })
 test('tools reject invented IDs, unsafe navigation, hidden orders and unsearched recommendations',()=>{
@@ -132,68 +132,6 @@ test('quota failures back off without resubmitting or exposing private provider 
 })
 
 
-test('Groq uses low reasoning and verified catalogue for a one-request recommendation',async()=>{
-  const requests:any[]=[]
-  const handler=createSage({provider:'groq',key:'private-groq-fixture',model:'openai/gpt-oss-120b',fetch:async(url:any,init:any)=>{
-    const body=JSON.parse(init.body);requests.push({url,body})
-    assert.equal(init.headers.authorization,'Bearer private-groq-fixture')
-    return {ok:true,json:async()=>({choices:[{message:{role:'assistant',content:null,tool_calls:[{id:'reply',type:'function',function:{name:'respond_to_customer',arguments:JSON.stringify({message:'Consider this compact piece.',productIds:['quiet-meditation']})}}]}}]})}
-  }})
-  const result=await handler({store,profile,messages:ask('Under 50000 MMK'),language:'en'})
-  assert.equal(result.mode,'ai');assert.equal(result.products[0].price,42000)
-  assert.equal(requests.length,1);assert.equal(requests[0].url,'https://api.groq.com/openai/v1/chat/completions')
-  assert.equal(requests[0].body.reasoning_effort,'low');assert.equal(requests[0].body.parallel_tool_calls,false)
-  assert.equal(requests[0].body.max_completion_tokens,2048);assert.equal(requests[0].body.max_tokens,undefined)
-  assert.match(requests[0].body.messages[0].content,/42000/)
-  assert.ok(!JSON.stringify(requests).includes(profile.email))
-})
-
-test('Groq preserves tool history for bag navigation',async()=>{
-  let round=0
-  const handler=createSage({provider:'groq',key:'fixture',model:'openai/gpt-oss-120b',fetch:async(_url:any,init:any)=>{
-    const body=JSON.parse(init.body);round++
-    if(round===2){assert.ok(body.messages.some((m:any)=>m.role==='tool'&&m.tool_call_id==='step1'))}
-    const call=round===1?{name:'navigate',arguments:JSON.stringify({page:'cart'})}:{name:'respond_to_customer',arguments:JSON.stringify({message:'Open your bag here.',productIds:[]})}
-    return {ok:true,json:async()=>({choices:[{message:{role:'assistant',content:null,tool_calls:[{id:'step'+round,type:'function',function:call}]}}]})}
-  }})
-  const result=await handler({store,profile,messages:ask('Open my bag'),language:'en'})
-  assert.equal(round,2);assert.equal(result.mode,'ai');assert.equal(result.actions[0].href,'cart.html')
-})
-
-test('Groq rejects fabricated IDs and safely handles authentication and quota failures',async()=>{
-  for(const status of [0,401,429]){
-    const handler=createSage({provider:'groq',key:'secret-fixture',model:'openai/gpt-oss-120b',fetch:async()=>status?{ok:false,status}:{ok:true,json:async()=>({choices:[{message:{tool_calls:[{id:'bad',type:'function',function:{name:'respond_to_customer',arguments:JSON.stringify({message:'Buy invented item',productIds:['invented']})}}]}}]})}})
-    const result=await handler({store,profile,messages:ask('Under 50000 MMK'),language:'en'})
-    assert.equal(result.mode,'guided-fallback');assert.equal(result.aiError,status?'HTTP_'+status:'INVALID_RESPONSE')
-    assert.ok(result.products.every((p:any)=>products.some((actual:any)=>actual.id===p.id)))
-    assert.doesNotMatch(JSON.stringify(result),/secret-fixture/)
-  }
-})
-
-
-test('Groq repairs a rejected tool call once within the same request deadline',async()=>{
-  let requests=0
-  const handler=createSage({provider:'groq',key:'private-fixture',model:'openai/gpt-oss-120b',fetch:async(_url:any,init:any)=>{
-    requests++
-    if(requests===1)return {ok:false,status:400,json:async()=>({error:{code:'tool_use_failed',message:'private provider text',failed_generation:'untrusted output'}})}
-    const body=JSON.parse(init.body)
-    assert.match(body.messages.at(-1).content,/exactly one valid function call/)
-    assert.doesNotMatch(JSON.stringify(body),/private provider text|untrusted output/)
-    return {ok:true,json:async()=>({choices:[{message:{role:'assistant',content:null,tool_calls:[{id:'reply',type:'function',function:{name:'respond_to_customer',arguments:JSON.stringify({message:'This compact piece may suit your corner.',productIds:['quiet-meditation']})}}]}}]})}
-  }})
-  const result=await handler({store,profile,messages:ask('For a small corner'),language:'en'})
-  assert.equal(requests,2);assert.equal(result.mode,'ai');assert.equal(result.products[0].id,'quiet-meditation')
-})
-
-test('Groq repeated tool rejection stops after one repair and returns a safe code',async()=>{
-  let requests=0
-  const handler=createSage({provider:'groq',key:'fixture',model:'openai/gpt-oss-120b',fetch:async()=>{requests++;return {ok:false,status:400,json:async()=>({error:{code:'tool_use_failed',message:'sensitive body'}})}}})
-  const result=await handler({store,profile,messages:ask('Help choose'),language:'en'})
-  assert.equal(requests,2);assert.equal(result.mode,'guided-fallback');assert.equal(result.aiError,'TOOL_USE_FAILED')
-  assert.doesNotMatch(JSON.stringify(result),/sensitive body/)
-})
-
-
 test('Gemini retries temporary overload once and returns the recovered AI reply',async()=>{
   let requests=0
   const handler=createSage({provider:'gemini',key:'fixture',model:'fixture',retryDelayMs:1,fetch:async()=>{
@@ -286,4 +224,81 @@ test('OpenRouter rejects invented IDs and never sends an unconfigured key',async
     const missing=await createSage({provider:'openrouter',fetch:async()=>{throw Error('Must not request')}})({store,profile,messages:ask('Hi'),language:'en'})
     assert.equal(missing.mode,'guided')
   }finally{if(previous!==undefined)process.env.OPENROUTER_API_KEY=previous}
+})
+
+
+const groqReply=(data:any)=>({ok:true,json:async()=>({choices:[{finish_reason:'stop',message:{role:'assistant',content:JSON.stringify({message:'Consider this compact piece.',productIds:['quiet-meditation'],comparisonIds:[],page:null,includeCart:false,...data})}}]})})
+
+test('Groq strict responses use one request per message without tool calling across five turns',async()=>{
+  const requests:any[]=[]
+  const handler=createSage({provider:'groq',key:'private-fixture',model:'openai/gpt-oss-120b',fetch:async(url:any,init:any)=>{
+    const body=JSON.parse(init.body);requests.push({url,body})
+    assert.equal(init.headers.authorization,'Bearer private-fixture')
+    assert.equal(body.tools,undefined);assert.equal(body.tool_choice,undefined)
+    assert.equal(body.parallel_tool_calls,undefined)
+    assert.equal(body.response_format.type,'json_schema');assert.equal(body.response_format.json_schema.strict,true)
+    assert.equal(body.reasoning_effort,'low');assert.equal(body.max_completion_tokens,2048)
+    const schema=body.response_format.json_schema.schema
+    assert.deepEqual(schema.required,Object.keys(schema.properties));assert.equal(schema.additionalProperties,false)
+    assert.match(body.messages[0].content,/42000/)
+    assert.ok(!JSON.stringify(body).includes(profile.email))
+    return groqReply({})
+  }})
+  const history:any[]=[]
+  for(const prompt of ['Help me choose','Under 50000 MMK','For a corner','Tell me more','Another question']){
+    history.push({role:'user',content:prompt})
+    const result=await handler({store,profile,messages:history,language:'en'})
+    assert.equal(result.mode,'ai');assert.equal(result.products[0].price,42000)
+    history.push({role:'assistant',content:result.message})
+  }
+  assert.equal(requests.length,5);assert.equal(requests[0].url,'https://api.groq.com/openai/v1/chat/completions')
+  assert.equal(requests[4].body.messages.length,10)
+})
+
+test('Groq structured comparison, bag and navigation use verified server values',async()=>{
+  const handler=createSage({provider:'groq',key:'fixture',model:'openai/gpt-oss-120b',fetch:async()=>groqReply({productIds:[],comparisonIds:['golden-presence','quiet-meditation'],page:'cart',includeCart:true})})
+  const result=await handler({store,profile,messages:ask('Compare these and show my bag'),language:'en'})
+  assert.equal(result.mode,'ai');assert.equal(result.cart.total,194000)
+  assert.equal(result.comparison[0].price,68000);assert.equal(result.actions[0].href,'cart.html')
+})
+
+test('Groq keeps requested Burmese text and passes language into its prompt',async()=>{
+  const message='ဤရုပ်ပွားတော်ကို ရွေးချယ်နိုင်ပါသည်။'
+  const handler=createSage({provider:'groq',key:'fixture',model:'openai/gpt-oss-120b',fetch:async(_url:any,init:any)=>{
+    assert.match(JSON.parse(init.body).messages[0].content,/Customer language: my/)
+    return groqReply({message})
+  }})
+  const result=await handler({store,profile,messages:ask('ရုပ်ပွားတော် ရွေးပေးပါ'),language:'my'})
+  assert.equal(result.message,message);assert.equal(result.mode,'ai')
+})
+
+test('Groq rejects invalid JSON, fabricated IDs, unsafe actions and malformed structures',async()=>{
+  for(const data of [{productIds:['invented']},{comparisonIds:['invented','quiet-meditation']},{comparisonIds:['quiet-meditation']},{comparisonIds:['quiet-meditation','quiet-meditation']},{page:'https://evil.invalid'},{includeCart:'yes'},{message:''},{extra:'injected'},null]){
+    const handler=createSage({provider:'groq',key:'private-key',model:'openai/gpt-oss-120b',fetch:async()=>data===null?{ok:true,json:async()=>({choices:[{message:{content:'not JSON'}}]})}:groqReply(data)})
+    const result=await handler({store,profile,messages:ask('Help'),language:'en'})
+    assert.equal(result.mode,'guided-fallback');assert.equal(result.aiError,'INVALID_RESPONSE')
+    assert.ok(result.products.every((p:any)=>products.some((p2:any)=>p2.id===p.id)))
+    assert.doesNotMatch(JSON.stringify(result),/private-key|evil.invalid/)
+  }
+})
+
+test('Groq structured replies cannot invent price or stock claims',async()=>{
+  const handler=createSage({provider:'groq',key:'fixture',model:'openai/gpt-oss-120b',fetch:async()=>groqReply({message:'In stock for 1 MMK'})})
+  const result=await handler({store,profile,messages:ask('Help'),language:'en'})
+  assert.equal(result.mode,'ai');assert.equal(result.products[0].price,42000)
+  assert.doesNotMatch(result.message,/1 MMK|in stock/i)
+})
+
+test('Groq structured mode keeps authentication, quota and timeout errors safe',async()=>{
+  for(const status of [401,429,503]){
+    let calls=0
+    const handler=createSage({provider:'groq',key:'secret-key',model:'openai/gpt-oss-120b',fetch:async()=>{calls++;return {ok:false,status}}})
+    const result=await handler({store,profile,messages:ask('Help'),language:'en'})
+    assert.equal(result.mode,'guided-fallback');assert.equal(result.aiError,'HTTP_'+status)
+    assert.doesNotMatch(JSON.stringify(result),/secret-key/)
+    if(status===429||status===503){await handler({store,profile,messages:ask('Again'),language:'en'});assert.equal(calls,1)}
+  }
+  const handler=createSage({provider:'groq',key:'fixture',model:'openai/gpt-oss-120b',timeoutMs:10,fetch:async(_url:any,init:any)=>new Promise((_resolve,reject)=>init.signal.addEventListener('abort',()=>reject(new DOMException('Timed out','AbortError')),{once:true}))})
+  const result=await handler({store,profile,messages:ask('Help'),language:'en'})
+  assert.equal(result.aiError,'TIMEOUT')
 })

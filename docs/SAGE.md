@@ -42,7 +42,7 @@ Server tools are `search_products`, `compare_products`, `cart_summary`, `navigat
 
 The model sees chat messages, public catalogue data and, when requested, that session's bag summary. Customer addresses, passwords and order records are not included in the prompt or available as tools. Text a customer types into chat will be sent to the chosen provider only when real AI is configured; do not enter passwords or payment details. Chat is not persisted on the server. No API key is needed for guided mode.
 
-The endpoint limits messages, lengths and roles, checks CSRF and applies a 12 requests/minute/profile limit. Each Sage response has a shared 20-second deadline; Gemini/Groq allow at most three tool rounds, other adapters five. These process/database limits are suitable for local testing; production needs centralized abuse protection.
+The endpoint limits messages, lengths and roles, checks CSRF and applies a 12 requests/minute/profile limit. Each Sage response has a shared 20-second deadline; Gemini/OpenRouter allow at most three tool rounds, other tool adapters five; Groq uses one strict structured-output request. These process/database limits are suitable for local testing; production needs centralized abuse protection.
 
 ## Files
 
@@ -86,7 +86,7 @@ GROQ_MODEL=openai/gpt-oss-120b
 
 Deploy the updated backend before switching providers. Save and redeploy/restart after changing settings. Never commit keys. Keep GEMINI_API_KEY and GEMINI_MODEL/COMPARISON_MODEL for shrine-photo comparison: Sage's Groq text adapter does not replace it.
 
-Groq uses the fixed Chat Completions endpoint, low reasoning for GPT-OSS, sequential validated tools and a preloaded verified catalogue to reduce round trips. Mock tests cover valid replies, tool history, invented IDs and provider failures. Live speed, account quota and Burmese quality must be checked with your own key; passing mock tests does not prove live provider availability.
+Groq uses the fixed Chat Completions endpoint, low reasoning for GPT-OSS and one strict JSON-schema response per customer message. It does not send tools or tool_choice, avoiding the failing tool-call generation path. Use openai/gpt-oss-120b (or another model supporting strict structured outputs). The server validates the complete JSON result before mapping product IDs, comparisons, navigation and current-session bag requests to existing internal validation functions. Prices and totals remain server-calculated. Only the public catalogue, conversation and current-session bag summary are sent; no customer addresses or order records. Mock tests cover five consecutive turns, Burmese text transport, comparisons, bag totals, navigation, invented IDs, malformed JSON and provider failures. Live speed, account quota and Burmese quality must be checked with your own key; passing mock tests does not prove live provider availability.
 
 Gemini HTTP 503 overload receives one retry after 750 ms, within the same 20-second deadline. Persistent overload returns labelled help and a 30-second cooldown. No retry occurs for invalid credentials or quota errors.
 

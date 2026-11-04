@@ -104,28 +104,46 @@ export function createSage(options:any={}){
           for(const {functionCall:call} of calls){let result;try{result=tools.execute(call.name,call.args||{})}catch{result={error:'Invalid tool arguments. Use allowed IDs and schemas.'}}parts.push({functionResponse:{name:call.name,response:{result}}});if(tools.state.done)return {...tools.state,mode:'ai'}}
           contents.push({role:'user',parts})
         }
-      }else if(provider==='nvidia'||provider==='groq'||provider==='openrouter'){
-        const isGroq=provider==='groq',isOpenRouter=provider==='openrouter',preloaded=isGroq||isOpenRouter
-        const endpoint=isOpenRouter?'https://openrouter.ai/api/v1/chat/completions':isGroq?'https://api.groq.com/openai/v1/chat/completions':'https://integrate.api.nvidia.com/v1/chat/completions'
+      }else if(provider==='groq'){
+        const ids=core.search(catalogue).map((p:any)=>p.id)
+        const fields={
+          message:{type:'string'},
+          productIds:{type:'array',items:{type:'string',enum:ids.length?ids:['__no_products__']}},
+          comparisonIds:{type:'array',items:{type:'string',enum:catalogue.length?catalogue.map((p:any)=>p.id):['__no_products__']}},
+          page:{type:['string','null'],enum:[...Object.keys(core.pages),null]},
+          includeCart:{type:'boolean'}
+        }
+        const facts=core.search(catalogue)
+        const grounded=instructions.replace('Use function calls, finish via respond_to_customer.','Return the required JSON object.')+
+          '\nUse the JSON response schema, not function calls. Write two or three short sentences in the customer language. Product IDs must come from the verified catalogue. Use comparisonIds only for requested comparisons, page only for a requested or relevant store link, and includeCart only for bag/checkout questions. Empty arrays and null page are valid. Never include prices or stock claims in message; the server renders verified details.'+
+          '\nVerified catalogue: '+JSON.stringify(facts)+'\nCurrent session bag (never another customer): '+JSON.stringify(core.cartSummary(catalogue,cart))
+        const response=await fetcher('https://api.groq.com/openai/v1/chat/completions',{
+          method:'POST',headers:{'content-type':'application/json',authorization:`Bearer ${key}`},signal:controller.signal,
+          body:JSON.stringify({model,messages:[{role:'system',content:grounded},...turns.map((m:any)=>({role:m.role,content:m.content}))],
+            response_format:{type:'json_schema',json_schema:{name:'sage_response',strict:true,schema:{type:'object',properties:fields,required:Object.keys(fields),additionalProperties:false}}},
+            max_completion_tokens:2048,...(/^openai\/gpt-oss-/.test(model)?{reasoning_effort:'low'}:{}),stream:false})
+        })
+        if(!response.ok)throw Object.assign(new Error('Provider unavailable'),{httpStatus:response.status})
+        const payload=await response.json(),choice=payload.choices?.[0]
+        if(choice?.finish_reason==='length'||choice?.message?.refusal)throw Error('Incomplete AI response')
+        const data=z.object({message:z.string().min(1).max(1500),productIds:z.array(z.string()).max(3),comparisonIds:z.array(z.string()).max(4),page:z.enum(Object.keys(core.pages) as any).nullable(),includeCart:z.boolean()}).strict().parse(JSON.parse(choice?.message?.content))
+        if(data.productIds.some(id=>!ids.includes(id)))throw Error('Unknown or unavailable recommendation')
+        if(data.comparisonIds.length===1||new Set(data.comparisonIds).size!==data.comparisonIds.length||data.comparisonIds.some(id=>!catalogue.some((p:any)=>p.id===id)))throw Error('Invalid comparison')
+        // Validate the entire result before applying any model-selected action.
+        if(data.comparisonIds.length)tools.execute('compare_products',{ids:data.comparisonIds})
+        if(data.includeCart)tools.execute('cart_summary',{})
+        if(data.page!==null)tools.execute('navigate',{page:data.page})
+        tools.execute('respond_to_customer',{message:data.message,productIds:data.productIds})
+        return {...tools.state,mode:'ai'}
+      }else if(provider==='nvidia'||provider==='openrouter'){
+        const isOpenRouter=provider==='openrouter'
+        const endpoint=isOpenRouter?'https://openrouter.ai/api/v1/chat/completions':'https://integrate.api.nvidia.com/v1/chat/completions'
         const facts=core.search(catalogue).map((p:any)=>({id:p.id,name:p.name,priceMMK:p.price,category:p.category,material:p.material,height:p.height,stock:p.stock,description:p.description}))
-        const chatInstructions=preloaded?instructions+'\nVerified catalogue already retrieved; these IDs are allowed: '+JSON.stringify(facts)+'\nCall respond_to_customer immediately for ordinary recommendations and greetings. Use other tools only when needed. Keep replies to two or three short sentences.':instructions
-        let repairedToolCall=false
+        const chatInstructions=isOpenRouter?instructions+'\nVerified catalogue already retrieved; these IDs are allowed: '+JSON.stringify(facts)+'\nCall respond_to_customer immediately for ordinary recommendations and greetings. Use other tools only when needed. Keep replies to two or three short sentences.':instructions
         const conversation:any[]=[{role:'system',content:chatInstructions},...turns.map((m:any)=>({role:m.role,content:m.content}))]
-        for(let round=0;round<(preloaded?3:5);round++){
-          const response=await fetcher(endpoint,{method:'POST',headers:{'content-type':'application/json',authorization:`Bearer ${key}`},signal:controller.signal,body:JSON.stringify({model,messages:conversation,tools:definitions.map(d=>({type:'function',function:d})),tool_choice:'required',...(isOpenRouter?{max_tokens:2048,provider:{allow_fallbacks:true,require_parameters:true,sort:'latency'},...(/^google\/gemini-3/.test(model)?{reasoning:{effort:'minimal'}}:{})}:isGroq?{max_completion_tokens:2048,parallel_tool_calls:false,...(/^openai\/gpt-oss-/.test(model)?{reasoning_effort:'low'}:{})}:{max_tokens:4096}),stream:false})})
-          if(!response.ok){
-            // Read only a known error code, never log provider messages or failed generations.
-            let toolRejected=false
-            if(isGroq&&response.status===400){
-              try{toolRejected=(await response.json())?.error?.code==='tool_use_failed'}catch{}
-            }
-            if(toolRejected&&!repairedToolCall&&round<2){
-              repairedToolCall=true
-              conversation.push({role:'system',content:'The previous function call was rejected. Retry with exactly one valid function call using its declared name and JSON argument schema. Use respond_to_customer to finish, with message and productIds. Do not emit XML, markdown or a textual function call.'})
-              continue
-            }
-            throw Object.assign(new Error('Provider unavailable'),{httpStatus:response.status,providerCode:toolRejected?'TOOL_USE_FAILED':undefined})
-          }
+        for(let round=0;round<(isOpenRouter?3:5);round++){
+          const response=await fetcher(endpoint,{method:'POST',headers:{'content-type':'application/json',authorization:`Bearer ${key}`},signal:controller.signal,body:JSON.stringify({model,messages:conversation,tools:definitions.map(d=>({type:'function',function:d})),tool_choice:'required',...(isOpenRouter?{max_tokens:2048,provider:{allow_fallbacks:true,require_parameters:true,sort:'latency'},...(/^google\/gemini-3/.test(model)?{reasoning:{effort:'minimal'}}:{})}:{max_tokens:4096}),stream:false})})
+          if(!response.ok)throw Object.assign(new Error('Provider unavailable'),{httpStatus:response.status})
           const payload=await response.json()
           // OpenRouter can also report provider errors inside a successful HTTP response.
           if(isOpenRouter&&payload.error){
@@ -159,7 +177,7 @@ export function createSage(options:any={}){
     }catch(error:any){
       // Never log provider bodies, request headers, chat messages or API keys.
       const status=Number(error?.httpStatus)
-      const code=Number.isInteger(status)&&status>=400&&status<=599?(error?.providerCode==='TOOL_USE_FAILED'?'TOOL_USE_FAILED':'HTTP_'+status):(controller.signal.aborted||error?.name==='AbortError'||error?.name==='TimeoutError')?'TIMEOUT':'INVALID_RESPONSE'
+      const code=Number.isInteger(status)&&status>=400&&status<=599?'HTTP_'+status:(controller.signal.aborted||error?.name==='AbortError'||error?.name==='TimeoutError')?'TIMEOUT':'INVALID_RESPONSE'
       // A short circuit prevents every follow-up waiting on an overloaded provider.
       if(code==='TIMEOUT'||status===429||status===503){unavailableUntil=Date.now()+30000;unavailableCode=code}
       console.warn(`Sage ${provider}: ${code}`)
