@@ -129,7 +129,7 @@
   }
   function welcome(){
     $('sageBody').replaceChildren()
-    bubble('assistant',language()==='my'?'မင်္ဂလာပါ၊ ကျွန်ုပ်က Sage ပါ။ ဘတ်ဂျက်နှင့် ထားရှိမည့်နေရာကို ပြောပြပေးပါ။':'A little guidance, thoughtfully chosen. I’m Sage—tell me your budget or the space you have in mind.')
+    bubble('assistant',language()==='my'?'မင်္ဂလာပါရှင်၊ ကျွန်မက Sage ပါ။ စိတ်ကြိုက်ရုပ်ပွားတော်လေး အတူရွေးကြမယ်နော်။ ဘယ်နေရာမှာ ထားချင်ပါသလဲ။':'Hi, I’m Sage! Let’s find a piece you’ll love. What space are you choosing for?')
     if(!messages.length){
       const quick=node('div',null,'sage-quick',$('sageBody'));quick.id='sageQuick'
       for(const [label,prompt] of [['Find My Perfect Buddha','Help me find my perfect Buddha'],['Shop Under My Budget','Help me shop under my budget'],['Compare Statues','I want to compare statues'],['Help Me Choose a Gift','I want a gift for my parents'],['Find a Statue for My Room','Find a statue for my room'],['Track My Order','How do I track my order?']]){const button=node('button',label,null,quick);button.type='button';button.onclick=()=>send(prompt)}

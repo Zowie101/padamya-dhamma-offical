@@ -1,3 +1,4 @@
+import {CATALOGUE_NAMES_VERSION,correctedProductName} from './catalogue-names.mts'
 import { DatabaseSync } from 'node:sqlite'
 import fs from 'node:fs'
 import path from 'node:path'
@@ -22,6 +23,14 @@ export function openDatabase(filename = path.join(ROOT,'.data/sacred-form.sqlite
   const seed = JSON.parse(fs.readFileSync(path.join(ROOT,'server/data/catalogue.json'),'utf8'))
   const insert = db.prepare('INSERT OR IGNORE INTO products VALUES(?,?)')
   for (const product of seed) insert.run(product.id,JSON.stringify(product))
+  transaction(db,()=>{
+    if(db.prepare('SELECT 1 FROM schema_migrations WHERE version=?').get(CATALOGUE_NAMES_VERSION))return
+    for(const row of db.prepare('SELECT id,data FROM products').all()){
+      const current=JSON.parse(String(row.data)),updated=correctedProductName(current)
+      if(updated!==current)db.prepare('UPDATE products SET data=? WHERE id=?').run(JSON.stringify(updated),String(row.id))
+    }
+    db.prepare("INSERT INTO schema_migrations VALUES(?,datetime('now'))").run(CATALOGUE_NAMES_VERSION)
+  })
   return db
 }
 export function transaction(db: DatabaseSync, callback: () => any) {

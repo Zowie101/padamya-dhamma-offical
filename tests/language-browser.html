@@ -2,6 +2,7 @@
 <html lang="en"><head><meta charset="utf-8"><title>Language regression checks</title><script src="../assets/js/language.js"></script></head>
 <body><header class="site-header"><div class="header-actions"></div></header>
 <h1>Language regression checks</h1><button id="run">Run checks</button><pre id="report">Ready</pre>
+<div class="home-hero-copy"><h1 id="heroHeading">Make room for<br><em>stillness.</em></h1></div><h2 id="otherStillness">stillness.</h2>
 <section id="fixture"><p id="name">Golden Presence</p><p id="amount">68,000 MMK</p><button id="action" data-filter="Home Shrine" aria-label="Save to wishlist: Golden Presence">Add to bag +</button><select id="country"><option>Myanmar</option><option>Thailand</option></select><input id="customer" value="Golden Presence"><p id="orderCustomerName">Golden Presence</p><p id="dynamic"></p></section>
 <script>
 document.querySelector('#run').onclick=async()=>{
@@ -13,6 +14,8 @@ document.querySelector('#run').onclick=async()=>{
   api.setLanguage('en'); await frame();
   api.setLanguage('my'); await frame();
   check(document.documentElement.lang==='my','document language');
+  check(document.querySelector('#heroHeading').textContent==='ငြိမ်းချမ်းရာနေရာတစ်ခုဖန်တီးပါ။','requested Burmese hero phrase');
+  check(document.querySelector('#otherStillness').textContent==='နေရာတစ်ခု။','other stillness headings unchanged');
   check(document.querySelector('#name').textContent==='ရွှေရောင်တင့်တယ်မှု','product name');
   check(document.querySelector('#amount').textContent==='68,000 ကျပ်','currency');
   check(document.querySelector('#action').dataset.filter==='Home Shrine','filter ID unchanged');
@@ -23,6 +26,7 @@ document.querySelector('#run').onclick=async()=>{
   check(document.querySelector('#dynamic').textContent==='အေးချမ်းသောသမာဓိ','new dynamic text translated');
   api.setLanguage('en'); await frame();
   check(document.querySelector('#name').textContent==='Golden Presence','exact English round trip');
+  check(document.querySelector('#heroHeading').textContent==='Make room forstillness.','English hero restored');
   check(document.querySelector('#action').textContent==='Add to bag +','button and icon round trip');
   check(document.querySelector('#dynamic').textContent==='Quiet Meditation','dynamic English restored');
   for(let i=0;i<3;i++){api.setLanguage('my');await frame();api.setLanguage('en');await frame()}

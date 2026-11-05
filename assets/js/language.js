@@ -44,9 +44,9 @@
     const names = [
       'Golden Presence',
       'Quiet Meditation',
-      'Earth Touching',
+      'Lotus Meditation',
       'Lotus Stillness',
-      'Gentle Blessing',
+      'Gentle Serenity',
       'Temple Gold'
     ]
     const name = s => phrase(s) || s
@@ -176,8 +176,12 @@
       const node = walker.currentNode,
         parent = node.parentElement
       if (!parent || parent.closest(ignored)) continue
-      const source = original(textSources.get(node), node.data),
-        rendered = translate(source)
+      const source = original(textSources.get(node), node.data)
+      // Keep this two-part translation specific to the home hero, preserving its italic accent.
+      const heroPart = language === 'my' && parent.closest('.home-hero-copy h1')
+        ? { 'Make room for': 'ငြိမ်းချမ်းရာ', 'stillness.': 'နေရာတစ်ခုဖန်တီးပါ။' }[normalize(source)]
+        : null
+      const rendered = heroPart ? source.replace(source.trim(), heroPart) : translate(source)
       if (parent.tagName === 'OPTION' && !parent.hasAttribute('value'))
         parent.value = parent.textContent
       textSources.set(node, { source, rendered })
@@ -262,7 +266,7 @@
     }
   })
   const dictionaryReady = fetch(
-    new URL('../locales/my.json?v=20261104-hero', document.currentScript.src)
+    new URL('../locales/my.json?v=20261105-sage-names', document.currentScript.src)
   )
     .then(r => {
       if (!r.ok) throw Error('Translation file unavailable')

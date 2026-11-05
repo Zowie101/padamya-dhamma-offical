@@ -45,7 +45,7 @@ const PRODUCTS = [
   },
   {
     id: 'earth-touching',
-    name: 'Earth Touching',
+    name: 'Lotus Meditation',
     category: 'Home Shrine',
     material: 'Bronze-tone resin',
     height: '32 cm',
@@ -89,7 +89,7 @@ const PRODUCTS = [
   },
   {
     id: 'gentle-blessing',
-    name: 'Gentle Blessing',
+    name: 'Gentle Serenity',
     category: 'Small & Simple',
     material: 'Ivory-tone resin',
     height: '15 cm',

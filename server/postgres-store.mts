@@ -1,3 +1,4 @@
+import {CATALOGUE_NAMES_VERSION,correctedProductName} from './catalogue-names.mts'
 import {addressBook,defaultDelivery,changeAddress} from './delivery-book.mts'
 import fs from 'node:fs'
 import path from 'node:path'
@@ -16,6 +17,13 @@ export class PostgresStore {
       await store.connection.query(fs.readFileSync(path.join(ROOT,'server/postgres-schema.sql'),'utf8'))
       const seed=JSON.parse(fs.readFileSync(path.join(ROOT,'server/data/catalogue.json'),'utf8'))
       for(const p of seed)await store.query('INSERT INTO padamya.products VALUES($1,$2::jsonb) ON CONFLICT DO NOTHING',[p.id,JSON.stringify(p)])
+      if(!(await store.query('SELECT 1 FROM padamya.schema_migrations WHERE version=$1',[CATALOGUE_NAMES_VERSION])).length){
+        for(const row of await store.query('SELECT id,data FROM padamya.products')){
+          const updated=correctedProductName(row.data)
+          if(updated!==row.data)await store.query('UPDATE padamya.products SET data=$1::jsonb WHERE id=$2',[JSON.stringify(updated),row.id])
+        }
+        await store.query('INSERT INTO padamya.schema_migrations(version) VALUES($1)',[CATALOGUE_NAMES_VERSION])
+      }
     })
   }
   async transaction(callback:(store:PostgresStore)=>Promise<any>){
