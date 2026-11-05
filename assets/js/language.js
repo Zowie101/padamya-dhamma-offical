@@ -179,7 +179,7 @@
       const source = original(textSources.get(node), node.data)
       // Keep this two-part translation specific to the home hero, preserving its italic accent.
       const heroPart = language === 'my' && parent.closest('.home-hero-copy h1')
-        ? { 'Make room for': 'ငြိမ်းချမ်းရာ', 'stillness.': 'နေရာတစ်ခုဖန်တီးပါ။' }[normalize(source)]
+        ? { 'Make room for': 'ငြိမ်းချမ်းရာနေရာတစ်ခု', 'stillness.': 'ဖန်တီးပါ။' }[normalize(source)]
         : null
       const rendered = heroPart ? source.replace(source.trim(), heroPart) : translate(source)
       if (parent.tagName === 'OPTION' && !parent.hasAttribute('value'))

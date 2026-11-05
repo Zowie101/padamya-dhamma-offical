@@ -1,4 +1,4 @@
-/* Optional Gemini vision analysis with an explicit, on-device fallback. */
+/* Optional server-routed vision analysis with an explicit, on-device fallback. */
 ; (() => {
   const root = document.getElementById('wishlistAdviser')
   if (!root) return
@@ -379,7 +379,7 @@
           ? 'The only piece that clears your entered shelf height.'
           : 'A stronger balance of finish, contrast and your selected details.'
     result.innerHTML =
-      (ai?'<p class="ai-comparison-label">Gemini photo analysis</p>':'')+(fallbackNotice?'<p class="ai-comparison-notice" role="status">'+escapeText(fallbackNotice)+'</p>':'')+
+      (ai?'<p class="ai-comparison-label">AI photo analysis</p>':'')+(fallbackNotice?'<p class="ai-comparison-notice" role="status">'+escapeText(fallbackNotice)+'</p>':'')+
       '<div class="result-hero"><div class="result-heading"><div><p class="eyebrow">Your comparison</p><h2 id="comparisonResultTitle">' +
       title +
       '</h2><p>' +
@@ -459,7 +459,7 @@
         : 'Height checked; confirm shelf width, depth and weight capacity.') +
       '</p></div>' +
       (ai?'<p class="photo-reading" data-ai data-no-translate>'+escapeText(ai.observation)+(ai.caution?' '+escapeText(ai.caution):'')+'</p>':'<p class="photo-reading">Photo: '+brightness+' overall exposure · '+colour+' average colour.</p>') +
-      (ai?'<details class="comparison-method"><summary>How this recommendation is calculated</summary><p>Gemini assesses visible palette, contrast and composition using your room photo and the selected product references. Its styling scores are subjective, not a probability or a measurement. Entered height clearance is checked separately against catalogue dimensions. A piece that exceeds that height is never recommended. Width, depth, stability and true finish cannot be verified from this photo.</p></details>':
+      (ai?'<details class="comparison-method"><summary>How this recommendation is calculated</summary><p>AI assesses visible palette, contrast and composition using your room photo and the selected product references. Its styling scores are subjective, not a probability or a measurement. Entered height clearance is checked separately against catalogue dimensions. A piece that exceeds that height is never recommended. Width, depth, stability and true finish cannot be verified from this photo.</p></details>':
       '<details class="comparison-method"><summary>How this recommendation is calculated</summary><p>Match points are a weighted rule score, not a probability or an AI confidence rating. Height clearance contributes up to 45 points when entered; palette pairing 20; visual contrast 15; and your chosen style preference 20 when selected. The total is scaled to 100 using only the criteria supplied. A piece that exceeds your entered height is never recommended, regardless of its score. Within 5 match points, the result is treated as a close call.</p><p>Colour and contrast rules use listed material descriptions and whole-image pixel averages. They cannot recognise your shrine or the statue, isolate a shelf, judge sacred suitability, predict true product colour or assess width, depth and stability. Check product measurements and actual photographs before ordering.</p></details>') +
       '<p class="adviser-small">' +
       (height === null

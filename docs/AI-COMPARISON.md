@@ -1,23 +1,35 @@
 # AI shrine-photo comparison
 
-The comparison page retains its on-device algorithm and adds an unchecked **Use Gemini photo analysis** option. Merely uploading a photo never calls Google. Selecting this option and submitting the comparison explicitly sends the resized photo and two public product references through the same-origin backend to Gemini. The customer-facing notice discloses Google free-tier data use and links its terms.
+The comparison page keeps its on-device algorithm and offers an unchecked **Use AI photo analysis** option. Upload alone never calls an AI provider. Selecting AI and submitting sends the resized room photo and two public product references through the same-origin backend to the configured service. The notice explains external processing and links Google terms and OpenRouter privacy policies.
 
-## Setup
+## Provider settings
 
-Uses the existing server-only `GEMINI_API_KEY` and `GEMINI_MODEL` settings. Optional `COMPARISON_MODEL` overrides only the vision model. The tested model is `gemini-3.5-flash-lite`. No database migration or new dependency is required.
+When `SAGE_PROVIDER=openrouter`, comparison automatically uses `OPENROUTER_API_KEY` and `OPENROUTER_MODEL`. A direct Google key is not needed for this route. The selected model must support image input and structured outputs. Optional `OPENROUTER_COMPARISON_MODEL` selects a separate vision model. Optional `COMPARISON_PROVIDER=openrouter` or `gemini` overrides automatic selection. Otherwise comparison uses direct Gemini with `GEMINI_API_KEY` and `COMPARISON_MODEL` (or `GEMINI_MODEL`). Old direct-Google `COMPARISON_MODEL` values are not accidentally sent to OpenRouter.
+
+```dotenv
+SAGE_PROVIDER=openrouter
+OPENROUTER_API_KEY=your_private_key
+OPENROUTER_MODEL=google/gemini-3.1-flash-lite
+# Optional:
+COMPARISON_PROVIDER=openrouter
+OPENROUTER_COMPARISON_MODEL=google/gemini-3.1-flash-lite
+```
+
+Save secrets only in the server environment. Existing OpenRouter Sage configuration needs no additional settings. No database migration or dependency is needed. Direct Gemini remains supported and uses minimal/low thinking where applicable.
 
 ## Data flow and limits
 
-- Browser canvas converts the upload to a JPEG of at most 1024 pixels on its longest side, stripping filename and EXIF metadata from the transmitted image. The original remains a local object URL.
-- `POST /api/comparison` requires the same session/CSRF checks as other storefront actions, explicit consent, two different catalogue IDs and a bounded base64 JPEG. It validates signature and dimensions before calling Gemini. At most two analyses run concurrently per server process; profile and IP rate limits also apply.
-- Only public catalogue details/product images accompany the room image. No name, email, cart, orders or account information is sent to Google.
-- The application keeps image bytes in memory for the request, with no photo/result persistence to database, files or logs. Google handles submitted material under its own terms; this is not a promise that Google retains nothing.
-- Provider output uses a constrained function response and server-side schema validation. Duplicate/invented IDs and invalid scores are rejected. Model text is displayed as escaped text, never trusted HTML.
-- AI rates palette, contrast and composition. Listed heights and customer-entered clearance determine physical height eligibility on the server. A product exceeding that height cannot win. Scores are subjective comparisons, not probabilities, measurements or sacred-suitability advice. Width, depth, loading and actual finishes still require checking.
-- Failed, unsupported, busy, ambiguous or timed-out AI requests show the labelled on-device fallback. Changing any input cancels the UI request and discards stale results.
+- The browser converts uploads to JPEG with at most 1024 pixels on the longest side, removing filenames and EXIF metadata from the transmitted image. The original remains a local object URL.
+- `POST /api/comparison` requires session/CSRF checks, explicit consent, two distinct available catalogue IDs and bounded JPEG data. Signature/dimensions are checked before sending. Per-profile/IP rate limits and the existing two-analysis concurrency cap remain.
+- Only public catalogue details and product images accompany the room image. No names, emails, orders, account records or bag contents are sent.
+- Image bytes stay in application memory for the request, without saving photos/results to files, logs or the database. External providers apply their own retention policies; this does not promise they retain nothing.
+- OpenRouter receives one multimodal Chat Completions request: room first, then labelled product references as image data URLs. Strict JSON-schema output and server validation reject invented/duplicate IDs, invalid scores, malformed JSON and truncated responses. Direct Gemini retains its constrained function response. Model text is escaped before rendering.
+- AI assesses visible palette, contrast and composition. Entered clearance and listed heights are checked on the server. A piece exceeding the entered height cannot win. Scores are subjective, not probabilities, physical measurements or sacred-suitability judgments. Width, depth, stability and true finish still require checking.
+- One 35-second deadline bounds a provider request. Failed, unsupported, unclear or timed-out analysis returns a safe error and the UI labels the on-device fallback. No automatic photo retries or cross-provider resubmission occur. Input changes cancel the UI request and discard stale responses.
+- Logs contain only provider name, safe error classification and status, never photos, provider response bodies or keys.
 
 ## Verification
 
-`node --test tests/comparison.test.mts` checks consent and CSRF, JPEG limits, ID/score validation, no-fit constraints and safe failure. Full regression suite: `node --run test`. Test real vision only with a synthetic/public room image or a photo whose owner has explicitly agreed to Google processing. Preview test images belong in the ignored `preview/` folder.
+`node --test tests/comparison.test.mts tests/hero-language.test.cjs` covers consent/CSRF, JPEG limits, routing, three-image OpenRouter payloads, Burmese prompts, structured validation, height eligibility, safe failures and timeout. Mock tests do not prove live model availability or vision quality. For a live check, use a synthetic/public room image or a photo with explicit owner consent. Save preview images in ignored `preview/`.
 
-Sources: [Gemini images](https://ai.google.dev/gemini-api/docs/generate-content/image-understanding), [Gemini data terms](https://ai.google.dev/gemini-api/terms).
+Implementation references: [OpenRouter image inputs](https://openrouter.ai/docs/guides/overview/multimodal/image-understanding), [OpenRouter structured outputs](https://openrouter.ai/docs/guides/features/structured-outputs), [Google data terms](https://ai.google.dev/gemini-api/terms), [OpenRouter privacy](https://openrouter.ai/privacy).

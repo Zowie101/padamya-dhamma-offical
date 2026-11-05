@@ -48,3 +48,41 @@ test('comparison endpoint requires consent and CSRF before invoking vision analy
   assert.equal(calls,0)
   assert.equal((await post(data)).status,200);assert.equal(calls,1)
 })
+
+test('OpenRouter vision sends the room plus two references and validates structured results',async()=>{
+ let request:any,endpoint:any,headers:any
+ const result=await createComparison({provider:'openrouter',key:'router-fixture-key',model:'google/gemini-3.1-flash-lite',fetch:async(url:any,init:any)=>{
+ endpoint=url;headers=init.headers;request=JSON.parse(init.body)
+ return {ok:true,json:async()=>({choices:[{finish_reason:'stop',message:{content:JSON.stringify(analysis())}}]})}
+ }})({store,data:{...data,language:'my'}})
+ assert.equal(endpoint,'https://openrouter.ai/api/v1/chat/completions');assert.equal(headers.authorization,'Bearer router-fixture-key')
+ const parts=request.messages[0].content
+ assert.equal(parts.filter((p:any)=>p.type==='image_url').length,3)
+ assert.ok(parts.find((p:any)=>p.type==='image_url').image_url.url.startsWith('data:image/jpeg;base64,'))
+ assert.match(parts[0].text,/Burmese/);assert.match(parts[0].text,/golden-presence/);assert.ok(!parts[0].text.includes('Return submit_comparison'))
+ assert.equal(request.response_format.type,'json_schema');assert.equal(request.response_format.json_schema.schema.additionalProperties,false)
+ assert.equal(request.response_format.json_schema.schema.properties.evaluations.items.additionalProperties,false)
+ assert.equal(request.provider.require_parameters,true);assert.equal(result.mode,'ai');assert.equal(result.pair[0].fits,false)
+ assert.doesNotMatch(JSON.stringify(result),/router-fixture-key|base64|data:image/)
+})
+test('OpenRouter rejects malformed, truncated and unsafe results and provider failures safely',async()=>{
+ const bad=analysis();bad.evaluations[0].id='invented'
+ const duplicate=analysis();duplicate.evaluations[0].id=duplicate.evaluations[1].id
+ const range=analysis();range.evaluations[0].palette=100
+ const cases=[{choices:[{message:{content:'not JSON'}}]},{choices:[{message:{content:JSON.stringify(bad)}}]},{choices:[{message:{content:JSON.stringify(duplicate)}}]},{choices:[{message:{content:JSON.stringify(range)}}]},{choices:[{finish_reason:'length',message:{content:JSON.stringify(analysis())}}]},{error:{code:429,message:'router-fixture-key'}}]
+ for(const payload of cases)await assert.rejects(()=>createComparison({provider:'openrouter',key:'router-fixture-key',model:'test',fetch:async()=>({ok:true,json:async()=>payload})})({store,data}),{status:503,message:'AI comparison could not finish. Try again or use the on-device comparison.'})
+ for(const status of [401,402,429,503])await assert.rejects(()=>createComparison({provider:'openrouter',key:'router-fixture-key',model:'test',fetch:async()=>({ok:false,status,json:async()=>({error:{message:'router-fixture-key'}})})})({store,data}),{status:503})
+ const unclear={...analysis(),sceneVisible:false}
+ await assert.rejects(()=>createComparison({provider:'openrouter',key:'fixture',model:'test',fetch:async()=>({ok:true,json:async()=>({choices:[{message:{content:JSON.stringify(unclear)}}]})})})({store,data}),{status:422})
+})
+test('comparison provider follows OpenRouter without requiring a direct Google key',async()=>{
+ const {comparisonConfig}=await import('../server/comparison.mts')
+ const env={SAGE_PROVIDER:'openrouter',OPENROUTER_API_KEY:' router-only ',OPENROUTER_MODEL:'google/gemini-3.1-flash-lite',COMPARISON_MODEL:'old-direct-gemini'}
+ assert.deepEqual(comparisonConfig({},env),{provider:'openrouter',key:'router-only',model:'google/gemini-3.1-flash-lite'})
+ assert.equal(comparisonConfig({},{...env,OPENROUTER_COMPARISON_MODEL:'google/other-vision'}).model,'google/other-vision')
+ assert.deepEqual(comparisonConfig({},{...env,COMPARISON_PROVIDER:'gemini',GEMINI_API_KEY:'direct-key'}),{provider:'gemini',key:'direct-key',model:'old-direct-gemini'})
+ assert.equal(comparisonConfig({},{SAGE_PROVIDER:'groq'}).provider,'gemini')
+})
+test('OpenRouter comparison timeout is bounded and does not return image data',async()=>{
+ await assert.rejects(()=>createComparison({provider:'openrouter',key:'fixture',model:'test',timeoutMs:10,fetch:async(_url:any,init:any)=>new Promise((_resolve,reject)=>{const hold=setTimeout(()=>reject(Error('too slow')),100);init.signal.addEventListener('abort',()=>{clearTimeout(hold);reject(init.signal.reason)},{once:true})})})({store,data}),{status:503})
+})

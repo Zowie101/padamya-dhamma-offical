@@ -651,5 +651,9 @@
   "Thoughtfully chosen Buddha statues for home shrines and quiet spaces.": "အိမ်ဘုရားစင်နှင့် တိတ်ဆိတ်ငြိမ်သက်သော နေရာများအတွက် စိတ်တိုင်းကျ ရွေးချယ်ထားသည့် ဗုဒ္ဓရုပ်ပွားတော်များ။",
   "Preview your shrine": "သင့်ဘုရားစင်ကို အစမ်းကြည့်ပါ",
   "Lotus Meditation": "ကြာပလ္လင်ပေါ်မှ သမာဓိ",
-  "Gentle Serenity": "နူးညံ့အေးချမ်းခြင်း"
+  "Gentle Serenity": "နူးညံ့အေးချမ်းခြင်း",
+  "Use AI photo analysis": "AI ဖြင့် ဓာတ်ပုံကို ဆန်းစစ်မည်",
+  "AI photo analysis": "AI ဓာတ်ပုံဆန်းစစ်မှု",
+  "Choosing AI sends your resized photo and product references to an external AI service. We do not save your photo. Avoid photos containing people or private information.": "AI ကို ရွေးပါက အရွယ်လျှော့ထားသော ဓာတ်ပုံနှင့် ရုပ်ပွားတော်ပုံများကို ပြင်ပ AI ဝန်ဆောင်မှုသို့ ပေးပို့ပါမည်။ ကျွန်ုပ်တို့က သင့်ဓာတ်ပုံကို သိမ်းဆည်းမထားပါ။ လူပုံများ သို့မဟုတ် ကိုယ်ရေးအချက်အလက်များပါသော ဓာတ်ပုံများကို ရှောင်ပါ။",
+  "OpenRouter privacy policy ↗": "OpenRouter ကိုယ်ရေးလုံခြုံမှု မူဝါဒ ↗"
 }
